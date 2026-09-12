@@ -1,0 +1,32 @@
+import pytest
+from jsonschema.exceptions import SchemaError, ValidationError
+
+from mcp_compat.schema import (
+    canonical_bytes,
+    canonical_json,
+    validate_instance,
+    validate_schema,
+)
+
+
+def test_validate_schema_and_instance() -> None:
+    schema = {"type": "integer", "minimum": 1}
+
+    assert validate_schema(schema) is None
+    assert validate_instance(1, schema) is None
+    with pytest.raises(ValidationError):
+        validate_instance(0, schema)
+
+
+def test_validate_schema_rejects_invalid_schema() -> None:
+    with pytest.raises(SchemaError):
+        validate_schema({"type": "not-a-json-type"})
+
+
+def test_canonical_serialization_ignores_dict_order() -> None:
+    first = {"b": [2, 1], "a": {"текст": "значение", "x": True}}
+    second = {"a": {"x": True, "текст": "значение"}, "b": [2, 1]}
+
+    assert canonical_json(first) == canonical_json(second)
+    assert canonical_json(first) == '{"a":{"x":true,"текст":"значение"},"b":[2,1]}'
+    assert canonical_bytes(first) == canonical_json(first).encode("utf-8")

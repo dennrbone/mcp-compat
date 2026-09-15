@@ -2,7 +2,7 @@
 
 ## 1. Статус документа
 
-**Версия:** 1.0  
+**Версия:** 1.1  
 **Целевая публикация:** журнал ВАК категории К3  
 **Предполагаемая специальность:** 2.3.5 — математическое и программное обеспечение вычислительных систем, комплексов и компьютерных сетей  
 **Рабочее название проекта:** MCP-Compat  
@@ -193,6 +193,46 @@ T_old + T_new + q_old
 ```
 
 `ABSTAIN` является корректным результатом алгоритма, а не ошибкой системы.
+
+### 10.1. MigrationDecision
+
+Для унификации решений всех последующих стадий вводится доменная сущность `MigrationDecision`.
+
+Она описывает **решение системы по конкретному evolution scenario**, а не ground-truth benchmark.
+
+Минимальная логическая модель:
+
+```text
+MigrationDecision
+├── action
+│   ├── EXECUTE
+│   └── ABSTAIN
+├── adapted_call: ToolCall | null
+├── reasons: list[str]
+├── evidence: dict
+└── metadata: dict
+```
+
+Инварианты:
+
+1. При `action = EXECUTE` поле `adapted_call` обязательно.
+2. При `action = ABSTAIN` поле `adapted_call` должно быть `null`.
+3. `reasons` содержит машинно-читаемые или стабильные текстовые причины принятого решения.
+4. `evidence` хранит результаты стадий проверки, но не является ground truth.
+5. `MigrationDecision` не должен содержать скрытую информацию из `oracle`.
+6. Benchmark `oracle` используется только evaluator'ом после принятия решения.
+7. На Phase 2 `MigrationDecision` может быть реализован как доменная модель, но `SchemaDiffEngine` не должен самостоятельно принимать финальное решение `EXECUTE/ABSTAIN`; его задача — только описывать изменения контрактов.
+
+Рекомендуемые значения `action`:
+
+```text
+EXECUTE
+ABSTAIN
+```
+
+Не вводить промежуточное `RETRY`, `REVIEW` или probabilistic action в Research Spec v1.0 без отдельного изменения спецификации.
+
+---
 
 ---
 
@@ -770,9 +810,10 @@ MCP Server vN
 - `ToolContract`
 - `ToolCall`
 - `EvolutionScenario`
-- `MigrationDecision`
 - JSON Schema validation
 - canonical serialization
+
+`MigrationDecision` формально определён в разделе 10.1 после Phase 1 и реализуется в начале Phase 2, поскольку исходная версия Research Spec упоминала сущность без достаточного контракта.
 
 **С этого этапа подключается Codex.**
 

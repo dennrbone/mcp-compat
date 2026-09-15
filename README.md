@@ -2,7 +2,7 @@
 
 MCP-Compat is a research project about safely restoring LLM-agent compatibility after MCP tool contracts evolve. It is not production-ready.
 
-Phase 1 provides typed `ToolContract`, `ToolCall`, and `EvolutionScenario` models, JSON Schema Draft 2020-12 validation, and deterministic JSON serialization. It does not include MCP transport, LLM integrations, benchmark generation, schema diffing, or recovery algorithms.
+Phase 1 provides typed `ToolContract`, `ToolCall`, and `EvolutionScenario` models, JSON Schema Draft 2020-12 validation, and deterministic JSON serialization. Phase 2 is implemented: `MigrationDecision` and `SchemaDiffEngine` describe deterministic contract changes across C1–C8. Semantic matching and adapter generation are not implemented; there is no MCP transport, LLM integration or benchmark generator.
 
 ## Setup
 
@@ -49,12 +49,33 @@ Run the tests:
 pytest -q
 ```
 
-Run the Phase 1 quality gate:
+Run the Phase 2 quality gate:
 
 ```bash
-pytest -q --cov=mcp_compat --cov-report=term-missing --cov-report=xml --cov-fail-under=100
+pytest -q --cov=mcp_compat --cov-branch --cov-report=term-missing --cov-report=xml --cov-fail-under=100
 ```
 
-Phase 1 requires 100% statement coverage for `src/mcp_compat`. GitHub Actions runs the same gate on pushes to `main` and `phase/**`, and on pull requests targeting `main`.
+Phase 2 requires 100% statement and branch coverage for `src/mcp_compat`. GitHub Actions runs the same gate on pushes to `main` and `phase/**`, and on pull requests targeting `main`.
 
-Development for this phase belongs on `phase/01-domain-model`; merge into `main` only after local tests and CI pass.
+Development for this phase belongs on `phase/02-schema-diff`.
+
+
+## Deterministic schema diff
+
+```python
+from mcp_compat import SchemaDiffEngine, canonical_bytes
+
+diff = SchemaDiffEngine.compare(old_contract, new_contract)
+print(diff.has_changes, diff.is_complete)
+print(canonical_bytes(diff.model_dump(mode="json")))
+```
+
+The engine reports typed changes with stable schema paths and ordering. It handles
+properties, required membership, nested objects, array items, types/nullable unions,
+formats, enums and acyclic local `$defs` references. Parameter renames require
+unique unchanged reference identity; matching names/types alone never suffice.
+C8 uses explicit `semantic_unit` markers only. Nesting/flattening may appear as
+primitive additions/removals. Unsupported constructs appear in `diff.opaque`;
+`has_changes=False` does not imply a complete comparison when `is_complete=False`.
+The engine makes no EXECUTE/ABSTAIN decision. See
+[implementation conventions and limitations](docs/IMPLEMENTATION_NOTES.md).

@@ -1,0 +1,1 @@
+{"base_tool":"booking_cancel","composed":true,"domain":"booking","families":["C1","C8"],"ground_truth":"MUST_ABSTAIN","mutation_family":"C8","mutation_subtype":"changed_notification","public_context":{"rules":[]},"recoverable":false,"scenario_id":"booking-4-C8-4-composed"}

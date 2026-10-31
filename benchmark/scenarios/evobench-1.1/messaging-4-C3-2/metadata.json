@@ -1,0 +1,1 @@
+{"base_tool":"messaging_revoke","composed":false,"domain":"messaging","ground_truth":"CONDITIONAL","mutation_family":"C3","mutation_subtype":"optional_required_present","public_context":{"rules":[]},"recoverable":true,"scenario_id":"messaging-4-C3-2"}

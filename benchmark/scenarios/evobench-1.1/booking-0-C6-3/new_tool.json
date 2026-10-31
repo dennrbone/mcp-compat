@@ -1,0 +1,1 @@
+{"description":"Synthetic booking price; isolated state only.","input_schema":{"properties":{"mode":{"enum":["delivery"],"type":"string"},"note":{"type":"string"},"notify":{"type":"boolean"},"target":{"type":"string"},"value":{"type":"integer"}},"required":["value","target","mode","notify"],"type":"object"},"metadata":{},"name":"booking_price","output_schema":null}

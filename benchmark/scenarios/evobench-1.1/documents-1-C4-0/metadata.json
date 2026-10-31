@@ -1,0 +1,1 @@
+{"base_tool":"documents_size","composed":false,"domain":"documents","ground_truth":"CONDITIONAL","mutation_family":"C4","mutation_subtype":"required_redundant_removed","public_context":{"rules":[]},"recoverable":true,"scenario_id":"documents-1-C4-0"}

@@ -1,0 +1,1 @@
+{"base_tool":"calendar_availability","composed":false,"domain":"calendar","ground_truth":"CONDITIONAL","mutation_family":"C6","mutation_subtype":"enum_rename","public_context":{"rules":[{"op":"enum","source":["mode"],"target":["mode"],"values":{"express":"priority","standard":"standard"}}]},"recoverable":true,"scenario_id":"calendar-1-C6-0"}

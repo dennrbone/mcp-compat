@@ -1,0 +1,1 @@
+{"base_tool":"calendar_agenda","composed":false,"domain":"calendar","ground_truth":"MUST_ABSTAIN","mutation_family":"C4","mutation_subtype":"value_removed","public_context":{"rules":[]},"recoverable":false,"scenario_id":"calendar-5-C4-4"}

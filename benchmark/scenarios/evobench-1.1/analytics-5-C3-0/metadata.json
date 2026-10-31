@@ -1,0 +1,1 @@
+{"base_tool":"analytics_report","composed":false,"domain":"analytics","ground_truth":"CONDITIONAL","mutation_family":"C3","mutation_subtype":"required_default","public_context":{"rules":[{"op":"set","target":["region"],"value":"local"}]},"recoverable":true,"scenario_id":"analytics-5-C3-0"}

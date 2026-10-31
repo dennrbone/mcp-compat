@@ -1,0 +1,1 @@
+{"base_tool":"messaging_revoke","composed":true,"domain":"messaging","families":["C1","C8"],"ground_truth":"CONDITIONAL","mutation_family":"C8","mutation_subtype":"rub_kopecks","public_context":{"rules":[{"factor":100,"op":"scale","source":["value"],"target":["value"]}]},"recoverable":true,"scenario_id":"messaging-4-C8-0-composed"}

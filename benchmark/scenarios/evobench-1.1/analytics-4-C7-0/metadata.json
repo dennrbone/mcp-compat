@@ -1,0 +1,1 @@
+{"base_tool":"analytics_purge","composed":false,"domain":"analytics","ground_truth":"CONDITIONAL","mutation_family":"C7","mutation_subtype":"nest_value","public_context":{"rules":[{"op":"move","source":["value"],"target":["payload","value"]}]},"recoverable":true,"scenario_id":"analytics-4-C7-0"}

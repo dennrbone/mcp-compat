@@ -1,0 +1,1 @@
+{"base_tool":"analytics_aggregate","composed":false,"domain":"analytics","ground_truth":"CONDITIONAL","mutation_family":"C7","mutation_subtype":"split_value","public_context":{"rules":[{"op":"wrap","source":["value"],"target":["value"]}]},"recoverable":true,"scenario_id":"analytics-3-C7-3"}

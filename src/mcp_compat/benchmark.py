@@ -13,7 +13,7 @@ from pydantic import BaseModel, ConfigDict
 from mcp_compat import EvolutionScenario, ToolCall, ToolContract, canonical_bytes
 from mcp_compat.domain.scenarios import GroundTruth, MutationFamily
 
-VERSION = "evobench-1.0"
+VERSION = "evobench-1.1"
 DOMAINS = {
     "commerce": ("quote", "discount", "order", "return", "cancel", "receipt"),
     "inventory": ("count", "capacity", "reserve", "release", "move", "audit"),
@@ -106,6 +106,8 @@ def _case(domain: str, operation: str, index: int, family: MutationFamily, varia
             rename("target", "destination")
             p["source"] = {"type": "string"}
             required.append("source")
+            old_view["source"] = {"constant": "private-source"}
+            new_view["source"] = {"path": ["source"]}
             truth = "MUST_ABSTAIN"
     elif family == "C2":
         truth = "SAFE_AUTO"
@@ -123,17 +125,22 @@ def _case(domain: str, operation: str, index: int, family: MutationFamily, varia
         if variant in (0, 1, 4):
             p["region"] = {"type": "string"}
             required.append("region")
+            new_view["region"] = {"path": ["region"]}
             if variant == 0:
+                old_view["region"] = {"constant": "local"}
                 p["region"]["default"] = "local"
                 expected["region"] = "local"
                 rules.append(dict(op="set", target=["region"], value="local"))
             elif variant == 4:
+                old_view["region"] = {"constant": domain}
                 expected["region"] = domain
                 rules.append(dict(op="set", target=["region"], value=domain))
             else:
+                old_view["region"] = {"constant": f"zone-{rng.randrange(100000)}"}
                 truth = "MUST_ABSTAIN"
         else:
             required.append("note")
+            new_view["note"] = {"path": ["note"]}
             if variant == 2:
                 args["note"] = expected["note"] = "explicit note"
                 old_view["note"] = new_view["note"] = {"path": ["note"]}
@@ -370,7 +377,7 @@ def load(directory: Path, expected_digest: str) -> list[EvolutionScenario]:
     manifest = json.loads((directory / "manifest.json").read_bytes())
     hashes = manifest["files"]
     content = {key: value for key, value in manifest.items() if key != "digest"}
-    if manifest["version"] != VERSION or sha256(canonical_bytes(content)).hexdigest() != expected_digest or manifest["digest"] != expected_digest:
+    if manifest["version"] not in ("evobench-1.0", VERSION) or sha256(canonical_bytes(content)).hexdigest() != expected_digest or manifest["digest"] != expected_digest:
         raise ValueError("manifest integrity failure")
     scenarios = []
     for sid, files in sorted(hashes.items()):

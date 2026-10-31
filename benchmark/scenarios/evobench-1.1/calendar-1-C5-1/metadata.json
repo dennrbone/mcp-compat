@@ -1,0 +1,1 @@
+{"base_tool":"calendar_availability","composed":false,"domain":"calendar","ground_truth":"CONDITIONAL","mutation_family":"C5","mutation_subtype":"scalar_array","public_context":{"rules":[{"op":"wrap","source":["value"],"target":["value"]}]},"recoverable":true,"scenario_id":"calendar-1-C5-1"}

@@ -1,0 +1,1 @@
+{"base_tool":"inventory_audit","composed":false,"domain":"inventory","ground_truth":"CONDITIONAL","mutation_family":"C1","mutation_subtype":"target_rename","public_context":{"rules":[{"op":"move","source":["target"],"target":["entity_id"]}]},"recoverable":true,"scenario_id":"inventory-5-C1-2"}

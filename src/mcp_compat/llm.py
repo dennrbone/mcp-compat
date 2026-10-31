@@ -4,7 +4,7 @@ import json
 from time import monotonic, sleep
 from typing import Annotated, Any, Callable, Literal, Protocol, Self
 
-from pydantic import BaseModel, ConfigDict, Field, JsonValue, model_validator
+from pydantic import BaseModel, ConfigDict, Field, JsonValue, model_serializer, model_validator
 
 from mcp_compat import ToolCall, canonical_json
 from mcp_compat.benchmark import RecoveryInput
@@ -31,6 +31,10 @@ class Operation(StrictModel):
     value: JsonValue = None
     values: dict[str, str] | None = None
     factor: Annotated[int, Field(ge=1, le=1000000)] | None = None
+
+    @model_serializer
+    def serialize_operands(self) -> dict:
+        return {key: getattr(self, key) for key in self.model_fields_set}
 
     @model_validator(mode="after")
     def check_operands(self) -> Self:

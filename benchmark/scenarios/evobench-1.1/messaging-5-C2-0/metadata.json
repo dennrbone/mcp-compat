@@ -1,0 +1,1 @@
+{"base_tool":"messaging_history","composed":false,"domain":"messaging","ground_truth":"SAFE_AUTO","mutation_family":"C2","mutation_subtype":"optional_added","public_context":{"rules":[]},"recoverable":true,"scenario_id":"messaging-5-C2-0"}

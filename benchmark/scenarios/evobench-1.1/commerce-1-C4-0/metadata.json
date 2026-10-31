@@ -1,0 +1,1 @@
+{"base_tool":"commerce_discount","composed":false,"domain":"commerce","ground_truth":"CONDITIONAL","mutation_family":"C4","mutation_subtype":"required_redundant_removed","public_context":{"rules":[]},"recoverable":true,"scenario_id":"commerce-1-C4-0"}

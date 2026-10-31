@@ -144,3 +144,12 @@ def test_seeded_mutations(seed, family, variant):
     b = _case('inventory', 'reserve', 2, family, variant, random.Random(seed))
     assert canonical_bytes(a.model_dump()) == canonical_bytes(b.model_dump())
     a.old_call.validate_against(a.old_contract)
+
+
+def test_required_added_value_affects_semantics():
+    import random
+    s = _case('commerce','order',2,'C3',0,random.Random(42))
+    call = ToolCall.model_validate(s.oracle['expected_call'])
+    assert equivalent(s, call)
+    call.arguments['region'] = 'different-region'
+    assert not equivalent(s, call)

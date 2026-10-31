@@ -1,0 +1,1 @@
+{"description":"Synthetic documents word_count; isolated state only.","input_schema":{"properties":{"note":{"type":"string"},"notify":{"type":"boolean"},"target":{"type":"string"},"value":{"type":"integer"}},"required":["value","target","notify"],"type":"object"},"metadata":{},"name":"documents_word_count","output_schema":null}

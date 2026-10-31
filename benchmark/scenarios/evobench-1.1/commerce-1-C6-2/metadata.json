@@ -1,0 +1,1 @@
+{"base_tool":"commerce_discount","composed":false,"domain":"commerce","ground_truth":"SAFE_AUTO","mutation_family":"C6","mutation_subtype":"enum_remove_unused","public_context":{"rules":[]},"recoverable":true,"scenario_id":"commerce-1-C6-2"}

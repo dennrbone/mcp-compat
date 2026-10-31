@@ -1,0 +1,1 @@
+{"base_tool":"inventory_count","composed":false,"domain":"inventory","ground_truth":"CONDITIONAL","mutation_family":"C1","mutation_subtype":"value_rename","public_context":{"rules":[{"op":"move","source":["value"],"target":["amount"]}]},"recoverable":true,"scenario_id":"inventory-0-C1-1"}

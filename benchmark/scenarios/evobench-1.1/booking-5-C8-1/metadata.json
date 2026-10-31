@@ -1,0 +1,1 @@
+{"base_tool":"booking_itinerary","composed":false,"domain":"booking","ground_truth":"CONDITIONAL","mutation_family":"C8","mutation_subtype":"seconds_milliseconds","public_context":{"rules":[{"factor":1000,"op":"scale","source":["value"],"target":["value"]}]},"recoverable":true,"scenario_id":"booking-5-C8-1"}

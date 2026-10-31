@@ -1,0 +1,1 @@
+{"base_tool":"calendar_agenda","composed":true,"domain":"calendar","families":["C1","C8"],"ground_truth":"CONDITIONAL","mutation_family":"C8","mutation_subtype":"seconds_milliseconds","public_context":{"rules":[{"factor":1000,"op":"scale","source":["value"],"target":["value"]}]},"recoverable":true,"scenario_id":"calendar-5-C8-1-composed"}

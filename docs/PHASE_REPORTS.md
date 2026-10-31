@@ -70,3 +70,16 @@ PASS. Phase 3/4 push PASS. Master task and .vscode remain untracked.
 - Engineering adapter/tests COMPLETE; real GigaChat/Qwen smoke and model-quality
   experiment **NOT RUN** (no credentials/weights/paid authorization). Phase 6
   overall **PARTIAL**; this does not block independent offline phases.
+
+## Phase 7 — Verified Hybrid
+
+- `hybrid.py`, `test_hybrid.py`, operation serialization round-trip regression.
+- Independent runtime binding; finite normalized outputs; isolated state;
+  unit rules; controlled adapter; A1–A4; fail-closed complete stage traces.
+- Oracle regression initially FAIL (region ignored); generator correction
+  creates **evobench-1.1**, preserving retired 1.0. Main/model experiments NOT RUN.
+- Full suite **192 passed; 100% statements/branches**, no missing lines/branches;
+  Ruff PASS; mypy PASS (16 modules).
+- Branch `phase/07-verified-hybrid`, base Phase 6 `6b92869`; Phase 6 push PASS.
+- Phase 7 COMPLETE for injected trusted runtimes. Absent runtime bindings cause
+  abstention; benchmark evaluator is never substituted for runtime verification.

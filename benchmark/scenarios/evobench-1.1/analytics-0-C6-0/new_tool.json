@@ -1,0 +1,1 @@
+{"description":"Synthetic analytics sum; isolated state only.","input_schema":{"properties":{"mode":{"enum":["standard","priority"],"type":"string"},"note":{"type":"string"},"notify":{"type":"boolean"},"target":{"type":"string"},"value":{"type":"integer"}},"required":["value","target","mode","notify"],"type":"object"},"metadata":{},"name":"analytics_sum","output_schema":null}

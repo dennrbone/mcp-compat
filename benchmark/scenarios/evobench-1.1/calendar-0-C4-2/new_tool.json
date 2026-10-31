@@ -1,0 +1,1 @@
+{"description":"Synthetic calendar duration; isolated state only.","input_schema":{"properties":{"mode":{"enum":["standard","express"],"type":"string"},"note":{"type":"string"},"notify":{"type":"boolean"},"value":{"type":"integer"}},"required":["value","mode","notify"],"type":"object"},"metadata":{},"name":"calendar_duration","output_schema":null}

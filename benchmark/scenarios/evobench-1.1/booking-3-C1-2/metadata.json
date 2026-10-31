@@ -1,0 +1,1 @@
+{"base_tool":"booking_extend","composed":false,"domain":"booking","ground_truth":"CONDITIONAL","mutation_family":"C1","mutation_subtype":"target_rename","public_context":{"rules":[{"op":"move","source":["target"],"target":["entity_id"]}]},"recoverable":true,"scenario_id":"booking-3-C1-2"}

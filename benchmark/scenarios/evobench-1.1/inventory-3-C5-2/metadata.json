@@ -1,0 +1,1 @@
+{"base_tool":"inventory_release","composed":false,"domain":"inventory","ground_truth":"MUST_ABSTAIN","mutation_family":"C5","mutation_subtype":"nullable_removed","public_context":{"rules":[]},"recoverable":false,"scenario_id":"inventory-3-C5-2"}

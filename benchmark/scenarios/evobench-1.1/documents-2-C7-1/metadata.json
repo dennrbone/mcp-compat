@@ -1,0 +1,1 @@
+{"base_tool":"documents_create","composed":false,"domain":"documents","ground_truth":"CONDITIONAL","mutation_family":"C7","mutation_subtype":"nest_target","public_context":{"rules":[{"op":"move","source":["target"],"target":["payload","target"]}]},"recoverable":true,"scenario_id":"documents-2-C7-1"}

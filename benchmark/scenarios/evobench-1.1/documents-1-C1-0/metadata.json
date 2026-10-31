@@ -1,0 +1,1 @@
+{"base_tool":"documents_size","composed":false,"domain":"documents","ground_truth":"CONDITIONAL","mutation_family":"C1","mutation_subtype":"tool_rename","public_context":{"rules":[]},"recoverable":true,"scenario_id":"documents-1-C1-0"}

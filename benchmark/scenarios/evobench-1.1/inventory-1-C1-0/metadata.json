@@ -1,0 +1,1 @@
+{"base_tool":"inventory_capacity","composed":false,"domain":"inventory","ground_truth":"CONDITIONAL","mutation_family":"C1","mutation_subtype":"tool_rename","public_context":{"rules":[]},"recoverable":true,"scenario_id":"inventory-1-C1-0"}

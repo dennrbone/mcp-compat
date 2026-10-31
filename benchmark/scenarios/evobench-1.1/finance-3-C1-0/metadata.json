@@ -1,0 +1,1 @@
+{"base_tool":"finance_debit","composed":false,"domain":"finance","ground_truth":"CONDITIONAL","mutation_family":"C1","mutation_subtype":"tool_rename","public_context":{"rules":[]},"recoverable":true,"scenario_id":"finance-3-C1-0"}

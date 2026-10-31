@@ -1,0 +1,1 @@
+{"base_tool":"inventory_release","composed":false,"domain":"inventory","ground_truth":"CONDITIONAL","mutation_family":"C1","mutation_subtype":"two_renames","public_context":{"rules":[{"op":"move","source":["value"],"target":["amount"]},{"op":"move","source":["target"],"target":["entity_id"]}]},"recoverable":true,"scenario_id":"inventory-3-C1-3"}

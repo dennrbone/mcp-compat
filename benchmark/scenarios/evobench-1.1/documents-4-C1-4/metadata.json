@@ -1,0 +1,1 @@
+{"base_tool":"documents_archive","composed":false,"domain":"documents","ground_truth":"MUST_ABSTAIN","mutation_family":"C1","mutation_subtype":"ambiguous_rename","public_context":{"rules":[]},"recoverable":false,"scenario_id":"documents-4-C1-4"}

@@ -1,0 +1,1 @@
+{"base_tool":"finance_tax","composed":true,"domain":"finance","families":["C1","C8"],"ground_truth":"MUST_ABSTAIN","mutation_family":"C8","mutation_subtype":"gross_net_unknown","public_context":{"rules":[]},"recoverable":false,"scenario_id":"finance-1-C8-2-composed"}

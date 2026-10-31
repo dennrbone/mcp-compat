@@ -1,0 +1,1 @@
+{"base_tool":"analytics_aggregate","composed":false,"domain":"analytics","ground_truth":"SAFE_AUTO","mutation_family":"C2","mutation_subtype":"optional_nullable","public_context":{"rules":[]},"recoverable":true,"scenario_id":"analytics-3-C2-3"}

@@ -1,0 +1,1 @@
+{"domain":"finance","expected_call":null,"new_view":{"mode":{"path":["mode"]},"note":{"constant":""},"notify":{"path":["notify"]},"target":{"path":["target"]},"value":{"constant":0}},"old_view":{"mode":{"path":["mode"]},"note":{"constant":""},"notify":{"path":["notify"]},"target":{"path":["target"]},"value":{"path":["value"]}},"operation":2}

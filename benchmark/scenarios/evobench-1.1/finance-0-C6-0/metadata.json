@@ -1,0 +1,1 @@
+{"base_tool":"finance_balance","composed":false,"domain":"finance","ground_truth":"CONDITIONAL","mutation_family":"C6","mutation_subtype":"enum_rename","public_context":{"rules":[{"op":"enum","source":["mode"],"target":["mode"],"values":{"express":"priority","standard":"standard"}}]},"recoverable":true,"scenario_id":"finance-0-C6-0"}

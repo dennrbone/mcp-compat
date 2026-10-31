@@ -1,0 +1,1 @@
+{"base_tool":"commerce_return","composed":false,"domain":"commerce","ground_truth":"CONDITIONAL","mutation_family":"C7","mutation_subtype":"nest_value","public_context":{"rules":[{"op":"move","source":["value"],"target":["payload","value"]}]},"recoverable":true,"scenario_id":"commerce-3-C7-0"}

@@ -96,7 +96,9 @@ def test_invalid_operands(data):
 
 def test_valid_operations_and_direct_calls():
     for data in [dict(op='set',target=['x'],value=None),dict(op='enum',source=['x'],target=['x'],values={'a':'b'}),dict(op='scale',source=['x'],target=['x'],factor=100)]:
-        assert Operation.model_validate(data).op == data['op']
+        op = Operation.model_validate(data)
+        assert Operation.model_validate_json(op.model_dump_json()) == op
+        assert op.op == data['op']
     text = '{"action":"EXECUTE","call":{"tool_name":"t","arguments":{}}}'
     for purpose in ('B1','B2'):
         client = FakeClient(text)

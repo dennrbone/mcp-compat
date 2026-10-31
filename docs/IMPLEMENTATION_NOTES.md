@@ -160,3 +160,31 @@ Offline fake tests prove protocol/safety behavior, not real model quality.
 User explicitly approved pushes to origin, then excluded Markdown prompts.
 Phase 3/4 were audited and pushed successfully; master-task Markdown remains
 untracked. Documentation contains design/results, not model prompt text.
+
+## Phase 7 — verification and benchmark correction
+
+The adapter evaluates six typed opcodes, reading only original arguments;
+overlapping targets, dependencies/cycles and invalid conversions fail closed.
+M1 records diff, candidates, mapping, adapter, schema validation, verification
+and gate reasons. An opaque diff always abstains. C8 additionally requires an
+explicit matching public scale rule and a recognized exact integer unit factor.
+Missing/negative verifier evidence, mapping errors and ambiguity never execute.
+
+SandboxVerifier binds independently supplied trusted implementations to both
+contract digests. It compares normalized pure results or isolated final states
+from equivalent initial states. It has no EvolutionScenario/oracle argument.
+An outcome match concerns this call, not a universal equivalence proof. Preview
+callbacks must be trusted local bounded operations: elapsed-time checks detect
+overruns after return, not preempt arbitrary Python code. Remote/hostile callbacks
+are outside this implementation's trust boundary.
+
+A1 skips verification (but retains unit/risk rules); A2 bypasses structural
+candidate reuse; A3 forbids the mapper; A4 removes final evidence/risk gating.
+These intentionally weakened methods are research ablations, not safe defaults.
+
+A new hand-checked test demonstrated an oracle bug: a changed required `region`
+was ignored in evobench-1.0. New required context and ambiguous `source` are now
+semantically observable. The old frozen dataset is preserved, not overwritten;
+generator evobench-1.1 is a new freeze of the same 48/1920/240 design. Version 1.0
+is retired and must not be used in scientific experiments. No scientific/model
+experiment preceded this correction. No settings were tuned to oracle scores.

@@ -1,0 +1,1 @@
+{"base_tool":"finance_credit","composed":false,"domain":"finance","ground_truth":"SAFE_AUTO","mutation_family":"C6","mutation_subtype":"enum_add","public_context":{"rules":[]},"recoverable":true,"scenario_id":"finance-2-C6-1"}

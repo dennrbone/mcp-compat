@@ -1,0 +1,1 @@
+{"base_tool":"finance_tax","composed":false,"domain":"finance","ground_truth":"SAFE_AUTO","mutation_family":"C6","mutation_subtype":"enum_remove_unused","public_context":{"rules":[]},"recoverable":true,"scenario_id":"finance-1-C6-2"}

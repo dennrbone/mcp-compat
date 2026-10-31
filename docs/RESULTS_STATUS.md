@@ -55,8 +55,10 @@ not explicitly enabled. They remain NOT RUN, not successful provider checks.
 
 Authenticated GitHub API inspection confirmed initial Phase 3/4/5 CI PASS and
 Phase 6/7/8/9 CI FAIL. Phase 6 logs showed missing `httpx`: the workflow omitted
-the declared LLM extra. CI repair is being propagated through the feature stack;
-final verified run ids/statuses are recorded in CI_FOLLOWUP.md/validation artifacts.
+the declared LLM extra. CI repair was propagated through the feature stack, adding
+the MCP extra where required. **All Phase 3–10 verified code runs now PASS**;
+run ids/commits are recorded in CI_FOLLOWUP.md and `docs/validation/ci.json`.
+Phase 10 tests and offline-e2e PASS; provider-smoke is skipped / NOT RUN.
 Local PASS is never substituted for a remote Actions result.
 
 Phase branches are stacked; no merge/rebase/squash into main was performed.

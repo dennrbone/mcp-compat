@@ -135,3 +135,11 @@ PASS. Phase 3/4 push PASS. Master task and .vscode remain untracked.
   without changing main or rewriting history. Final runs recorded separately.
 - Branch `phase/10-statistics-article`, base initial Phase 9 `c162472`.
 - Engineering artifacts COMPLETE; scientific Phase 10 PARTIAL (real study not run).
+
+Final CI follow-up: authenticated API confirms **PASS for Phase 3–10** after
+repairing omitted LLM/MCP extras in historical workflows. Feature-only merges
+preserve complete stacked ancestry; main stays `23a4846`. Final code run
+41198274481 at `c07ab3aa` passed tests and offline-e2e, while provider-smoke was
+skipped. Exact commits/runs and initial failures are retained in CI_FOLLOWUP.md
+and validation/ci.json. Final installed-wheel gate also passed **233 + 2 skips,
+100% statements/branches**. No missing lines or branches; no failing/xfail tests.

@@ -57,3 +57,16 @@ PASS. Phase 3/4 push PASS. Master task and .vscode remain untracked.
 - Branch `phase/05-llm-abstraction`, base Phase 4 `8bfd3d9`.
 - Fake responses test the interface only. Model quality: NOT RUN.
 - Phase 5 COMPLETE. Next: provider transports and B1/B2.
+
+## Phase 6 — providers and B1/B2
+
+- `providers.py`, B1/B2 in `recovery.py`, mock transport/integration tests,
+  `PROVIDERS.md`, optional pinned httpx transport dependency.
+- **171 passed; 100% statements/branches**, no missing lines/branches;
+  Ruff PASS; mypy PASS (15 modules).
+- Official API/deployment documentation checked; versions/credentials are
+  explicit configuration. Redirects blocked; credential-bearing errors sanitized.
+- Branch `phase/06-llm-providers`, base Phase 5 `df623c6`; Phase 5 push PASS.
+- Engineering adapter/tests COMPLETE; real GigaChat/Qwen smoke and model-quality
+  experiment **NOT RUN** (no credentials/weights/paid authorization). Phase 6
+  overall **PARTIAL**; this does not block independent offline phases.

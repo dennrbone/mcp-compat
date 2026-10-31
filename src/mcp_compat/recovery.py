@@ -4,6 +4,7 @@ from typing import Protocol
 
 from mcp_compat import MigrationDecision, SchemaDiffEngine, ToolCall
 from mcp_compat.benchmark import RecoveryInput
+from mcp_compat.llm import SemanticMapper
 
 
 class Strategy(Protocol):
@@ -55,4 +56,29 @@ class RuleBased:
         call = ToolCall(tool_name=request.new_contract.name, arguments=request.old_call.arguments)
         decision = validate_candidate(request, call, self.name)
         decision.evidence["diff"] = diff.model_dump()
+        return decision
+
+
+class LLMBaseline:
+    def __init__(self, name: str, mapper: SemanticMapper):
+        if name not in ("B1", "B2"):
+            raise ValueError("unknown LLM baseline")
+        self.name, self.mapper = name, mapper
+
+    def recover(self, request: RecoveryInput) -> MigrationDecision:
+        initial = None
+        error = None
+        if self.name == "B1":
+            initial = NoRecovery().recover(request)
+            if initial.action == "EXECUTE":
+                initial.evidence["method"] = self.name
+                return initial
+            error = initial.evidence["error"]
+        result = self.mapper.propose_mapping(request, self.name, error)
+        proposal = result.proposal
+        if proposal is None or proposal.action == "ABSTAIN" or proposal.call is None:
+            decision = abstain("llm_abstain", mapping_reason=result.reason)
+        else:
+            decision = validate_candidate(request, proposal.call, self.name)
+        decision.evidence.update(llm=result.trace, initial_attempt=None if initial is None else initial.model_dump())
         return decision

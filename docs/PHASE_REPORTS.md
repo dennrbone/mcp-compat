@@ -94,3 +94,19 @@ PASS. Phase 3/4 push PASS. Master task and .vscode remain untracked.
   Ruff PASS; mypy PASS (17 modules).
 - Branch `phase/08-mcp-integration`, base Phase 7 `abfcc50`; Phase 7 push PASS.
 - Phase 8 COMPLETE for isolated local transport; production deployment excluded.
+
+## Phase 9 — runner and offline demo
+
+- `experiments.py`, `test_experiments.py`, console entry point, actual demo
+  artifacts in `experiments/offline-demo/` (45 frozen cases × 9 methods = **405**
+  records). This run uses **no real inference** and is not a scientific study.
+- B0/B1/B2/B3/M1 and A1–A4 use identical ids and dataset digest. One manually
+  authored runtime pair demonstrates positive M1 verification without oracle access.
+- Resume, interruption, corruption, selection, missing usage, metric formulas,
+  empty strata, pacing and e2e demo tests PASS.
+- Full suite **215 passed; 100% statements/branches**, no missing lines/branches;
+  Ruff PASS; mypy PASS (18 modules).
+- Branch `phase/09-experiments`, base Phase 8 `f66141e`; Phase 8 push PASS.
+- Engineering COMPLETE. Main two-provider study/repeated real inference NOT RUN;
+  phase overall PARTIAL pending resources and independently bound runtimes for
+  the full corpus. No fake run is presented as a result about GigaChat or Qwen.

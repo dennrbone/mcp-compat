@@ -188,3 +188,39 @@ semantically observable. The old frozen dataset is preserved, not overwritten;
 generator evobench-1.1 is a new freeze of the same 48/1920/240 design. Version 1.0
 is retired and must not be used in scientific experiments. No scientific/model
 experiment preceded this correction. No settings were tuned to oracle scores.
+
+## Phase 9 — metrics and reproducibility conventions
+
+Runner uses exactly one pinned frozen dataset and identical selected ids for
+all methods/repeats. Manifest records UTC start time, source digest, Python and
+dependency versions, seed, sample ids, prompt version, model identifiers and
+generation settings. The supported generation configuration is fixed at
+temperature 0 / 2048 maximum output tokens, matching actual transports; other
+parameters are rejected rather than merely logged without applying them.
+Seed concerns dataset generation/selection; deterministic model inference is
+not asserted. Per-case pacing and bounded mapper retry/backoff limit requests.
+
+Results use atomically replaced per-case JSON files. Interrupted runs retain
+completed cases; resumes reject configuration/identity mismatch and validate
+record keys and completed-result hashes. Existing results are never silently
+rerun after deletion/corruption. A source change requires a new run directory.
+Source manifests fingerprint package implementation, not external custom
+callbacks; external runtime/model serving versions must be pinned by operators.
+
+Research Spec gives formulas for CRR/UHR/FBR but describes the other denominator
+choices in prose. Conventions: Abstention Accuracy denominator is MUST_ABSTAIN;
+Schema Validity denominator is final proposed candidates (B0 includes its raw
+attempt), excluding decisions with no candidate; Semantic Equivalence denominator
+is EXECUTE decisions. A schema-invalid EXECUTE is unsafe. Recoverable CONDITIONAL
+cases count with SAFE_AUTO in CRR/FBR, per explicit scenario recoverability.
+Rates expose numerator/denominator, with null for zero denominator. Missing
+provider usage/cost is null, not zero; zero calls have known zero token/cost use.
+Unexpected strategy errors mark operational use unknown. Family/category empty
+strata remain explicit. Repeats count attempts and are paired by (id, repeat).
+
+Offline demo uses an explicitly named fake provider, public rules and a single
+independently authored commerce quote/unit runtime binding. Other M1 runtime
+pairs are unbound and abstain. No oracle is injected into recovery. This is an
+engineering exercise, not a benchmark of model quality. Full main runs require
+real model versions and separately supplied trusted runtime bindings. Two-provider
+variability experiments are NOT RUN, and cannot be inferred from this demo.

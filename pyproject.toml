@@ -14,6 +14,9 @@ dependencies = [
     "pydantic>=2,<3",
 ]
 
+[project.scripts]
+mcp-compat-demo = "mcp_compat.experiments:demo_cli"
+
 [project.optional-dependencies]
 dev = [
     "pytest>=7,<9",

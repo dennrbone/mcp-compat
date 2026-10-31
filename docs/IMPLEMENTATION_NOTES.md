@@ -127,3 +127,19 @@ business tasks merely from the corpus size.
 Frozen datasets use exclusive creation plus per-file SHA-256 and a pinned
 manifest digest supplied by the caller. Hashes detect corruption, not a trusted
 signature. Regenerate into a new directory; never edit a frozen dataset.
+
+## Phase 4
+
+B0 attempts the original name and arguments against the new contract, preserving
+the failed candidate and error in evidence. B3 changes only the supplied tool
+name, accepts optional additions, enum expansion/contraction (subject to actual
+validation), and optional→required when the call already supplies the value.
+It refuses removals, value conversions, field renames, units and opaque schemas.
+All strategies return MigrationDecision with stable reasons and machine-readable
+candidate/schema evidence. Baseline execution does not assert semantic proof.
+
+Regression tests exposed two Phase 1 validation defects before fixing them:
+jsonschema's default registry could retrieve external references, and cyclic
+references escaped as RecursionError. Validation now uses a non-fetching registry
+and wraps unresolved/cyclic references as domain errors. No resolver expansion
+or change to structural opaque behavior was made.

@@ -30,3 +30,19 @@ def test_canonical_serialization_ignores_dict_order() -> None:
     assert canonical_json(first) == canonical_json(second)
     assert canonical_json(first) == '{"a":{"x":true,"текст":"значение"},"b":[2,1]}'
     assert canonical_bytes(first) == canonical_json(first).encode("utf-8")
+
+
+def test_external_refs_never_fetch(monkeypatch):
+    requests = []
+    def forbidden(request):
+        requests.append(request)
+        raise OSError('network must not be used')
+    monkeypatch.setattr('urllib.request.urlopen', forbidden)
+    with pytest.raises(ValueError, match='schema reference'):
+        validate_instance(1, {'$ref':'https://example.invalid/schema'})
+    assert requests == []
+
+
+def test_cyclic_reference_fails_safely():
+    with pytest.raises(ValueError, match='schema reference'):
+        validate_instance(1, {'$ref':'#/$defs/self', '$defs': {'self':{'$ref':'#/$defs/self'}}})

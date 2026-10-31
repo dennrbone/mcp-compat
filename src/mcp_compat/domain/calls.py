@@ -39,3 +39,5 @@ class ToolCall(BaseModel):
             raise ToolCallValidationError(
                 f"arguments are invalid at {path}: {error.message}"
             ) from error
+        except ValueError as error:
+            raise ToolCallValidationError(str(error)) from error

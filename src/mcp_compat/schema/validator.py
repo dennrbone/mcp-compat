@@ -3,6 +3,8 @@
 from typing import Any
 
 from jsonschema import Draft202012Validator
+from referencing import Registry
+from referencing.exceptions import Unresolvable
 
 
 def validate_schema(schema: dict[str, Any]) -> None:
@@ -12,4 +14,7 @@ def validate_schema(schema: dict[str, Any]) -> None:
 
 def validate_instance(instance: object, schema: dict[str, Any]) -> None:
     """Raise ``ValidationError`` unless instance satisfies the given schema."""
-    Draft202012Validator(schema).validate(instance)
+    try:
+        Draft202012Validator(schema, registry=Registry()).validate(instance)
+    except (Unresolvable, RecursionError) as error:
+        raise ValueError("unresolvable or cyclic schema reference") from error

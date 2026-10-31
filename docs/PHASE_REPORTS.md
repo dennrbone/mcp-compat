@@ -31,3 +31,15 @@ Frozen data: `benchmark/scenarios/evobench-1.0/`, seed 42, digest
 `f34cacc1ebaf53fb6313bb61ee496192575e5e37c0d1d46efc231a52c7b8458c`.
 Development provisional datasets were moved to /tmp before the final freeze;
 no experiment was run against them. Phase 3 COMPLETE (synthetic scope).
+
+## Phase 4 — B0/B3
+
+- `recovery.py`, `test_recovery.py`, validator/call regression fixes and tests.
+- Pre-fix regression: 2 FAIL (external reference retrieval; recursion escape).
+- Final full suite: **118 passed; 100% statements/branches**, no missing lines
+  or branches. Ruff PASS; mypy PASS (13 modules).
+- B3 is intentionally conservative; candidate schema validity is separate from
+  semantic equivalence. No implicit rename/enum/unit/side-effect inference.
+- Branch `phase/04-baselines`, depends on Phase 3 `c207c03`.
+- Phase 3 push BLOCKED by automatic approval review (destination authorization);
+  publication approval pending, local work continues. Phase 4 COMPLETE.

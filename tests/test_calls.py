@@ -48,3 +48,9 @@ def test_wrong_argument_type(contract: ToolContract) -> None:
 
     with pytest.raises(ToolCallValidationError, match=r"at quantity.*integer"):
         call.validate_against(contract)
+
+
+def test_broken_ref_is_domain_error():
+    contract = ToolContract(name='t', input_schema={'type':'object','properties':{'x':{'$ref':'#/$defs/missing'}}})
+    with pytest.raises(ToolCallValidationError, match='schema reference'):
+        ToolCall(tool_name='t', arguments={'x':1}).validate_against(contract)

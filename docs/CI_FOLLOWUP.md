@@ -9,3 +9,9 @@ Phase 6 CI now installs `[dev,llm]` and uses verified Node.js 24 actions
 checkout 5.0.0 / setup-python 6.0.0. Local branch rerun: **171 passed, 100%
 statements/branches**. The correction is propagated forward through feature
 branches with ordinary merges, preserving history; main is untouched.
+
+Phase 7 inherited the correction; local rerun **192 passed, 100% coverage**.
+Phase 8 additionally installs the official MCP SDK extra, required by its actual
+protocol integration tests. Its earlier dev-only workflow omitted that extra.
+Phase 8 local rerun: **201 passed, 100% statements/branches**. Phase 6 repaired
+remote run 41197661102: **success**, confirmed through authenticated Actions API.

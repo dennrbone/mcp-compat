@@ -18,7 +18,7 @@ jobs:
         with:
           python-version: "3.11.4"
       - run: python -m pip install --upgrade pip
-      - run: python -m pip install -e ".[dev,llm]"
+      - run: python -m pip install -e ".[dev,llm,mcp]"
       - run: >-
           pytest -q
           --cov=mcp_compat

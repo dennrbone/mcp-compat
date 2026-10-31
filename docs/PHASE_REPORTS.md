@@ -43,3 +43,17 @@ no experiment was run against them. Phase 3 COMPLETE (synthetic scope).
 - Branch `phase/04-baselines`, depends on Phase 3 `c207c03`.
 - Phase 3 push BLOCKED by automatic approval review (destination authorization);
   publication approval pending, local work continues. Phase 4 COMPLETE.
+
+Publication update: user explicitly authorized this origin; prompt Markdown audit
+PASS. Phase 3/4 push PASS. Master task and .vscode remain untracked.
+
+## Phase 5 — model abstraction
+
+- `llm.py`, `test_llm.py`: strict proposals/opcodes, injected provider, versioned
+  source-code prompt, duplicate/nonfinite/extra-key rejection, limits/deadlines,
+  bounded retry/backoff, stable failure traces and malicious-description tests.
+- **149 passed; 100% statements/branches**, no missing lines/branches.
+- Ruff PASS; mypy PASS (14 modules). Entire suite offline.
+- Branch `phase/05-llm-abstraction`, base Phase 4 `8bfd3d9`.
+- Fake responses test the interface only. Model quality: NOT RUN.
+- Phase 5 COMPLETE. Next: provider transports and B1/B2.

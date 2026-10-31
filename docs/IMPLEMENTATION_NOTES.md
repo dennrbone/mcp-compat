@@ -143,3 +143,20 @@ jsonschema's default registry could retrieve external references, and cyclic
 references escaped as RecursionError. Validation now uses a non-fetching registry
 and wraps unresolved/cyclic references as domain errors. No resolver expansion
 or change to structural opaque behavior was made.
+
+## Phase 5
+
+`SemanticMapper`/`LLMClient` protocols are injected; Mapper uses versioned prompts
+in Python source (no prompt Markdown is committed). Tool names/descriptions,
+errors and context are JSON data under a fixed system instruction. This limits
+instruction confusion but does not claim that prompt wording defeats injection;
+typed proposals, independent validation and runtime verification are required.
+Strict JSON rejects extra/duplicate keys, code fields, non-finite numbers and
+unbounded operations. The six-opcode language cannot execute Python. Retries
+are limited to three attempts under a shared deadline; transport implementations
+must honor each supplied timeout. Errors retain type only, not credential text.
+Offline fake tests prove protocol/safety behavior, not real model quality.
+
+User explicitly approved pushes to origin, then excluded Markdown prompts.
+Phase 3/4 were audited and pushed successfully; master-task Markdown remains
+untracked. Documentation contains design/results, not model prompt text.

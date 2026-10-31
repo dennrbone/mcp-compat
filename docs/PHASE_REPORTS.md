@@ -83,3 +83,14 @@ PASS. Phase 3/4 push PASS. Master task and .vscode remain untracked.
 - Branch `phase/07-verified-hybrid`, base Phase 6 `6b92869`; Phase 6 push PASS.
 - Phase 7 COMPLETE for injected trusted runtimes. Absent runtime bindings cause
   abstention; benchmark evaluator is never substituted for runtime verification.
+
+## Phase 8 — official MCP integration
+
+- `mcp_integration.py`, `test_mcp.py`, `MCP_INTEGRATION.md`; SDK **1.30.0**.
+- 9 actual in-memory MCP integration tests PASS: handshake, discovery, schemas,
+  v1/v2, proxy adaptation/abstention, invalid payloads/output, server failures,
+  timeout and disconnect. No external services or user data.
+- Full suite **201 passed; 100% statements/branches**, no missing lines/branches;
+  Ruff PASS; mypy PASS (17 modules).
+- Branch `phase/08-mcp-integration`, base Phase 7 `abfcc50`; Phase 7 push PASS.
+- Phase 8 COMPLETE for isolated local transport; production deployment excluded.

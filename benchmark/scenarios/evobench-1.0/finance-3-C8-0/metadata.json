@@ -1,0 +1,1 @@
+{"base_tool":"finance_debit","composed":false,"domain":"finance","ground_truth":"CONDITIONAL","mutation_family":"C8","mutation_subtype":"rub_kopecks","public_context":{"rules":[{"factor":100,"op":"scale","source":["value"],"target":["value"]}]},"recoverable":true,"scenario_id":"finance-3-C8-0"}

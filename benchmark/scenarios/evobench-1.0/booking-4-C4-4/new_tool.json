@@ -1,0 +1,1 @@
+{"description":"Synthetic booking cancel; isolated state only.","input_schema":{"properties":{"mode":{"enum":["standard","express"],"type":"string"},"note":{"type":"string"},"notify":{"type":"boolean"},"target":{"type":"string"}},"required":["target","mode","notify"],"type":"object"},"metadata":{},"name":"booking_cancel","output_schema":null}

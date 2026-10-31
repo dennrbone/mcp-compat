@@ -1,0 +1,1 @@
+{"base_tool":"documents_search","composed":false,"domain":"documents","ground_truth":"MUST_ABSTAIN","mutation_family":"C6","mutation_subtype":"enum_merge","public_context":{"rules":[]},"recoverable":false,"scenario_id":"documents-5-C6-3"}

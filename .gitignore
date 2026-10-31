@@ -4,3 +4,8 @@
 __pycache__/
 coverage.xml
 *.egg-info/
+.hypothesis/
+.mypy_cache/
+.ruff_cache/
+build/
+dist/

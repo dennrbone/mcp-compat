@@ -1,0 +1,1 @@
+{"base_tool":"messaging_deliver","composed":false,"domain":"messaging","ground_truth":"CONDITIONAL","mutation_family":"C4","mutation_subtype":"required_redundant_removed","public_context":{"rules":[]},"recoverable":true,"scenario_id":"messaging-3-C4-0"}

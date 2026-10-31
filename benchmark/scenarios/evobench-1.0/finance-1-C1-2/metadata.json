@@ -1,0 +1,1 @@
+{"base_tool":"finance_tax","composed":false,"domain":"finance","ground_truth":"CONDITIONAL","mutation_family":"C1","mutation_subtype":"target_rename","public_context":{"rules":[{"op":"move","source":["target"],"target":["entity_id"]}]},"recoverable":true,"scenario_id":"finance-1-C1-2"}

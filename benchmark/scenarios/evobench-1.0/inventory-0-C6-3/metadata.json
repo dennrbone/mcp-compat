@@ -1,0 +1,1 @@
+{"base_tool":"inventory_count","composed":false,"domain":"inventory","ground_truth":"MUST_ABSTAIN","mutation_family":"C6","mutation_subtype":"enum_merge","public_context":{"rules":[]},"recoverable":false,"scenario_id":"inventory-0-C6-3"}

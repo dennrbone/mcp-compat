@@ -1,0 +1,1 @@
+{"base_tool":"documents_word_count","composed":false,"domain":"documents","ground_truth":"CONDITIONAL","mutation_family":"C1","mutation_subtype":"target_rename","public_context":{"rules":[{"op":"move","source":["target"],"target":["entity_id"]}]},"recoverable":true,"scenario_id":"documents-0-C1-2"}

@@ -1,0 +1,1 @@
+{"base_tool":"documents_create","composed":true,"domain":"documents","families":["C1","C8"],"ground_truth":"CONDITIONAL","mutation_family":"C8","mutation_subtype":"rub_kopecks","public_context":{"rules":[{"factor":100,"op":"scale","source":["value"],"target":["value"]}]},"recoverable":true,"scenario_id":"documents-2-C8-0-composed"}

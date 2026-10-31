@@ -1,0 +1,1 @@
+{"base_tool":"booking_vacancies","composed":false,"domain":"booking","ground_truth":"CONDITIONAL","mutation_family":"C5","mutation_subtype":"integer_string","public_context":{"rules":[{"op":"string","source":["value"],"target":["value"]}]},"recoverable":true,"scenario_id":"booking-1-C5-0"}

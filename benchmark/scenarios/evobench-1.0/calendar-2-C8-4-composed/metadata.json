@@ -1,0 +1,1 @@
+{"base_tool":"calendar_schedule","composed":true,"domain":"calendar","families":["C1","C8"],"ground_truth":"MUST_ABSTAIN","mutation_family":"C8","mutation_subtype":"changed_notification","public_context":{"rules":[]},"recoverable":false,"scenario_id":"calendar-2-C8-4-composed"}

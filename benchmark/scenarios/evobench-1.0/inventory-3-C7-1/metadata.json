@@ -1,0 +1,1 @@
+{"base_tool":"inventory_release","composed":false,"domain":"inventory","ground_truth":"CONDITIONAL","mutation_family":"C7","mutation_subtype":"nest_target","public_context":{"rules":[{"op":"move","source":["target"],"target":["payload","target"]}]},"recoverable":true,"scenario_id":"inventory-3-C7-1"}

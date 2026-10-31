@@ -1,0 +1,1 @@
+{"base_tool":"calendar_schedule","composed":false,"domain":"calendar","ground_truth":"CONDITIONAL","mutation_family":"C8","mutation_subtype":"rub_kopecks","public_context":{"rules":[{"factor":100,"op":"scale","source":["value"],"target":["value"]}]},"recoverable":true,"scenario_id":"calendar-2-C8-0"}

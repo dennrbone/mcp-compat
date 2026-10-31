@@ -1,0 +1,1 @@
+{"base_tool":"analytics_mean","composed":false,"domain":"analytics","ground_truth":"SAFE_AUTO","mutation_family":"C6","mutation_subtype":"enum_add","public_context":{"rules":[]},"recoverable":true,"scenario_id":"analytics-1-C6-1"}

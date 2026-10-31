@@ -1,0 +1,1 @@
+{"description":"Synthetic booking extend; isolated state only.","input_schema":{"properties":{"mode":{"enum":["standard","express"],"type":"string"},"note":{"type":"string"},"notify":{"type":"boolean"},"target":{"type":"string"},"value":{"type":"integer"}},"required":["value","target","mode","notify"],"type":"object"},"metadata":{},"name":"booking_extend_v2","output_schema":null}

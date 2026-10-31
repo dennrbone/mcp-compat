@@ -1,0 +1,1 @@
+{"base_tool":"messaging_quota","composed":true,"domain":"messaging","families":["C1","C8"],"ground_truth":"MUST_ABSTAIN","mutation_family":"C8","mutation_subtype":"gross_net_unknown","public_context":{"rules":[]},"recoverable":false,"scenario_id":"messaging-1-C8-2-composed"}

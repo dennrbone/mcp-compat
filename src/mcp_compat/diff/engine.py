@@ -1,7 +1,7 @@
 """Conservative structural comparison of the supported JSON Schema subset."""
 
 from copy import deepcopy
-from typing import Any
+from typing import Any, cast
 
 from pydantic import BaseModel, Field
 
@@ -120,11 +120,11 @@ class SchemaDiffEngine:
                 emit("C5", "nullable_changed", path + ".type", "null" in a, "null" in b)
             if a - {"null"} != b - {"null"}:
                 family = "C7" if "object" in a | b else "C5"
-                emit(family, "type_changed", path + ".type", sorted(a), sorted(b))
+                emit(cast(MutationFamily, family), "type_changed", path + ".type", sorted(a), sorted(b))
             for key, family, subtype in (("format", "C5", "format_changed"),
                                           ("semantic_unit", "C8", "semantic_unit_changed")):
                 if old.get(key) != new.get(key):
-                    emit(family, subtype, _path(path, key), old.get(key), new.get(key))
+                    emit(cast(MutationFamily, family), subtype, _path(path, key), old.get(key), new.get(key))
             if canonical_json(old.get("enum")) != canonical_json(new.get("enum")):
                 before = {canonical_json(v) for v in old.get("enum", [])}
                 after = {canonical_json(v) for v in new.get("enum", [])}

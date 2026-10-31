@@ -1,0 +1,1 @@
+{"base_tool":"messaging_enqueue","composed":false,"domain":"messaging","ground_truth":"CONDITIONAL","mutation_family":"C3","mutation_subtype":"required_default","public_context":{"rules":[{"op":"set","target":["region"],"value":"local"}]},"recoverable":true,"scenario_id":"messaging-2-C3-0"}

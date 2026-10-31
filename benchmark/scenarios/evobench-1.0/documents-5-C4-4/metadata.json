@@ -1,0 +1,1 @@
+{"base_tool":"documents_search","composed":false,"domain":"documents","ground_truth":"MUST_ABSTAIN","mutation_family":"C4","mutation_subtype":"value_removed","public_context":{"rules":[]},"recoverable":false,"scenario_id":"documents-5-C4-4"}

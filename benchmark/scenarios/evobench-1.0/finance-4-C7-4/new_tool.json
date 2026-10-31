@@ -1,0 +1,1 @@
+{"description":"Synthetic finance reverse; isolated state only.","input_schema":{"properties":{"mode":{"enum":["standard","express"],"type":"string"},"note":{"type":"string"},"notify":{"type":"boolean"},"packed":{"type":"string"}},"required":["mode","notify","packed"],"type":"object"},"metadata":{},"name":"finance_reverse","output_schema":null}

@@ -101,3 +101,29 @@ No scientific interpretation has been added for these ambiguities.
 Semantic matching, adapter generation, benchmark generation, MCP transport and
 LLM integration are not implemented. No dependencies or Hypothesis were added.
 Tests are offline; Python installation and Git operations may require network.
+
+## Phase 3 conventions
+
+`RecoveryInput` is a separate strict boundary model. Only old/new contracts,
+old call and `metadata.public_context` reach strategies; labels, ids, expected
+calls and oracle programs do not. Public mutation rules are explicit knowledge
+provided by the synthetic environment. They are untrusted proposals until a
+separate runtime verifier validates them. Evaluator views are private decoders,
+not runtime verification inputs. Missing defaults are constants only in the
+simulated implementation, never guessed by recovery.
+
+The corpus includes all three categories; recoverability means a safe solution
+exists with the allowed context. `MUST_ABSTAIN` expresses insufficient permitted
+information, even if a lucky guess happens to match a hidden implementation.
+Five C8 mutations combine with tool rename for each base tool (240 composed).
+The synthetic tools share an interpreter with domain-specific pure calculations
+(quotes, capacities, durations, text counts, quotas, prices, aggregates, taxes)
+and record creation/update/removal plus event logs for side effects. Canonical
+intent is retained alongside computed outputs to make lost user intent visible.
+These are simplified business models, not production implementations. Mutation
+patterns repeat across tool clusters; analysis must not claim 2160 independent
+business tasks merely from the corpus size.
+
+Frozen datasets use exclusive creation plus per-file SHA-256 and a pinned
+manifest digest supplied by the caller. Hashes detect corruption, not a trusted
+signature. Regenerate into a new directory; never edit a frozen dataset.

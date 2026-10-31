@@ -1,0 +1,1 @@
+{"base_tool":"analytics_sum","composed":false,"domain":"analytics","ground_truth":"SAFE_AUTO","mutation_family":"C6","mutation_subtype":"enum_remove_unused","public_context":{"rules":[]},"recoverable":true,"scenario_id":"analytics-0-C6-2"}

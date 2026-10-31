@@ -1,0 +1,1 @@
+{"base_tool":"documents_word_count","composed":true,"domain":"documents","families":["C1","C8"],"ground_truth":"CONDITIONAL","mutation_family":"C8","mutation_subtype":"seconds_milliseconds","public_context":{"rules":[{"factor":1000,"op":"scale","source":["value"],"target":["value"]}]},"recoverable":true,"scenario_id":"documents-0-C8-1-composed"}

@@ -1,0 +1,1 @@
+{"base_tool":"commerce_quote","composed":false,"domain":"commerce","ground_truth":"CONDITIONAL","mutation_family":"C6","mutation_subtype":"enum_rename","public_context":{"rules":[{"op":"enum","source":["mode"],"target":["mode"],"values":{"express":"priority","standard":"standard"}}]},"recoverable":true,"scenario_id":"commerce-0-C6-0"}

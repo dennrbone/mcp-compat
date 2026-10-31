@@ -1,0 +1,1 @@
+{"base_tool":"finance_balance","composed":false,"domain":"finance","ground_truth":"MUST_ABSTAIN","mutation_family":"C8","mutation_subtype":"changed_notification","public_context":{"rules":[]},"recoverable":false,"scenario_id":"finance-0-C8-4"}

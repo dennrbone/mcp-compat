@@ -1,0 +1,1 @@
+{"base_tool":"analytics_report","composed":false,"domain":"analytics","ground_truth":"CONDITIONAL","mutation_family":"C4","mutation_subtype":"required_redundant_removed","public_context":{"rules":[]},"recoverable":true,"scenario_id":"analytics-5-C4-0"}

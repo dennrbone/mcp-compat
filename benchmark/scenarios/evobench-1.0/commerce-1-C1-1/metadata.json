@@ -1,0 +1,1 @@
+{"base_tool":"commerce_discount","composed":false,"domain":"commerce","ground_truth":"CONDITIONAL","mutation_family":"C1","mutation_subtype":"value_rename","public_context":{"rules":[{"op":"move","source":["value"],"target":["amount"]}]},"recoverable":true,"scenario_id":"commerce-1-C1-1"}

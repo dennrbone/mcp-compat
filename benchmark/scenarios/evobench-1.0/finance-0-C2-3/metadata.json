@@ -1,0 +1,1 @@
+{"base_tool":"finance_balance","composed":false,"domain":"finance","ground_truth":"SAFE_AUTO","mutation_family":"C2","mutation_subtype":"optional_nullable","public_context":{"rules":[]},"recoverable":true,"scenario_id":"finance-0-C2-3"}

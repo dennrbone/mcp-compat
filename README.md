@@ -2,7 +2,12 @@
 
 MCP-Compat is a research project about safely restoring LLM-agent compatibility after MCP tool contracts evolve. It is not production-ready.
 
-Phase 1 provides typed `ToolContract`, `ToolCall`, and `EvolutionScenario` models, JSON Schema Draft 2020-12 validation, and deterministic JSON serialization. Phase 2 is implemented: `MigrationDecision` and `SchemaDiffEngine` describe deterministic contract changes across C1–C8. Semantic matching and adapter generation are not implemented; there is no MCP transport, LLM integration or benchmark generator.
+The engineering prototype includes typed contracts/calls, conservative C1–C8
+diffs, a frozen 2160-case synthetic benchmark, B0–B3, provider-neutral mapping,
+opt-in GigaChat/local Qwen transports, verified adapters, an official-SDK local
+MCP proxy, resumable experiments, metrics and statistical artifacts. Real model
+experiments have **not run**. See [actual status](docs/RESULTS_STATUS.md),
+[phase reports](docs/PHASE_REPORTS.md) and [reproduction commands](docs/REPRODUCIBILITY.md).
 
 ## Setup
 
@@ -12,7 +17,8 @@ Use Python 3.11.4:
 python3.11 -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
-python -m pip install -e ".[dev]"
+python -m pip install --require-hashes -r requirements.lock
+python -m pip install --no-deps -e .
 ```
 
 ## Validation example
@@ -49,15 +55,30 @@ Run the tests:
 pytest -q
 ```
 
-Run the Phase 2 quality gate:
+Run the full quality gate:
 
 ```bash
 pytest -q --cov=mcp_compat --cov-branch --cov-report=term-missing --cov-report=xml --cov-fail-under=100
 ```
 
-Phase 2 requires 100% statement and branch coverage for `src/mcp_compat`. GitHub Actions runs the same gate on pushes to `main` and `phase/**`, and on pull requests targeting `main`.
+All source modules retain the Phase 2 requirement of 100% statement and branch
+coverage. GitHub Actions includes tests, lint, types, packaging and offline e2e.
+Real provider smoke tests are opt-in and otherwise report SKIP / NOT RUN.
 
-Development for this phase belongs on `phase/02-schema-diff`.
+Phase 3–10 development uses separate stacked branches; no merge into main has
+been performed. Review dependencies are listed in docs/IMPLEMENTATION_PLAN.md.
+
+## Offline demo
+
+```bash
+mcp-compat-demo --output /tmp/mcp-offline-demo
+mcp-compat-analyze --run /tmp/mcp-offline-demo --output /tmp/mcp-offline-analysis
+```
+
+This runs 45 frozen cases for B0–B3/M1/A1–A4 using an explicitly fake provider.
+It tests the pipeline, not model quality. Main studies need actual model versions,
+authorized access/resources and independently supplied runtime verification;
+unbound M1 cases abstain. Active data: `benchmark/manifest.json` (evobench-1.2).
 
 
 ## Deterministic schema diff

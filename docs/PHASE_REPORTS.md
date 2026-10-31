@@ -110,3 +110,28 @@ PASS. Phase 3/4 push PASS. Master task and .vscode remain untracked.
 - Engineering COMPLETE. Main two-provider study/repeated real inference NOT RUN;
   phase overall PARTIAL pending resources and independently bound runtimes for
   the full corpus. No fake run is presented as a result about GigaChat or Qwen.
+
+## Phase 10 — analysis, article and final engineering audit
+
+- `analysis.py`, `test_analysis.py`, opt-in provider smoke, fixed dependency
+  lock, Node 24 workflows, experiment protocol, reproduction/status docs and
+  article draft with explicit missing-experiment placeholders.
+- Hand-checked exact McNemar (.125 for four discordant successes) and Wilcoxon
+  (.25 for three distinct positive differences) fixtures PASS. Clustered 95%
+  bootstrap, missing pairs/strata, seed stability, integrity and actual tables,
+  family/category/ablation summaries and PNG/SVG/LaTeX tests PASS.
+- New negative tests exposed nonfinite JSON, optional note oracle loss and
+  inconsistent old base contracts. Active **evobench-1.2** fixes these, preserves
+  48/1920/240 and retires (without overwriting) old data. Full seeded replay PASS.
+- Risk gate checks each unit marker and requires evidence for literal values.
+- Final source + separate installed-wheel suites: **233 passed, 2 real-provider
+  skips, 100% statements/branches** (1433 statements / 546 branches; missing empty).
+  Ruff PASS, mypy PASS (19 modules), sdist/wheel PASS, workflow YAML PASS.
+- Actual final offline demo: **405 records** at `experiments/offline-demo-final/`;
+  diagnostics at `experiments/analysis-offline-demo/`. One base-tool cluster means
+  no bootstrap CI; Wilcoxon remains withheld without confirmed symmetry.
+- Remote API inspection found Phase 3–5 PASS, Phase 6–9 FAIL due omitted optional
+  dependencies in their historical CI. A separate worktree propagates the fixes
+  without changing main or rewriting history. Final runs recorded separately.
+- Branch `phase/10-statistics-article`, base initial Phase 9 `c162472`.
+- Engineering artifacts COMPLETE; scientific Phase 10 PARTIAL (real study not run).

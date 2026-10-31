@@ -1,0 +1,1 @@
+{"base_tool":"booking_book","composed":false,"domain":"booking","ground_truth":"SAFE_AUTO","mutation_family":"C2","mutation_subtype":"optional_nullable","public_context":{"rules":[]},"recoverable":true,"scenario_id":"booking-2-C2-3"}

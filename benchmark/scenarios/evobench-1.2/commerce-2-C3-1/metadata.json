@@ -1,0 +1,1 @@
+{"base_tool":"commerce_order","composed":false,"domain":"commerce","ground_truth":"MUST_ABSTAIN","mutation_family":"C3","mutation_subtype":"required_unknown","public_context":{"rules":[]},"recoverable":false,"scenario_id":"commerce-2-C3-1"}

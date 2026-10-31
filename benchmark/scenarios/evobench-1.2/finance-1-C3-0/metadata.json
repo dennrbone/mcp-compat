@@ -1,0 +1,1 @@
+{"base_tool":"finance_tax","composed":false,"domain":"finance","ground_truth":"CONDITIONAL","mutation_family":"C3","mutation_subtype":"required_default","public_context":{"rules":[{"op":"set","target":["region"],"value":"finance"}]},"recoverable":true,"scenario_id":"finance-1-C3-0"}

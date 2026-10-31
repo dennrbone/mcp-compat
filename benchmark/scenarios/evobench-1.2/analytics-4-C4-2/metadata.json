@@ -1,0 +1,1 @@
+{"base_tool":"analytics_purge","composed":false,"domain":"analytics","ground_truth":"MUST_ABSTAIN","mutation_family":"C4","mutation_subtype":"target_removed","public_context":{"rules":[]},"recoverable":false,"scenario_id":"analytics-4-C4-2"}

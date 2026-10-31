@@ -46,3 +46,11 @@ def test_external_refs_never_fetch(monkeypatch):
 def test_cyclic_reference_fails_safely():
     with pytest.raises(ValueError, match='schema reference'):
         validate_instance(1, {'$ref':'#/$defs/self', '$defs': {'self':{'$ref':'#/$defs/self'}}})
+
+
+@pytest.mark.parametrize('number', [float('nan'),float('inf'),-float('inf')])
+def test_nonfinite_values_are_not_json(number):
+    with pytest.raises(ValueError):
+        canonical_json({'value':number})
+    with pytest.raises(ValueError):
+        validate_instance({'value':number},{'type':'object','properties':{'value':{'type':'number'}}})

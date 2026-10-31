@@ -1,0 +1,1 @@
+{"base_tool":"finance_reverse","composed":false,"domain":"finance","ground_truth":"CONDITIONAL","mutation_family":"C4","mutation_subtype":"required_redundant_removed","public_context":{"rules":[]},"recoverable":true,"scenario_id":"finance-4-C4-0"}

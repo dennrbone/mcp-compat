@@ -13,7 +13,7 @@ from pydantic import BaseModel, ConfigDict
 from mcp_compat import EvolutionScenario, ToolCall, ToolContract, canonical_bytes
 from mcp_compat.domain.scenarios import GroundTruth, MutationFamily
 
-VERSION = "evobench-1.1"
+VERSION = "evobench-1.2"
 DOMAINS = {
     "commerce": ("quote", "discount", "order", "return", "cancel", "receipt"),
     "inventory": ("count", "capacity", "reserve", "release", "move", "audit"),
@@ -62,18 +62,22 @@ def _schema(properties: dict, required: list[str]) -> dict:
 def _case(domain: str, operation: str, index: int, family: MutationFamily, variant: int, rng: random.Random) -> EvolutionScenario:
     value = rng.randint(2, 90)
     target = f"{domain}-{rng.randrange(100000):05}"
-    props = {"value": {"type": "integer"}, "target": {"type": "string"},
+    props = {"value": {"type": ["integer", "number", "null"],"semantic_unit":"RUB"}, "target": {"type": "string"},
              "mode": {"type": "string", "enum": ["standard", "express"]},
-             "note": {"type": "string"}, "notify": {"type": "boolean"}}
-    args = dict(value=value, target=target, mode="express", notify=True)
+             "note": {"type": "string"}, "notify": {"type": "boolean"},
+             "legacy": {"type":"boolean"}, "date":{"type":"string","format":"date"},
+             "duration":{"type":"integer","semantic_unit":"seconds"}}
+    args: dict[str, Any] = dict(value=value, target=target, mode="express", notify=True, legacy=True, duration=value+60)
     old = ToolContract(name=f"{domain}_{operation}", description=f"Synthetic {domain} {operation}; isolated state only.",
-                       input_schema=_schema(props, ["value", "target", "mode", "notify"]))
+                       input_schema=_schema(props, ["value", "target", "mode", "notify", "legacy"]))
     new = old.model_copy(deep=True)
     p = new.input_schema["properties"]
     required = new.input_schema["required"]
     expected: Any = deepcopy(args)
     old_view: dict[str, Any] = {key: {"path": [key]} for key in args}
-    old_view["note"] = {"constant": ""}
+    old_view.pop("legacy")
+    old_view.update(note={"path":["note"],"default":""},date={"path":["date"],"default":""},
+                    region={"constant":domain},source={"constant":"private-source"})
     new_view = deepcopy(old_view)
     truth: GroundTruth = "CONDITIONAL"
     rules: list[dict] = []
@@ -106,7 +110,6 @@ def _case(domain: str, operation: str, index: int, family: MutationFamily, varia
             rename("target", "destination")
             p["source"] = {"type": "string"}
             required.append("source")
-            old_view["source"] = {"constant": "private-source"}
             new_view["source"] = {"path": ["source"]}
             truth = "MUST_ABSTAIN"
     elif family == "C2":
@@ -127,16 +130,16 @@ def _case(domain: str, operation: str, index: int, family: MutationFamily, varia
             required.append("region")
             new_view["region"] = {"path": ["region"]}
             if variant == 0:
-                old_view["region"] = {"constant": "local"}
-                p["region"]["default"] = "local"
-                expected["region"] = "local"
-                rules.append(dict(op="set", target=["region"], value="local"))
+                old_view["region"] = {"constant": domain}
+                p["region"]["default"] = domain
+                expected["region"] = domain
+                rules.append(dict(op="set", target=["region"], value=domain))
             elif variant == 4:
                 old_view["region"] = {"constant": domain}
                 expected["region"] = domain
                 rules.append(dict(op="set", target=["region"], value=domain))
             else:
-                old_view["region"] = {"constant": f"zone-{rng.randrange(100000)}"}
+                old_view["region"] = {"constant": domain}
                 truth = "MUST_ABSTAIN"
         else:
             required.append("note")
@@ -148,9 +151,9 @@ def _case(domain: str, operation: str, index: int, family: MutationFamily, varia
                 truth = "MUST_ABSTAIN"
     elif family == "C4":
         if variant == 0:
-            old.input_schema["properties"]["legacy"] = {"type": "boolean"}
-            old.input_schema["required"].append("legacy")
-            args["legacy"] = True
+            p.pop("legacy")
+            required.remove("legacy")
+            expected.pop("legacy")
         else:
             key = ("notify", "target", "mode", "value")[variant - 1]
             remove(key, {"notify": False, "target": "unknown", "mode": "standard", "value": 0}[key])
@@ -162,7 +165,6 @@ def _case(domain: str, operation: str, index: int, family: MutationFamily, varia
             new_view["value"]["decode"] = "integer"
             rules.append(dict(op="string", source=["value"], target=["value"]))
             if variant == 3:
-                old.input_schema["properties"]["value"] = {"type": "number"}
                 args["value"] = value + .25
                 expected["value"] = str(args["value"])
                 new_view["value"]["decode"] = "decimal"
@@ -172,13 +174,12 @@ def _case(domain: str, operation: str, index: int, family: MutationFamily, varia
             new_view["value"]["decode"] = "singleton"
             rules.append(dict(op="wrap", source=["value"], target=["value"]))
         elif variant == 2:
-            old.input_schema["properties"]["value"] = {"type": ["integer", "null"]}
+            p["value"] = {"type":"integer"}
             args["value"] = None
             truth = "MUST_ABSTAIN"
         else:
-            old.input_schema["properties"]["target"]["format"] = "date"
-            args["target"] = "2026-01-01"
-            p["target"]["format"] = "date-time"
+            args["date"] = "2026-01-01"
+            p["date"]["format"] = "date-time"
             truth = "MUST_ABSTAIN"
     elif family == "C6":
         if variant == 0:
@@ -206,8 +207,10 @@ def _case(domain: str, operation: str, index: int, family: MutationFamily, varia
         elif variant == 2:
             new.input_schema = _schema({"payload": deepcopy(old.input_schema)}, ["payload"])
             expected = {"payload": expected}
+            for spec in new_view.values():
+                if "path" in spec:
+                    spec["path"].insert(0,"payload")
             for key in args:
-                new_view[key]["path"].insert(0, "payload")
                 rules.append(dict(op="move", source=[key], target=["payload", key]))
         elif variant == 3:
             p["value"] = {"type": "array", "items": {"type": "integer"}}
@@ -224,14 +227,15 @@ def _case(domain: str, operation: str, index: int, family: MutationFamily, varia
             new_view["target"] = {"path": ["packed"], "decode": "packed_target"}
             truth = "MUST_ABSTAIN"
     else:
-        old.metadata["semantic_unit"] = "RUB" if variant == 0 else "seconds"
-        new.metadata["semantic_unit"] = ("kopecks", "milliseconds", "net", "deactivated", "silent")[variant]
         if variant < 2:
             factor = 100 if variant == 0 else 1000
-            expected["value"] = value * factor
-            new_view["value"]["divisor"] = factor
-            rules.append(dict(op="scale", source=["value"], target=["value"], factor=factor))
+            key = "value" if variant == 0 else "duration"
+            p[key]["semantic_unit"] = "kopecks" if variant == 0 else "milliseconds"
+            expected[key] = args[key] * factor
+            new_view[key]["divisor"] = factor
+            rules.append(dict(op="scale", source=[key], target=[key], factor=factor))
         else:
+            new.metadata["semantic_unit"] = ("net", "deactivated", "silent")[variant-2]
             truth = "MUST_ABSTAIN"
             new_view["notify"] = {"constant": False}
     if truth == "MUST_ABSTAIN":
@@ -279,6 +283,9 @@ def _view(arguments: dict, view: dict) -> dict:
         else:
             value = arguments
             for segment in spec["path"]:
+                if segment not in value and "default" in spec:
+                    value = spec["default"]
+                    break
                 value = value[segment]
         decode = spec.get("decode")
         if decode == "integer":
@@ -301,8 +308,9 @@ def _view(arguments: dict, view: dict) -> dict:
             value /= spec["divisor"]
         result[key] = value
     # Equal JSON numbers normalize to the same representation, independently of schema validation.
-    if isinstance(result.get("value"), float) and result["value"].is_integer():
-        result["value"] = int(result["value"])
+    for key,value in result.items():
+        if isinstance(value, float) and value.is_integer():
+            result[key] = int(value)
     return result
 
 
@@ -377,7 +385,7 @@ def load(directory: Path, expected_digest: str) -> list[EvolutionScenario]:
     manifest = json.loads((directory / "manifest.json").read_bytes())
     hashes = manifest["files"]
     content = {key: value for key, value in manifest.items() if key != "digest"}
-    if manifest["version"] not in ("evobench-1.0", VERSION) or sha256(canonical_bytes(content)).hexdigest() != expected_digest or manifest["digest"] != expected_digest:
+    if manifest["version"] not in ("evobench-1.0", "evobench-1.1", VERSION) or sha256(canonical_bytes(content)).hexdigest() != expected_digest or manifest["digest"] != expected_digest:
         raise ValueError("manifest integrity failure")
     scenarios = []
     for sid, files in sorted(hashes.items()):

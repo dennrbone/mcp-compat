@@ -1,0 +1,1 @@
+{"base_tool":"finance_ledger","composed":false,"domain":"finance","ground_truth":"MUST_ABSTAIN","mutation_family":"C4","mutation_subtype":"target_removed","public_context":{"rules":[]},"recoverable":false,"scenario_id":"finance-5-C4-2"}

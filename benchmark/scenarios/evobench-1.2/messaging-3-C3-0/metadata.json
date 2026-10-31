@@ -1,0 +1,1 @@
+{"base_tool":"messaging_deliver","composed":false,"domain":"messaging","ground_truth":"CONDITIONAL","mutation_family":"C3","mutation_subtype":"required_default","public_context":{"rules":[{"op":"set","target":["region"],"value":"messaging"}]},"recoverable":true,"scenario_id":"messaging-3-C3-0"}

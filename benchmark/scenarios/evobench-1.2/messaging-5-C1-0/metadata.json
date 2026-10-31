@@ -1,0 +1,1 @@
+{"base_tool":"messaging_history","composed":false,"domain":"messaging","ground_truth":"CONDITIONAL","mutation_family":"C1","mutation_subtype":"tool_rename","public_context":{"rules":[]},"recoverable":true,"scenario_id":"messaging-5-C1-0"}

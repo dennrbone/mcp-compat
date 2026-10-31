@@ -1,0 +1,1 @@
+{"base_tool":"analytics_mean","composed":false,"domain":"analytics","ground_truth":"MUST_ABSTAIN","mutation_family":"C8","mutation_subtype":"changed_notification","public_context":{"rules":[]},"recoverable":false,"scenario_id":"analytics-1-C8-4"}

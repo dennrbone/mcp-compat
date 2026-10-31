@@ -1,0 +1,1 @@
+{"base_tool":"commerce_receipt","composed":false,"domain":"commerce","ground_truth":"CONDITIONAL","mutation_family":"C1","mutation_subtype":"tool_rename","public_context":{"rules":[]},"recoverable":true,"scenario_id":"commerce-5-C1-0"}

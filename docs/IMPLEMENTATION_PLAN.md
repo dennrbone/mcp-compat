@@ -16,7 +16,7 @@ Research Spec is immutable during this work. No merge into main is authorized.
 | M1, independent verification, gate (§10) | 7 | hybrid.py | test_hybrid.py | schema-valid semantic errors blocked; no oracle access | COMPLETE (injected trusted runtimes) |
 | MCP SDK proxy (§25,27) | 8 | mcp_integration.py | test_mcp.py | local handshake/discovery/calls/errors/timeout | COMPLETE (local in-memory) |
 | Frozen paired runner, metrics, A1–A4 (§19–23) | 9 | experiments.py | test_experiments.py | offline e2e, resumability, undefined denominators explicit | PARTIAL: engineering/demo complete, main study NOT RUN |
-| CI, paired tests, article (§22,24,26) | 10 | analysis/, docs/ | test_analysis.py | actual-run artifacts, no invented scientific claims | NOT STARTED |
+| CI, paired tests, article (§22,24,26) | 10 | analysis.py, docs/ | test_analysis.py | actual-run artifacts, no invented scientific claims | PARTIAL: engineering complete; main empirical artifacts NOT RUN |
 
 ## Branch dependencies
 

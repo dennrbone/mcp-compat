@@ -11,6 +11,7 @@ from pydantic import BaseModel, Field
 
 from mcp_compat import MigrationDecision, SchemaDiffEngine, ToolCall, ToolContract, canonical_bytes
 from mcp_compat.benchmark import RecoveryInput
+from mcp_compat.diff.engine import _path
 from mcp_compat.llm import Operation, SemanticMapper
 from mcp_compat.recovery import RuleBased, abstain, validate_candidate
 
@@ -168,13 +169,41 @@ class Hybrid:
             if self.ablation != "A4":
                 if self.ablation != "A1" and not verification.passed:
                     return abstain(verification.reason, **stages)
-                if any(c.family == "C8" for c in diff.changes):
+                public = [Operation.model_validate(rule) for rule in request.context.get("rules", [])]
+                for op in operations:
+                    if op.op == "set" and op not in public:
+                        schema = request.new_contract.input_schema
+                        for segment in op.target:
+                            schema = schema["properties"][segment]
+                        if "default" not in schema or canonical_bytes(schema["default"]) != canonical_bytes(op.value):
+                            return abstain("literal_value_unproven", **stages)
+                unit_changes = [c for c in diff.changes if c.family == "C8"]
+                if unit_changes or any(op.op == "scale" for op in operations):
                     allowed: dict[tuple[Any, Any], int] = {("RUB", "kopecks"):100, ("seconds", "milliseconds"):1000}
-                    pair = request.old_contract.metadata.get("semantic_unit"), request.new_contract.metadata.get("semantic_unit")
-                    factor = allowed.get(pair)
-                    public = [Operation.model_validate(rule) for rule in request.context.get("rules", [])]
-                    if factor is None or not any(op.op == "scale" and op.factor == factor and op in public for op in operations):
+                    proven: set[str] = set()
+                    for op in operations:
+                        if op.op == "scale":
+                            if op not in public:
+                                return abstain("unit_rule_missing", **stages)
+                            old_node,new_node = request.old_contract.input_schema,request.new_contract.input_schema
+                            old_path,new_path = "input","input"
+                            assert op.source is not None
+                            for segment in op.source:
+                                old_node = old_node["properties"][segment]
+                                old_path = _path(old_path+".properties",segment)
+                            for segment in op.target:
+                                new_node = new_node["properties"][segment]
+                                new_path = _path(new_path+".properties",segment)
+                            pairs = [(request.old_contract.metadata.get("semantic_unit"),request.new_contract.metadata.get("semantic_unit")),
+                                     (old_node.get("semantic_unit"),new_node.get("semantic_unit"))]
+                            if not any(allowed.get(pair) == op.factor for pair in pairs):
+                                return abstain("unit_rule_missing", **stages)
+                            for change in unit_changes:
+                                if allowed.get((change.old_value,change.new_value)) == op.factor and change.path in ("metadata.semantic_unit",old_path+".semantic_unit",new_path+".semantic_unit"):
+                                    proven.add(change.path)
+                    if any(change.path not in proven for change in unit_changes):
                         return abstain("unit_rule_missing", **stages)
+                    stages["unit_rules_proven"] = sorted(proven)
             decision.evidence.update(stages, semantic_verified=verification.passed)
             decision.reasons = ["verified" if verification.passed else "ablation_unverified"]
             return decision

@@ -1,0 +1,1 @@
+{"base_tool":"finance_ledger","composed":false,"domain":"finance","ground_truth":"CONDITIONAL","mutation_family":"C1","mutation_subtype":"two_renames","public_context":{"rules":[{"op":"move","source":["value"],"target":["amount"]},{"op":"move","source":["target"],"target":["entity_id"]}]},"recoverable":true,"scenario_id":"finance-5-C1-3"}

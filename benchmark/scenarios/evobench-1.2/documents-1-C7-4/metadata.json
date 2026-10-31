@@ -1,0 +1,1 @@
+{"base_tool":"documents_size","composed":false,"domain":"documents","ground_truth":"MUST_ABSTAIN","mutation_family":"C7","mutation_subtype":"merge_target_value","public_context":{"rules":[]},"recoverable":false,"scenario_id":"documents-1-C7-4"}

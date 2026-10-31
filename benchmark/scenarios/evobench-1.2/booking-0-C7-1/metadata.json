@@ -1,0 +1,1 @@
+{"base_tool":"booking_price","composed":false,"domain":"booking","ground_truth":"CONDITIONAL","mutation_family":"C7","mutation_subtype":"nest_target","public_context":{"rules":[{"op":"move","source":["target"],"target":["payload","target"]}]},"recoverable":true,"scenario_id":"booking-0-C7-1"}

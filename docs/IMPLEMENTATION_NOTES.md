@@ -98,9 +98,10 @@ direction. The remaining “v1.0” wording in section 10.1 is a version-label
 inconsistency; the v1.1 header and defined EXECUTE/ABSTAIN invariants are used.
 No scientific interpretation has been added for these ambiguities.
 
-Semantic matching, adapter generation, benchmark generation, MCP transport and
-LLM integration are not implemented. No dependencies or Hypothesis were added.
-Tests are offline; Python installation and Git operations may require network.
+At the end of Phase 2, semantic matching, adapter generation, benchmark generation,
+MCP transport and LLM integration were deferred. Later sections document the
+Phase 3–10 implementation and added dependencies/property tests. Default tests
+remain offline; installations/Git and explicitly enabled real smoke need network.
 
 ## Phase 3 conventions
 
@@ -224,3 +225,30 @@ pairs are unbound and abstain. No oracle is injected into recovery. This is an
 engineering exercise, not a benchmark of model quality. Full main runs require
 real model versions and separately supplied trusted runtime bindings. Two-provider
 variability experiments are NOT RUN, and cannot be inferred from this demo.
+
+## Phase 10 audit corrections
+
+Hand-written regressions exposed non-finite JSON acceptance, inconsistent base
+contracts across mutation variants and an oracle ignoring newly supplied optional
+notes. Non-finite JSON now fails before instance validation/serialization. The
+new evobench-1.2 freeze has exactly 48 distinct old contracts, with declared RUB
+and seconds markers at separate parameter nodes, common nullable numeric input,
+fixed legacy/date fields and consistent implicit context. Optional note/date
+lookups use declared simulator defaults and observe newly supplied values.
+The 1920+240 size and categories/families are preserved. Frozen 1.0/1.1 data and
+their historical engineering traces are retained; main runs reject retired
+versions. No scientific/model result was used to tune this correction.
+
+Risk gating now requires explicit public rules or matching schema defaults for
+literal values, even after a positive preview. Every classified unit change
+needs its own matching public conversion evidence; one known conversion cannot
+authorize a second unknown unit/side-effect marker. Both tool-level and property
+unit markers are supported using existing schema-path conventions. Unsupported
+constructs remain opaque. The LLM operation serializer preserves operand shape
+for strict round trips.
+
+Statistics use base-tool clustered percentile bootstrap with explicit undefined
+resample accounting, exact conditional McNemar and assumption-gated Wilcoxon.
+Tables, category/family breakdowns, ablations and PNG/SVG/LaTeX come from actual
+runner files with verified hashes. Undefined plot rates are labeled N/A. No
+main model-quality or hypothesis conclusions are supplied.

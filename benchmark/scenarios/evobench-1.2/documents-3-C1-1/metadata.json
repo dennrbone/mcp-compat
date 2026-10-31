@@ -1,0 +1,1 @@
+{"base_tool":"documents_append","composed":false,"domain":"documents","ground_truth":"CONDITIONAL","mutation_family":"C1","mutation_subtype":"value_rename","public_context":{"rules":[{"op":"move","source":["value"],"target":["amount"]}]},"recoverable":true,"scenario_id":"documents-3-C1-1"}

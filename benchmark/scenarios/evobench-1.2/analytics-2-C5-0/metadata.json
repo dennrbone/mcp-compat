@@ -1,0 +1,1 @@
+{"base_tool":"analytics_record","composed":false,"domain":"analytics","ground_truth":"CONDITIONAL","mutation_family":"C5","mutation_subtype":"integer_string","public_context":{"rules":[{"op":"string","source":["value"],"target":["value"]}]},"recoverable":true,"scenario_id":"analytics-2-C5-0"}

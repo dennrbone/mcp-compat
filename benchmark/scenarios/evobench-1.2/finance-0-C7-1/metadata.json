@@ -1,0 +1,1 @@
+{"base_tool":"finance_balance","composed":false,"domain":"finance","ground_truth":"CONDITIONAL","mutation_family":"C7","mutation_subtype":"nest_target","public_context":{"rules":[{"op":"move","source":["target"],"target":["payload","target"]}]},"recoverable":true,"scenario_id":"finance-0-C7-1"}

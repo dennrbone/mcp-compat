@@ -1,0 +1,1 @@
+{"base_tool":"inventory_count","composed":false,"domain":"inventory","ground_truth":"MUST_ABSTAIN","mutation_family":"C8","mutation_subtype":"changed_notification","public_context":{"rules":[]},"recoverable":false,"scenario_id":"inventory-0-C8-4"}

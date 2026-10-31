@@ -1,0 +1,1 @@
+{"base_tool":"messaging_quota","composed":false,"domain":"messaging","ground_truth":"MUST_ABSTAIN","mutation_family":"C1","mutation_subtype":"ambiguous_rename","public_context":{"rules":[]},"recoverable":false,"scenario_id":"messaging-1-C1-4"}

@@ -1,0 +1,1 @@
+{"base_tool":"inventory_audit","composed":false,"domain":"inventory","ground_truth":"CONDITIONAL","mutation_family":"C4","mutation_subtype":"required_redundant_removed","public_context":{"rules":[]},"recoverable":true,"scenario_id":"inventory-5-C4-0"}

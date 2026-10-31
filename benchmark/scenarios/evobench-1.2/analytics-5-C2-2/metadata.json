@@ -1,0 +1,1 @@
+{"base_tool":"analytics_report","composed":false,"domain":"analytics","ground_truth":"MUST_ABSTAIN","mutation_family":"C2","mutation_subtype":"used_removed","public_context":{"rules":[]},"recoverable":false,"scenario_id":"analytics-5-C2-2"}

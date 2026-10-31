@@ -8,17 +8,38 @@ on:
   pull_request:
     branches:
       - main
+  workflow_dispatch:
+    inputs:
+      real_provider_smoke:
+        description: "Run configured real provider smoke (may incur billing)"
+        type: boolean
+        default: false
+      provider:
+        description: "Provider"
+        type: choice
+        options: [qwen, gigachat]
+        default: qwen
+      allow_paid:
+        description: "Explicit authorization for GigaChat billing"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
 
 jobs:
   tests:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5.0.0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v6.0.0
         with:
           python-version: "3.11.4"
       - run: python -m pip install --upgrade pip
-      - run: python -m pip install -e ".[dev]"
+      - run: python -m pip install --require-hashes -r requirements.lock
+      - run: python -m pip install --no-deps -e .
       - run: >-
           pytest -q
           --cov=mcp_compat
@@ -26,3 +47,43 @@ jobs:
           --cov-report=term-missing
           --cov-report=xml
           --cov-fail-under=100
+      - run: ruff check src tests
+      - run: mypy src
+      - run: python -m build
+
+  offline-e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5.0.0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v6.0.0
+        with:
+          python-version: "3.11.4"
+      - run: python -m pip install --require-hashes -r requirements.lock
+      - run: python -m pip install --no-deps -e .
+      - run: mcp-compat-demo --output /tmp/mcp-compat-offline-demo
+      - run: mcp-compat-analyze --run /tmp/mcp-compat-offline-demo --output /tmp/mcp-compat-offline-analysis
+
+  provider-smoke:
+    if: github.event_name == 'workflow_dispatch' && inputs.real_provider_smoke
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5.0.0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v6.0.0
+        with:
+          python-version: "3.11.4"
+      - run: python -m pip install --require-hashes -r requirements.lock
+      - run: python -m pip install --no-deps -e .
+      - run: python -m pytest -q -rs -m real_provider tests/test_provider_smoke.py
+        env:
+          MCP_COMPAT_RUN_PROVIDER_SMOKE: "1"
+          MCP_COMPAT_SMOKE_PROVIDER: ${{ inputs.provider }}
+          MCP_COMPAT_ALLOW_PAID: ${{ inputs.allow_paid && '1' || '0' }}
+          GIGACHAT_ENDPOINT: ${{ vars.GIGACHAT_ENDPOINT }}
+          GIGACHAT_MODEL: ${{ vars.GIGACHAT_MODEL }}
+          GIGACHAT_ACCESS_TOKEN: ${{ secrets.GIGACHAT_ACCESS_TOKEN }}
+          QWEN_ENDPOINT: ${{ vars.QWEN_ENDPOINT }}
+          QWEN_MODEL: ${{ vars.QWEN_MODEL }}

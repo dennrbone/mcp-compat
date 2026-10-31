@@ -1,0 +1,1 @@
+{"base_tool":"messaging_enqueue","composed":false,"domain":"messaging","ground_truth":"SAFE_AUTO","mutation_family":"C6","mutation_subtype":"enum_remove_unused","public_context":{"rules":[]},"recoverable":true,"scenario_id":"messaging-2-C6-2"}

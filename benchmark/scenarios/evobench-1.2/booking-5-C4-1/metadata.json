@@ -1,0 +1,1 @@
+{"base_tool":"booking_itinerary","composed":false,"domain":"booking","ground_truth":"MUST_ABSTAIN","mutation_family":"C4","mutation_subtype":"notification_removed","public_context":{"rules":[]},"recoverable":false,"scenario_id":"booking-5-C4-1"}

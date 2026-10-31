@@ -127,3 +127,46 @@ def test_bad_adapters(ops,args):
     r.old_call.arguments = args
     with pytest.raises(ValueError):
         adapt(r,[Operation.model_validate(op) for op in ops])
+
+
+def test_literal_values_require_a_declared_source_even_after_verification():
+    r = unit_request()
+    r.new_contract.metadata = dict(r.old_contract.metadata)
+    r.new_contract.input_schema['properties']['region'] = {'type':'string'}
+    r.new_contract.input_schema['required'].append('region')
+    r.context = {}
+    operation = dict(op='set',target=['region'],value='guessed')
+    v = SandboxVerifier(r.old_contract,r.new_contract,lambda a,s:1,lambda a,s:1)
+    assert Hybrid(mapper([operation]),v).recover(r).reasons == ['literal_value_unproven']
+    r.new_contract.input_schema['properties']['region']['default'] = 'guessed'
+    v = SandboxVerifier(r.old_contract,r.new_contract,lambda a,s:1,lambda a,s:1)
+    assert Hybrid(mapper([operation]),v).recover(r).action == 'EXECUTE'
+    r.new_contract.input_schema['properties']['region']['default'] = 'other'
+    v = SandboxVerifier(r.old_contract,r.new_contract,lambda a,s:1,lambda a,s:1)
+    assert Hybrid(mapper([operation]),v).recover(r).action == 'ABSTAIN'
+
+
+def test_unit_gate_checks_each_changed_marker_and_does_not_guess_factors():
+    r = unit_request()
+    operation = dict(op='scale',source=['value'],target=['value'],factor=100)
+    r.old_contract.metadata = {}
+    r.new_contract.metadata = {}
+    r.old_contract.input_schema['properties']['value']['semantic_unit'] = 'seconds'
+    r.new_contract.input_schema['properties']['value']['semantic_unit'] = 'milliseconds'
+    v = SandboxVerifier(r.old_contract,r.new_contract,lambda a,s:1,lambda a,s:1)
+    assert Hybrid(mapper([operation]),v).recover(r).reasons == ['unit_rule_missing']
+    operation['factor'] = 1000
+    r.context['rules'] = [operation]
+    assert Hybrid(mapper([operation]),v).recover(r).action == 'EXECUTE'
+    r.new_contract.metadata['semantic_unit'] = 'unknown'
+    v = SandboxVerifier(r.old_contract,r.new_contract,lambda a,s:1,lambda a,s:1)
+    assert Hybrid(mapper([operation]),v).recover(r).reasons == ['unit_rule_missing']
+
+
+def test_composed_unit_rule_with_explicit_context_constant():
+    r = unit_request()
+    r.new_contract.input_schema['properties']['tag'] = {'type':'string'}
+    r.context['rules'].append(dict(op='set',target=['tag'],value='local'))
+    v = verifier(r)
+    result = Hybrid(mapper(r.context['rules']),v).recover(r)
+    assert result.action == 'EXECUTE' and result.adapted_call.arguments['tag'] == 'local'

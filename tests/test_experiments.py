@@ -184,3 +184,16 @@ def test_nonempty_output_and_unhashed_resume_identity(tmp_path,frozen):
     path.write_bytes(canonical_bytes(payload))
     with pytest.raises(ValueError,match='corrupt resume'):
         run(cfg,[NoRecovery()],directory,output)
+
+
+def test_main_refuses_retired_benchmark(tmp_path,frozen):
+    from hashlib import sha256
+    directory,_,_ = frozen
+    manifest_path = directory/'manifest.json'
+    manifest = json.loads(manifest_path.read_bytes())
+    manifest['version'] = 'evobench-1.0'
+    digest = manifest['digest'] = sha256(canonical_bytes({k:v for k,v in manifest.items() if k != 'digest'})).hexdigest()
+    manifest_path.write_bytes(canonical_bytes(manifest))
+    cfg = RunConfig(kind='main',benchmark_digest=digest,model_versions={'test':'offline-unit-test-only'})
+    with pytest.raises(ValueError,match='retired benchmark'):
+        run(cfg,[NoRecovery()],directory,tmp_path/'out')

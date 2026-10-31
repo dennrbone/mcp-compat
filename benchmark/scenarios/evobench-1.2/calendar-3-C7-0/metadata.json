@@ -1,0 +1,1 @@
+{"base_tool":"calendar_reschedule","composed":false,"domain":"calendar","ground_truth":"CONDITIONAL","mutation_family":"C7","mutation_subtype":"nest_value","public_context":{"rules":[{"op":"move","source":["value"],"target":["payload","value"]}]},"recoverable":true,"scenario_id":"calendar-3-C7-0"}

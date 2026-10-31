@@ -6,7 +6,7 @@ from typing import Any
 
 def canonical_json(value: Any) -> str:
     """Serialize a JSON-compatible value deterministically without ASCII escaping."""
-    return json.dumps(value, ensure_ascii=False, separators=(",", ":"), sort_keys=True)
+    return json.dumps(value, ensure_ascii=False, separators=(",", ":"), sort_keys=True, allow_nan=False)
 
 
 def canonical_bytes(value: Any) -> bytes:

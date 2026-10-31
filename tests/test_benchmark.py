@@ -21,6 +21,7 @@ def corpus():
 def test_corpus_validity_diversity_and_ground_truth(corpus):
     assert len(corpus) == len({s.scenario_id for s in corpus}) == 2160
     assert len({s.metadata['base_tool'] for s in corpus}) == 48
+    assert len({canonical_bytes(s.old_contract.model_dump()) for s in corpus}) == 48
     assert len({s.metadata['domain'] for s in corpus}) == 8
     assert sum(s.metadata['composed'] for s in corpus) == 240
     assert {s.ground_truth for s in corpus} == {'SAFE_AUTO', 'CONDITIONAL', 'MUST_ABSTAIN'}
@@ -153,3 +154,11 @@ def test_required_added_value_affects_semantics():
     assert equivalent(s, call)
     call.arguments['region'] = 'different-region'
     assert not equivalent(s, call)
+
+
+def test_oracle_observes_new_optional_side_effects():
+    import random
+    s = _case('commerce','order',2,'C2',0,random.Random(42))
+    call = ToolCall.model_validate(s.oracle['expected_call'])
+    call.arguments['note'] = 'unrequested audit note'
+    assert not equivalent(s,call)

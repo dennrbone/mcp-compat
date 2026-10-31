@@ -1,0 +1,1 @@
+{"base_tool":"messaging_revoke","composed":false,"domain":"messaging","ground_truth":"MUST_ABSTAIN","mutation_family":"C8","mutation_subtype":"changed_notification","public_context":{"rules":[]},"recoverable":false,"scenario_id":"messaging-4-C8-4"}

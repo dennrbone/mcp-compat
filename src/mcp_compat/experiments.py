@@ -15,7 +15,7 @@ from typing import Any, Literal
 from pydantic import Field, model_validator
 
 from mcp_compat import MigrationDecision, ToolCall, ToolContract, canonical_bytes
-from mcp_compat.benchmark import equivalent, load, recovery_input
+from mcp_compat.benchmark import VERSION, equivalent, load, recovery_input
 from mcp_compat.domain.scenarios import GroundTruth, MutationFamily
 from mcp_compat.hybrid import Hybrid, SandboxVerifier
 from mcp_compat.llm import LLMRequest, LLMResponse, Mapper, PROMPT_VERSION, StrictModel
@@ -107,6 +107,9 @@ def run(config: RunConfig, strategies: list[Strategy], benchmark: Path, output: 
         raise ValueError("invalid or duplicate methods")
     if config.kind == "main" and not config.model_versions:
         raise ValueError("main experiment requires explicit model versions")
+    benchmark_manifest = json.loads((benchmark/"manifest.json").read_bytes())
+    if config.kind == "main" and benchmark_manifest["version"] != VERSION:
+        raise ValueError("retired benchmark cannot be used for a main experiment")
     scenarios = load(benchmark,config.benchmark_digest)
     if config.scenario_ids is not None:
         selected = set(config.scenario_ids)
@@ -122,7 +125,7 @@ def run(config: RunConfig, strategies: list[Strategy], benchmark: Path, output: 
         except PackageNotFoundError:
             dependencies[package] = None
     source = sha256(b"".join(p.read_bytes() for p in sorted(Path(__file__).parent.rglob("*.py")))).hexdigest()
-    identity = dict(config=config.model_dump(),methods=names,prompt_version=PROMPT_VERSION,
+    identity = dict(config=config.model_dump(),methods=names,prompt_version=PROMPT_VERSION,benchmark_version=benchmark_manifest["version"],
                     source_digest=source,python=platform.python_version(),dependencies=dependencies)
     fingerprint = sha256(canonical_bytes(identity)).hexdigest()
     output.mkdir(parents=True,exist_ok=True)
@@ -217,15 +220,16 @@ class OfflineClient:
 def offline_methods() -> list[Strategy]:
     # Independently authored fixture implementation, bound only to this quote/unit pair.
     old = ToolContract(name="commerce_quote",description="Synthetic commerce quote; isolated state only.",
-        input_schema=dict(type="object",properties=dict(value={"type":"integer"},target={"type":"string"},
-            mode={"type":"string","enum":["standard","express"]},note={"type":"string"},notify={"type":"boolean"}),
-            required=["value","target","mode","notify"]), metadata={"semantic_unit":"RUB"})
+        input_schema=dict(type="object",properties=dict(value={"type":["integer","number","null"],"semantic_unit":"RUB"},target={"type":"string"},
+            mode={"type":"string","enum":["standard","express"]},note={"type":"string"},notify={"type":"boolean"},
+            legacy={"type":"boolean"},date={"type":"string","format":"date"},duration={"type":"integer","semantic_unit":"seconds"}),
+            required=["value","target","mode","notify","legacy"]))
     new = old.model_copy(deep=True)
-    new.metadata["semantic_unit"] = "kopecks"
+    new.input_schema['properties']['value']['semantic_unit'] = 'kopecks'
     def old_impl(a,s):
-        return dict(value=a["value"],target=a["target"],mode=a["mode"],notify=a["notify"],note=a.get("note",""))
+        return dict(value=a["value"],target=a["target"],mode=a["mode"],notify=a["notify"],note=a.get("note",""),date=a.get("date",""),duration=a['duration'])
     def new_impl(a,s):
-        return dict(value=a["value"]/100,target=a["target"],mode=a["mode"],notify=a["notify"],note=a.get("note",""))
+        return dict(value=a["value"]/100,target=a["target"],mode=a["mode"],notify=a["notify"],note=a.get("note",""),date=a.get("date",""),duration=a['duration'])
     verifier = SandboxVerifier(old,new,old_impl,new_impl)
     mapper = Mapper(OfflineClient(),attempts=1)
     ablations: list[Literal["A1","A2","A3","A4"]] = ["A1","A2","A3","A4"]

@@ -1,0 +1,1 @@
+{"base_tool":"commerce_cancel","composed":false,"domain":"commerce","ground_truth":"MUST_ABSTAIN","mutation_family":"C7","mutation_subtype":"merge_target_value","public_context":{"rules":[]},"recoverable":false,"scenario_id":"commerce-4-C7-4"}

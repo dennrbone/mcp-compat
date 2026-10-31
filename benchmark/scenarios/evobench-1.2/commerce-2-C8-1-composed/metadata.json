@@ -1,0 +1,1 @@
+{"base_tool":"commerce_order","composed":true,"domain":"commerce","families":["C1","C8"],"ground_truth":"CONDITIONAL","mutation_family":"C8","mutation_subtype":"seconds_milliseconds","public_context":{"rules":[{"factor":1000,"op":"scale","source":["duration"],"target":["duration"]}]},"recoverable":true,"scenario_id":"commerce-2-C8-1-composed"}

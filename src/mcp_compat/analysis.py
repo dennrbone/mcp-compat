@@ -177,6 +177,7 @@ def artifacts(directory: Path, output: Path, *, seed: int = 42, draws: int = 200
             axis.bar([row["method"] for row in rows],[np.nan if row[metric] is None else row[metric] for row in rows],color="#486f99")
             axis.set_title(metric)
             axis.set_ylim(0,1)
+            axis.set_xlim(-.5,len(rows)-.5)
             axis.tick_params(axis="x",labelrotation=45)
             axis.set_ylabel("Rate")
             for index,row in enumerate(rows):

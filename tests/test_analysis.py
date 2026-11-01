@@ -133,3 +133,23 @@ def test_artifacts_come_from_actual_records_and_cli(tmp_path,capsys):
     result = artifacts(minimal,tmp_path/'minimal-analysis',draws=8)
     assert result['comparisons']['B0']['status'] == 'missing_methods'
     assert not (tmp_path/'minimal-analysis'/'ablations.csv').exists()
+
+
+def test_trailing_undefined_rate_label_remains_inside_plot(tmp_path,monkeypatch):
+    import matplotlib.pyplot as plt
+    figures=[]
+    original=plt.subplots
+    def capture(*args,**kwargs):
+        figure,axes=original(*args,**kwargs)
+        figures.append(figure)
+        return figure,axes
+    monkeypatch.setattr(plt,'subplots',capture)
+    baseline,hybrid=row(),row(False,semantic=None,valid=None)
+    baseline.method,hybrid.method='B0','M1'
+    directory=tmp_path/'run'
+    save(directory,[baseline,hybrid],kind='pilot')
+    artifacts(directory,tmp_path/'analysis',draws=8)
+    axis=figures[0].axes[1]
+    label=next(text for text in axis.texts if text.get_text()=='N/A')
+    left,right=axis.get_xlim()
+    assert left < label.get_position()[0] < right

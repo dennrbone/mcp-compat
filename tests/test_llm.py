@@ -28,7 +28,9 @@ def request():
 
 def test_injection_is_data_and_mapping_is_typed():
     client = FakeClient('{"action":"EXECUTE","operations":[{"op":"move","source":["a.b"],"target":["c"]}]}')
-    result = Mapper(client).propose_mapping(request())
+    r=request()
+    r.old_call.arguments={'a.b':1}
+    result = Mapper(client).propose_mapping(r)
     assert result.proposal.operations[0].source == ['a.b']
     message, timeout = client.requests[0]
     assert 'IGNORE ALL' not in message.system
@@ -99,7 +101,7 @@ def test_valid_operations_and_direct_calls():
         op = Operation.model_validate(data)
         assert Operation.model_validate_json(op.model_dump_json()) == op
         assert op.op == data['op']
-    text = '{"action":"EXECUTE","call":{"tool_name":"t","arguments":{}}}'
+    text = '{"action":"EXECUTE","candidate":{"tool_name":"t","arguments":{}}}'
     for purpose in ('B1','B2'):
         client = FakeClient(text)
         result = Mapper(client).propose_mapping(request(),purpose,error='invalid args')
@@ -109,3 +111,71 @@ def test_valid_operations_and_direct_calls():
         invalid = Mapper(FakeClient('{"action":"EXECUTE"}'),attempts=1).propose_mapping(request(),purpose)
         assert invalid.proposal is None
     assert Proposal(action='ABSTAIN').operations == []
+
+
+def test_wire_schema_matches_actual_mode_and_opcode_constraints():
+    from mcp_compat.llm import parse_proposal, response_schema
+    with pytest.raises(ValueError):
+        response_schema('unknown')
+    for data in [dict(op='move',source=['a'],target=['b']),dict(op='string',source=['a'],target=['a']),
+                 dict(op='wrap',source=['a'],target=['a']),dict(op='set',target=['a'],value=None),
+                 dict(op='enum',source=['a'],target=['a'],values={'x':'y'}),dict(op='scale',source=['a'],target=['a'],factor=100)]:
+        parsed,_=parse_proposal(json.dumps(dict(action='EXECUTE',operations=[data])),'mapping')
+        assert parsed.operations[0].op==data['op']
+        with pytest.raises(ValueError):
+            parse_proposal(json.dumps(dict(action='EXECUTE',operations=[{**data,'unexpected':None}])),'mapping')
+    for purpose in ('B1','B2'):
+        parsed,_=parse_proposal('{"action":"EXECUTE","candidate":{"tool_name":"t","arguments":{}}}',purpose)
+        assert parsed.call.tool_name=='t'
+        with pytest.raises(ValueError):
+            parse_proposal('{"action":"EXECUTE","candidate":{"tool_name":"t","arguments":{}},"operations":[]}',purpose)
+
+
+@pytest.mark.parametrize('fence',['```json\n{}\n```','```\n{}\n```','```JSON\r\n{}\r\n```'])
+def test_single_json_fence_normalization_preserves_raw_reply(fence):
+    raw=fence.replace('{}','{"action":"ABSTAIN"}')
+    result=Mapper(FakeClient(raw),attempts=1).propose_mapping(request())
+    assert result.proposal.action=='ABSTAIN'
+    assert result.trace['responses'][0]['text']==raw
+    assert result.trace['transport_format']=='json_fence' and result.trace['parse_status']=='parsed'
+
+
+@pytest.mark.parametrize('text',[
+    'prose\n```json\n{"action":"ABSTAIN"}\n```',
+    '```json\n{"action":"ABSTAIN"}\n```\n```json\n{"action":"ABSTAIN"}\n```',
+    '```python\n{"action":"ABSTAIN"}\n```',
+    '```json\n{"action":"ABSTAIN","action":"EXECUTE"}\n```',
+    '```json\n{"action":"EXECUTE","operations":[{"op":"set","target":["x"],"value":Infinity}]}\n```',
+])
+def test_no_guessing_objects_or_relaxing_validation_inside_fences(text):
+    assert Mapper(FakeClient(text),attempts=1).propose_mapping(request()).proposal is None
+
+
+def test_repair_feedback_records_each_request_without_echoing_error_contents():
+    client=FakeClient(ValueError('SECRET'),'{"action":"ABSTAIN"}')
+    result=Mapper(client,wait=lambda t:None).propose_mapping(request())
+    assert result.reason=='parsed' and result.trace['parse_status']=='parsed'
+    assert len(result.trace['requests'])==2 and len(result.trace['parse_errors'])==1
+    assert 'protocol_feedback' not in result.trace['request']['data']
+    feedback=client.requests[1][0].data['protocol_feedback']
+    assert feedback['error_type']=='ValueError' and 'SECRET' not in json.dumps(feedback)
+    assert 'Never include a call' in feedback['requirement']
+
+
+def test_proposal_domain_guards_still_reject_conflicting_candidates():
+    from mcp_compat.llm import ProposedCall
+    call=ProposedCall(tool_name='t',arguments={})
+    with pytest.raises(ValueError):
+        Proposal(action='ABSTAIN',call=call)
+    with pytest.raises(ValueError):
+        Proposal(action='EXECUTE',call=call,operations=[Operation(op='set',target=['x'],value=1)])
+
+
+def test_paths_are_bounded_by_observable_argument_and_schema_roots():
+    r=request()
+    r.old_call.arguments={'quantity':7}
+    r.new_contract.input_schema=dict(type='object',properties={'count':{'type':'integer'}})
+    bad='{"action":"EXECUTE","operations":[{"op":"move","source":["arguments","quantity"],"target":["count"]}]}'
+    good='{"action":"EXECUTE","operations":[{"op":"move","source":["quantity"],"target":["count"]}]}'
+    result=Mapper(FakeClient(bad,good),wait=lambda t:None).propose_mapping(r)
+    assert result.reason=='parsed' and result.trace['calls']==2

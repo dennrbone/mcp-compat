@@ -13,7 +13,7 @@ from mcp_compat import canonical_bytes
 from mcp_compat.benchmark import load
 from mcp_compat.domain.scenarios import EvolutionScenario
 from mcp_compat.experiments import RunConfig, recovery_methods, run
-from mcp_compat.llm import LLMRequest, Mapper, Proposal, SYSTEM_PROMPT
+from mcp_compat.llm import LLMRequest, Mapper, parse_proposal, response_schema, SYSTEM_PROMPT
 from mcp_compat.providers import AgentProvider, MODEL_ID, ProviderConfig, ProviderError, from_env
 
 
@@ -49,9 +49,9 @@ def agent_cli(argv: list[str] | None = None) -> None:
         config = from_env()
         report["cli_version"] = cli_version(config)
         client = AgentProvider(config)
-        response = client.complete(LLMRequest(system=PROBE_PROMPT, data={}, response_schema=Proposal.model_json_schema()), 120)
+        response = client.complete(LLMRequest(system=PROBE_PROMPT, data={}, response_schema=response_schema("mapping")), 120)
         report["response"] = response.model_dump()
-        if Proposal.model_validate_json(response.text).action != "ABSTAIN":
+        if parse_proposal(response.text,"mapping")[0].action != "ABSTAIN":
             raise ProviderError("probe_expected_abstain")
         report["status"] = "PASS"
     except Exception as exc:

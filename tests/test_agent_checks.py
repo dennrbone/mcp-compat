@@ -56,7 +56,7 @@ def test_real_cli_smoke_and_pilot_wiring(tmp_path,monkeypatch,capsys,pilot):
         agent_cli(['--output',str(output)])
 
 
-@pytest.mark.parametrize('result',[ProviderError('provider_timeout'),LLMResponse(text='{"action":"EXECUTE"}',model='test'),LLMResponse(text='```json\n{}\n```',model='test')])
+@pytest.mark.parametrize('result',[ProviderError('provider_timeout'),LLMResponse(text='{"action":"EXECUTE","operations":[]}',model='test'),LLMResponse(text='```json\n{}\n```',model='test')])
 def test_smoke_failure_is_not_success(tmp_path,monkeypatch,result):
     monkeypatch.setenv('GIGACODE_BIN',sys.executable)
     monkeypatch.setattr('mcp_compat.agent_checks.cli_version',lambda c:'26.10.76')

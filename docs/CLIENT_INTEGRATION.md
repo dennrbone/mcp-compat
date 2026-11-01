@@ -8,14 +8,15 @@ client supplies one method:
 from mcp_compat.llm import LLMClient, LLMRequest, LLMResponse, Mapper
 
 # your_client implements complete(request: LLMRequest, timeout: float) -> LLMResponse
-mapper = Mapper(your_client, attempts=1, timeout=120)
+mapper = Mapper(your_client, attempts=2, timeout=120)
 ```
 
 The method sends the supplied system/data/response schema to the chosen model,
 honors the timeout, and returns raw text plus its real model ID and measured
 usage (or null for unknown usage). Credentials belong to that client's local
-configuration. Do not strip Markdown, fabricate tokens/cost or convert transport
-errors into successful model replies. `Mapper` already validates strict JSON,
+configuration. Return the raw reply and follow the supplied mode-specific response schema.
+Do not fabricate tokens/cost or convert transport errors into model replies.
+`Mapper` handles one whole JSON fence without dropping schema checks and validates
 limits, retries and declarative operations.
 
 Pass this mapper into `LLMBaseline("B2", mapper)` or `Hybrid(mapper, verifier)`.

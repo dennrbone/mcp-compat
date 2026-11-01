@@ -35,19 +35,35 @@ this is a CLI-harness experiment, not a bare-API comparison. Mapping instruction
 are repeated in the final user message because the client otherwise treated a
 schema-only message as an ordinary coding question.
 
-One step, temperature 0, an output-token cap of 2048 and a deadline up to 120 s
-are configured. Tool/error/incomplete/multiple-step events and nonzero reported
-cost are rejected. A temporary file captures stdout; at most 1 MiB is decoded.
-CLI stderr and credentials never appear in provider exceptions. TLS verification
-remains enabled. Model output cannot create shell commands.
+The CLI agent has a two-step ceiling with tools denied; successful requests must
+still emit exactly one completed text-generation step. The previous one-step
+ceiling could inject a summarization instruction on the first response. Temperature
+0, a 2048-token output cap and a shared deadline up to 120 s remain fixed.
+Inherited client-specific config variables are removed before applying the
+isolated profile. Tool/error/incomplete/multiple-step events and nonzero reported
+cost are rejected. Stderr is discarded; at most 1 MiB of stdout is decoded.
 
-`calls` measures wrapper invocations, not an independently audited count of
-backend requests or invisible client retries. Reported input usage includes
-cache reads/writes; output includes reasoning when present. Missing usage remains
-null. A reported zero cost is not an independent billing audit.
+Protocol **mapping-2.0** supplies separate wire schemas. Mapping replies contain
+`operations`; B1/B2 replies contain a `candidate` object, converted to the existing
+internal `Proposal.call` only after validation. Unused mode definitions are absent.
+The schema enforces opcode-specific operands and observable argument-path roots.
+Paths are relative to arguments, with no `arguments` or `old_call` prefix.
 
-Prompt `mapping-1.1` explicitly requires one JSON object. Fenced/prose responses
-remain rejected. Historical artifacts retain their original prompt/fingerprint.
+The common parser accepts plain JSON or one complete JSON Markdown fence. Prose,
+multiple objects/blocks, duplicate keys, nonfinite numbers, extra fields and
+incorrect mode/operand shapes remain rejected. Raw replies are preserved. A
+bounded retry supplies the required shape and error class, without copying error
+messages or treating model output as instructions. Every request, response,
+normalization and retry is recorded under the same total deadline.
+
+`calls` counts wrapper invocations; response details record observed CLI steps.
+These are not an independent audit of hidden backend retries or billing. Missing
+usage remains null; reported cache reads/writes and reasoning count toward usage.
+
+A native structured-output calibration was also attempted. The installed client
+sometimes captured schema-invalid objects or timed out. It was not adopted as a
+conformance guarantee. Production parsing remains in the shared validated mapper.
+The earlier `mapping-1.1` pilot is historical evidence and is preserved unchanged.
 
 Other models use the existing `LLMClient.complete(request, timeout)` protocol and
 `Mapper` injection. Standard MCP agents connect through stdio. These extension

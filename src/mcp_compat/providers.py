@@ -63,7 +63,7 @@ def _parse_events(stdout: str, model: str) -> LLMResponse:
     if finish.get("cost", 0) != 0:
         raise ProviderError("provider_nonzero_reported_cost")
     return LLMResponse(text=text, model=model, input_tokens=input_tokens,
-                       output_tokens=output_tokens, cost=finish.get("cost"))
+                       output_tokens=output_tokens, cost=finish.get("cost"), details=dict(transport="gigacode-cli-json-2",cli_steps=1))
 
 
 class AgentProvider:
@@ -79,12 +79,12 @@ class AgentProvider:
             root = Path(directory)
             (root / "config").mkdir()
             (root / "extra").mkdir()
-            agent = dict(mode="primary", prompt=request.system, temperature=0, steps=1, permission="deny")
+            agent = dict(mode="primary", prompt=request.system, temperature=0, steps=2, permission="deny")
             settings = dict(model=config.model, small_model=config.model, autoupdate=False, snapshot=False,
                 share="disabled", enabled_providers=["gigacode"], permission="deny", instructions=[],
                 plugin=[], mcp={}, compaction=dict(auto=False, prune=False),
                 agent=dict(mcp_mapper=agent, title=dict(disable=True), summary=dict(disable=True), compaction=dict(disable=True)))
-            env = os.environ.copy()
+            env = {k:v for k,v in os.environ.items() if not k.startswith("KILO_")}
             env.update(XDG_CONFIG_HOME=str(root / "config"), NODE_TLS_REJECT_UNAUTHORIZED="1")
             env[f"{prefix}_CONFIG_DIR"] = str(root / "extra")
             env[f"{prefix}_CONFIG_CONTENT"] = canonical_json(settings)
@@ -95,7 +95,7 @@ class AgentProvider:
                 env[f"{prefix}_{flag}"] = "1"
             payload = canonical_json(dict(data=request.data, response_schema=request.response_schema))
             command = [config.executable, "run", "--pure", "--log-level", "ERROR", "--model", config.model,
-                       "--agent", "mcp_mapper", "--format", "json", "--title", "mcp-compat", request.system + "\n" + payload]
+                       "--agent", "mcp_mapper", "--format", "json", "--title", "mcp-compat", request.system + "\n" + payload + "\n" + request.system]
             try:
                 result = subprocess.run(command, cwd=root, env=env, stdin=subprocess.DEVNULL,
                     stdout=stdout, stderr=subprocess.DEVNULL, timeout=timeout, check=False)

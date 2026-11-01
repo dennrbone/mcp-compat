@@ -168,3 +168,19 @@ and validation/ci.json. Final installed-wheel gate also passed **233 + 2 skips,
   Push rejected by automatic approval review: prior authorization covers Phase
   3–10 only. Phase 11 remote CI NOT RUN pending explicit publication approval.
 - Task/prompt Markdown remains local/untracked. No merge into main.
+
+## Phase 12 — validated model protocol
+
+- Branch `phase/12-structured-mapping`; previous Phase 11 evidence preserved.
+- Protocol mapping-2.0 has purpose-specific schemas and valid opcode operands,
+  relative argument paths and a separate baseline candidate wire object. One
+  complete JSON fence is normalized while all schema/domain checks stay active.
+- Retry feedback is bounded, preserves raw responses, and records each request.
+- Native structured capture was calibrated but not adopted: invalid captures and
+  timeouts were observed. The installed CLI plus independent parser is retained.
+- Full suite: **266 passed, 4 opt-in skips; 100% statements/branches** (1572/574).
+  Ruff, mypy (20 modules) and dependency consistency PASS.
+- **4 real CodeAgent tests PASS**, including positive mapping and B2 development
+  transformations, strict smoke and actual MCP delivery. This is protocol
+  evidence, not a whole-benchmark effectiveness claim. See IMPROVEMENTS.md.
+- Main unchanged; no feature publication or scientific conclusion claimed.

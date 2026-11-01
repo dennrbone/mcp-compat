@@ -5,7 +5,7 @@ import os
 import pytest
 
 from mcp_compat.agent_checks import PROBE_PROMPT
-from mcp_compat.llm import LLMRequest, Proposal
+from mcp_compat.llm import LLMRequest, parse_proposal, response_schema
 from mcp_compat.providers import AgentProvider, from_env
 
 
@@ -14,8 +14,8 @@ def test_real_provider_smoke():
     if os.environ.get('MCP_COMPAT_RUN_PROVIDER_SMOKE') != '1':
         pytest.skip('real CodeAgent inference not explicitly enabled')
     response=AgentProvider(from_env()).complete(LLMRequest(system=PROBE_PROMPT,
-        data={},response_schema=Proposal.model_json_schema()),120)
-    assert Proposal.model_validate_json(response.text).action == 'ABSTAIN'
+        data={},response_schema=response_schema('mapping')),120)
+    assert parse_proposal(response.text,'mapping')[0].action == 'ABSTAIN'
 
 
 @pytest.mark.real_provider
@@ -66,3 +66,25 @@ def test_codeagent_calls_project_mcp(tmp_path):
     assert 'ABSTAIN' in state['output']
     finishes=[e['part'] for e in events if e['type']=='step_finish']
     assert finishes and all(p.get('cost')==0 for p in finishes)
+
+
+@pytest.mark.real_provider
+@pytest.mark.parametrize('purpose',['mapping','B2'])
+def test_real_mapping_protocol(purpose):
+    if os.environ.get('MCP_COMPAT_RUN_PROVIDER_SMOKE')!='1':
+        pytest.skip('real CodeAgent inference not explicitly enabled')
+    from mcp_compat import ToolCall,ToolContract
+    from mcp_compat.benchmark import RecoveryInput
+    from mcp_compat.hybrid import adapt
+    from mcp_compat.llm import Mapper
+    old=ToolContract(name='development_counter',input_schema=dict(type='object',properties=dict(quantity={'type':'integer'}),required=['quantity'],additionalProperties=False))
+    new=old.model_copy(deep=True)
+    new.input_schema=dict(type='object',properties=dict(count={'type':'integer'}),required=['count'],additionalProperties=False)
+    request=RecoveryInput(old_contract=old,new_contract=new,old_call=ToolCall(tool_name=old.name,arguments={'quantity':7}),
+        context=dict(rules=[dict(op='move',source=['quantity'],target=['count'])]))
+    result=Mapper(AgentProvider(from_env()),attempts=2,timeout=120).propose_mapping(request,purpose)
+    assert result.proposal is not None and result.proposal.action=='EXECUTE'
+    call=adapt(request,result.proposal.operations) if purpose=='mapping' else result.proposal.call
+    call.validate_against(new)
+    assert call.arguments=={'count':7}
+    assert result.trace['responses'][-1]['details']['transport']=='gigacode-cli-json-2'

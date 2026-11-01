@@ -40,7 +40,7 @@ def test_cli_isolation_and_usage(monkeypatch):
         assert settings['enabled_providers'] == ['gigacode']
         assert settings['permission'] == settings['agent']['mcp_mapper']['permission'] == 'deny'
         assert settings['agent']['mcp_mapper']['prompt'] == 'fixed'
-        assert settings['agent']['mcp_mapper']['steps'] == 1
+        assert settings['agent']['mcp_mapper']['steps'] == 2
         assert settings['agent']['title']['disable'] and settings['plugin'] == []
         assert settings['instructions'] == [] and settings['mcp'] == {}
         assert env['NODE_TLS_REJECT_UNAUTHORIZED'] == '1'
@@ -54,7 +54,7 @@ def test_cli_isolation_and_usage(monkeypatch):
         assert command[0] == sys.executable and '--pure' in command and '--title' in command
         assert command[command.index('--model')+1] == c.model
         assert command[-1].startswith('fixed\n')
-        assert json.loads(command[-1].split('\n',1)[1]) == dict(data={},response_schema={})
+        assert json.loads(command[-1].split('\n',1)[1].rsplit('\n',1)[0]) == dict(data={},response_schema={})
         response = events(tokens=dict(input=3,output=4,reasoning=2,cache=dict(read=5,write=1)),cost=0)
         kwargs['stdout'].write(('startup notice\n'+'\n'.join(json.dumps(e) for e in response)).encode())
         return SimpleNamespace(returncode=0)
@@ -141,7 +141,7 @@ def test_llm_baselines():
     with pytest.raises(ValueError):
         LLMBaseline('B9',Mapper(FakeClient()))
     r = request()
-    fake = FakeClient('{"action":"EXECUTE","call":{"tool_name":"t","arguments":{}}}')
+    fake = FakeClient('{"action":"EXECUTE","candidate":{"tool_name":"t","arguments":{}}}')
     assert LLMBaseline('B1',Mapper(fake)).recover(r).action == 'EXECUTE'
     assert not fake.requests
     r.old_call.tool_name = 'old'
@@ -151,5 +151,5 @@ def test_llm_baselines():
     for text in ('{"action":"ABSTAIN"}', 'malformed'):
         result = LLMBaseline('B2',Mapper(FakeClient(text),attempts=1)).recover(r)
         assert result.action == 'ABSTAIN'
-    text = '{"action":"EXECUTE","call":{"tool_name":"wrong","arguments":{}}}'
+    text = '{"action":"EXECUTE","candidate":{"tool_name":"wrong","arguments":{}}}'
     assert LLMBaseline('B2',Mapper(FakeClient(text))).recover(r).reasons == ['schema_invalid']

@@ -1,5 +1,8 @@
 # GigaCode validation — 2026-11-01
 
+Historical Phase 11 report. Current improvements and revalidation are in
+[IMPROVEMENTS.md](IMPROVEMENTS.md).
+
 Only the installed GigaCode CodeAgent is used for current real tests. The actual
 CLI catalog ID is `gigacode/GigaCode`, version 26.10.76. Its hidden model revision
 is unknown. The selected client reports zero token cost.

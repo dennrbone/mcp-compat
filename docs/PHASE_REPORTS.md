@@ -152,12 +152,19 @@ and validation/ci.json. Final installed-wheel gate also passed **233 + 2 skips,
   research definitions stay fixed, model-selection amendment is Spec 1.2.
 - Kept the generic LLMClient injection, added standard MCP stdio serving and a
   runnable provider-independent decision endpoint. No global agent config edited.
-- Full source and installed-wheel gates: **253 passed, 2 opt-in skips; 100%
-  statements/branches** (1524 / 560). Ruff PASS; mypy PASS (20 modules); dependency
+- Full source and installed-wheel gates: **254 passed, 2 opt-in skips; 100%
+  statements/branches** (1525 / 560). Ruff PASS; mypy PASS (20 modules); dependency
   consistency, sdist/wheel/source equality, workflow YAML and offline e2e PASS.
 - Actual CodeAgent checks: **2 real pytest cases PASS**, including the agent
   invoking our MCP tool. Earlier non-JSON output failed; prompt/harness changes
   are explicit (`mapping-1.1`). No fenced response is silently accepted.
-- Stratified real pilot IN PROGRESS; final outcome and limitations are recorded
-  in AGENT_TESTS.md. Main repeated two-family study remains NOT RUN.
+- Stratified real pilot COMPLETED: 18 cases, 162 decisions, 94 wrapper calls.
+  **79 replies failed strict parsing; M1 abstained in all 18 cases**. Integration
+  checks passing does not establish recovery effectiveness. Details and observed
+  rates are in AGENT_TESTS.md. Main repeated two-family study remains NOT RUN.
+- Actual artifact inspection exposed trailing N/A labels outside plot limits.
+  Regression initially FAIL; bounded axes fix and final rendering/tests PASS.
+- Code commits: `d1752b0f` (pilot implementation), `6a60e0ee` (plot fix).
+  Push rejected by automatic approval review: prior authorization covers Phase
+  3–10 only. Phase 11 remote CI NOT RUN pending explicit publication approval.
 - Task/prompt Markdown remains local/untracked. No merge into main.

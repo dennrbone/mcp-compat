@@ -4,9 +4,9 @@
 
 | Check | Status | Evidence |
 |---|---|---|
-| Full pytest, Python 3.11.4 | PASS | 253 passed, 2 real-provider skips |
-| Statement + branch coverage | PASS | 1524 statements / 560 branches; 100%; no missing coverage |
-| Clean wheel install, Python 3.11.4 | PASS | 253 passed, 2 skips; 100% in separate /tmp environment |
+| Full pytest, Python 3.11.4 | PASS | 254 passed, 2 real-provider skips |
+| Statement + branch coverage | PASS | 1525 statements / 560 branches; 100%; no missing coverage |
+| Clean wheel install, Python 3.11.4 | PASS | 254 passed, 2 skips; 100% in separate /tmp environment |
 | Ruff / mypy | PASS | All source/tests lint; all 20 source modules type checked |
 | Packaging | PASS | sdist + wheel built; wheel Python files equal source |
 | Workflow YAML | PASS | Parsed and required jobs present; remote execution is a separate check |
@@ -61,7 +61,9 @@ the declared LLM extra. CI repair was propagated through the feature stack, addi
 the MCP extra where required. **All Phase 3–10 verified code runs now PASS**;
 run ids/commits are recorded in CI_FOLLOWUP.md and `docs/validation/ci.json`.
 Phase 10 tests and offline-e2e PASS; provider-smoke is skipped / NOT RUN.
-Local PASS is never substituted for a remote Actions result.
+Local PASS is never substituted for a remote Actions result. Phase 11 is locally
+committed; automatic approval review rejected its push because prior permission
+covers Phase 3–10 only. Phase 11 remote CI remains NOT RUN.
 
 Phase branches are stacked; no merge/rebase/squash into main was performed.
 Only ordinary forward propagation of CI fixes between feature branches is used.

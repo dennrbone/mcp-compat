@@ -1,0 +1,3 @@
+# Preserve standard CSV line endings and generated SVG glyph whitespace.
+experiments/**/analysis/*.csv whitespace=cr-at-eol
+experiments/**/analysis/*.svg -whitespace

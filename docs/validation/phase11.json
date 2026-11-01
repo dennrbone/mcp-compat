@@ -2,7 +2,7 @@
   "date": "2026-11-01",
   "python": "3.11.4",
   "pytest": {
-    "passed": 253,
+    "passed": 254,
     "skipped": 2,
     "failed": 0
   },
@@ -10,13 +10,13 @@
     "meta": {
       "format": 3,
       "version": "7.17.0",
-      "timestamp": "2026-11-01T12:31:23.949202",
+      "timestamp": "2026-11-01T12:41:27.147640",
       "branch_coverage": true,
       "show_contexts": false
     },
     "totals": {
-      "covered_lines": 1524,
-      "num_statements": 1524,
+      "covered_lines": 1525,
+      "num_statements": 1525,
       "percent_covered": 100.0,
       "percent_covered_display": "100",
       "missing_lines": 0,
@@ -73,8 +73,8 @@
       },
       "src/mcp_compat/analysis.py": {
         "summary": {
-          "covered_lines": 167,
-          "num_statements": 167,
+          "covered_lines": 168,
+          "num_statements": 168,
           "percent_covered": 100.0,
           "percent_covered_display": "100",
           "missing_lines": 0,
@@ -434,20 +434,36 @@
     }
   },
   "clean_wheel": {
-    "passed": 253,
+    "passed": 254,
     "skipped": 2,
-    "failed": 0
+    "failed": 0,
+    "coverage": {
+      "covered_lines": 1525,
+      "num_statements": 1525,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 13,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100",
+      "num_branches": 560,
+      "num_partial_branches": 0,
+      "covered_branches": 560,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    }
   },
   "real_provider": {
     "passed": 2,
     "skipped": 0,
     "failed": 0
   },
-  "source_digest": "fdf205dd00300b0098259a513fb2f1305e3ec0fb7ef462cdd5029e1f3de647f5",
+  "source_digest": "72399402e2d87de524974ea3122267d8a2e4188946e34690fdbfe79aa27b98b4",
   "benchmark_digest": "ef002e38917804b246bdd0d9a5c104160f89b76a4f15de34499c5dcb2b2ce8de",
   "packages": {
-    "mcp_compat-0.1.0-py3-none-any.whl": "398c8653a2008c32b4880245dcdfaf88ad47e358c9fe24d8eadc42deb95d786f",
-    "mcp_compat-0.1.0.tar.gz": "fe2c8760ac787633723c6f58489ce4951199fdc7400d609f51f0c73f09b9056e"
+    "mcp_compat-0.1.0-py3-none-any.whl": "3dd64b5ff5f0768bd73ea4de760e41181e232243490713c4ea9027b49590eaec",
+    "mcp_compat-0.1.0.tar.gz": "4c61e74da5a3e4cb94d2d27719163642acedb78a3e2ab77b2f5d01f3f06dcef3"
   },
   "checks": {
     "ruff": "PASS",
@@ -457,7 +473,8 @@
     "workflow_yaml": "PASS",
     "offline_e2e": "PASS",
     "stdio_sdk_client": "PASS",
-    "codeagent_to_mcp": "PASS"
+    "codeagent_to_mcp": "PASS",
+    "plot_annotation_regression": "PASS (failed before the axis-limit correction)"
   },
   "provider": {
     "client": "GigaCode",
@@ -468,6 +485,32 @@
   },
   "ci": {
     "status": "NOT RUN",
-    "reason": "Feature branch not yet published"
+    "reason": "Automatic approval review rejected publishing Phase 11; prior push authorization covers Phase 3\u201310 only."
+  },
+  "code_commit": "6a60e0ee00276c9e6f1b2ff090ef8ecfc6889bc6",
+  "pilot": {
+    "status": "COMPLETED",
+    "scope": "stratified_integration_pilot",
+    "scenarios": 18,
+    "decisions": 162,
+    "base_tools": 16,
+    "families": 8,
+    "repeats": 1,
+    "wrapper_calls": 94,
+    "invalid_mapping_replies": 79,
+    "mapping_errors": {
+      "JSONDecodeError": 61,
+      "ValidationError": 12,
+      "ValueError": 6
+    },
+    "input_tokens": 575769,
+    "output_tokens": 56330,
+    "reported_cost": 0,
+    "source_digest": "fdf205dd00300b0098259a513fb2f1305e3ec0fb7ef462cdd5029e1f3de647f5",
+    "code_commit": "d1752b0f57d7667017b0f08da6b8f84afa5407cc",
+    "m1_executed": 0,
+    "quality_conclusion": "Recovery effectiveness is not established; M1 abstained on all 18 cases.",
+    "integrity": "PASS",
+    "analysis_code_commit": "6a60e0ee00276c9e6f1b2ff090ef8ecfc6889bc6"
   }
 }

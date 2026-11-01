@@ -1,0 +1,176 @@
+{
+  "scope": "codeagent_to_project_mcp",
+  "model": "gigacode/GigaCode",
+  "returncode": 0,
+  "events": [
+    {
+      "type": "step_start",
+      "timestamp": 1793514615165,
+      "sessionID": "ses_e6a32e769ffe0Tz8381aqWrRko",
+      "part": {
+        "id": "prt_195cd317b001XnKUAk2cShouWO",
+        "messageID": "msg_195cd21b8001I930MYTuVMuWIz",
+        "sessionID": "ses_e6a32e769ffe0Tz8381aqWrRko",
+        "type": "step-start"
+      }
+    },
+    {
+      "type": "text",
+      "timestamp": 1793514615170,
+      "sessionID": "ses_e6a32e769ffe0Tz8381aqWrRko",
+      "part": {
+        "id": "prt_195cd317f002wDlamZgE2475Vz",
+        "messageID": "msg_195cd21b8001I930MYTuVMuWIz",
+        "sessionID": "ses_e6a32e769ffe0Tz8381aqWrRko",
+        "type": "text",
+        "text": "\n\n",
+        "time": {
+          "start": 1793514615167,
+          "end": 1793514615169
+        }
+      }
+    },
+    {
+      "type": "tool_use",
+      "timestamp": 1793514615174,
+      "sessionID": "ses_e6a32e769ffe0Tz8381aqWrRko",
+      "part": {
+        "type": "tool",
+        "tool": "compat_check_migration",
+        "callID": "call_9aa77c3f54214cb19a1db4a3",
+        "state": {
+          "status": "completed",
+          "input": {
+            "old_contract": {
+              "name": "echo",
+              "description": null,
+              "input_schema": {
+                "type": "object",
+                "properties": {
+                  "x": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "x"
+                ]
+              },
+              "output_schema": null,
+              "metadata": {}
+            },
+            "new_contract": {
+              "name": "echo",
+              "description": null,
+              "input_schema": {
+                "type": "object",
+                "properties": {
+                  "x": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "x"
+                ]
+              },
+              "output_schema": null,
+              "metadata": {}
+            },
+            "old_call": {
+              "tool_name": "echo",
+              "arguments": {
+                "x": 3
+              }
+            },
+            "context": {}
+          },
+          "output": "{\"action\":\"ABSTAIN\",\"adapted_call\":null,\"evidence\":{\"candidate\":{\"arguments\":{\"x\":3},\"tool_name\":\"echo\"},\"candidates\":[\"x\"],\"diff\":{\"changes\":[],\"opaque\":[]},\"method\":\"M1\",\"schema_valid\":true,\"semantic_verified\":false,\"verification\":{\"evidence\":{},\"passed\":false,\"reason\":\"verifier_unavailable\"}},\"metadata\":{},\"reasons\":[\"verifier_unavailable\"]}",
+          "metadata": {
+            "truncated": false
+          },
+          "title": "",
+          "time": {
+            "start": 1793514615170,
+            "end": 1793514615173
+          },
+          "attachments": []
+        },
+        "id": "prt_195cd3180001F5LM3utnNBJvco",
+        "sessionID": "ses_e6a32e769ffe0Tz8381aqWrRko",
+        "messageID": "msg_195cd21b8001I930MYTuVMuWIz"
+      }
+    },
+    {
+      "type": "step_finish",
+      "timestamp": 1793514615176,
+      "sessionID": "ses_e6a32e769ffe0Tz8381aqWrRko",
+      "part": {
+        "id": "prt_195cd31870017ISd2CljUkpKlV",
+        "reason": "tool-calls",
+        "messageID": "msg_195cd21b8001I930MYTuVMuWIz",
+        "sessionID": "ses_e6a32e769ffe0Tz8381aqWrRko",
+        "type": "step-finish",
+        "tokens": {
+          "total": 6372,
+          "input": 6151,
+          "output": 221,
+          "reasoning": 0,
+          "cache": {
+            "write": 0,
+            "read": 0
+          }
+        },
+        "cost": 0
+      }
+    },
+    {
+      "type": "step_start",
+      "timestamp": 1793514616411,
+      "sessionID": "ses_e6a32e769ffe0Tz8381aqWrRko",
+      "part": {
+        "id": "prt_195cd3656001QRp8T4jBwQC5kC",
+        "messageID": "msg_195cd318a001lcfLUtqKW4iOhd",
+        "sessionID": "ses_e6a32e769ffe0Tz8381aqWrRko",
+        "type": "step-start"
+      }
+    },
+    {
+      "type": "text",
+      "timestamp": 1793514616422,
+      "sessionID": "ses_e6a32e769ffe0Tz8381aqWrRko",
+      "part": {
+        "id": "prt_195cd365e001q31esMWHXEiZVK",
+        "messageID": "msg_195cd318a001lcfLUtqKW4iOhd",
+        "sessionID": "ses_e6a32e769ffe0Tz8381aqWrRko",
+        "type": "text",
+        "text": "\n\nThe `compat_check_migration` tool returned:\n\n- **Action:** `ABSTAIN`\n- **Reason:** `verifier_unavailable` — no verifier was available to perform the migration compatibility check.\n- **Details:** The old and new contracts are identical (both define an `echo` tool accepting `{x: integer}`), and the candidate adapted call matches the original call (`echo(x=3)`). However, semantic verification could not proceed because the verifier was unavailable.",
+        "time": {
+          "start": 1793514616414,
+          "end": 1793514616420
+        }
+      }
+    },
+    {
+      "type": "step_finish",
+      "timestamp": 1793514616423,
+      "sessionID": "ses_e6a32e769ffe0Tz8381aqWrRko",
+      "part": {
+        "id": "prt_195cd3666001BYNWFoVqxDi3Na",
+        "reason": "stop",
+        "messageID": "msg_195cd318a001lcfLUtqKW4iOhd",
+        "sessionID": "ses_e6a32e769ffe0Tz8381aqWrRko",
+        "type": "step-finish",
+        "tokens": {
+          "total": 6591,
+          "input": 331,
+          "output": 116,
+          "reasoning": 0,
+          "cache": {
+            "write": 0,
+            "read": 6144
+          }
+        },
+        "cost": 0
+      }
+    }
+  ]
+}

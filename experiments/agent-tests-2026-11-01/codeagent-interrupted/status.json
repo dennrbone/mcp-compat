@@ -1,0 +1,7 @@
+{
+  "status": "INTERRUPTED",
+  "reason": "User changed the configured client before completion.",
+  "completed_decisions": 78,
+  "planned_decisions": 162,
+  "usable_as_completed_study": false
+}

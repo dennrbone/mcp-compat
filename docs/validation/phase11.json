@@ -1,0 +1,473 @@
+{
+  "date": "2026-11-01",
+  "python": "3.11.4",
+  "pytest": {
+    "passed": 253,
+    "skipped": 2,
+    "failed": 0
+  },
+  "coverage": {
+    "meta": {
+      "format": 3,
+      "version": "7.17.0",
+      "timestamp": "2026-11-01T12:31:23.949202",
+      "branch_coverage": true,
+      "show_contexts": false
+    },
+    "totals": {
+      "covered_lines": 1524,
+      "num_statements": 1524,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 13,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100",
+      "num_branches": 560,
+      "num_partial_branches": 0,
+      "covered_branches": 560,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "files": {
+      "src/mcp_compat/__init__.py": {
+        "summary": {
+          "covered_lines": 7,
+          "num_statements": 7,
+          "percent_covered": 100.0,
+          "percent_covered_display": "100",
+          "missing_lines": 0,
+          "excluded_lines": 0,
+          "percent_statements_covered": 100.0,
+          "percent_statements_covered_display": "100",
+          "num_branches": 0,
+          "num_partial_branches": 0,
+          "covered_branches": 0,
+          "missing_branches": 0,
+          "percent_branches_covered": 100.0,
+          "percent_branches_covered_display": "100"
+        },
+        "missing_lines": [],
+        "missing_branches": []
+      },
+      "src/mcp_compat/agent_checks.py": {
+        "summary": {
+          "covered_lines": 60,
+          "num_statements": 60,
+          "percent_covered": 100.0,
+          "percent_covered_display": "100",
+          "missing_lines": 0,
+          "excluded_lines": 0,
+          "percent_statements_covered": 100.0,
+          "percent_statements_covered_display": "100",
+          "num_branches": 10,
+          "num_partial_branches": 0,
+          "covered_branches": 10,
+          "missing_branches": 0,
+          "percent_branches_covered": 100.0,
+          "percent_branches_covered_display": "100"
+        },
+        "missing_lines": [],
+        "missing_branches": []
+      },
+      "src/mcp_compat/analysis.py": {
+        "summary": {
+          "covered_lines": 167,
+          "num_statements": 167,
+          "percent_covered": 100.0,
+          "percent_covered_display": "100",
+          "missing_lines": 0,
+          "excluded_lines": 0,
+          "percent_statements_covered": 100.0,
+          "percent_statements_covered_display": "100",
+          "num_branches": 64,
+          "num_partial_branches": 0,
+          "covered_branches": 64,
+          "missing_branches": 0,
+          "percent_branches_covered": 100.0,
+          "percent_branches_covered_display": "100"
+        },
+        "missing_lines": [],
+        "missing_branches": []
+      },
+      "src/mcp_compat/benchmark.py": {
+        "summary": {
+          "covered_lines": 316,
+          "num_statements": 316,
+          "percent_covered": 100.0,
+          "percent_covered_display": "100",
+          "missing_lines": 0,
+          "excluded_lines": 0,
+          "percent_statements_covered": 100.0,
+          "percent_statements_covered_display": "100",
+          "num_branches": 142,
+          "num_partial_branches": 0,
+          "covered_branches": 142,
+          "missing_branches": 0,
+          "percent_branches_covered": 100.0,
+          "percent_branches_covered_display": "100"
+        },
+        "missing_lines": [],
+        "missing_branches": []
+      },
+      "src/mcp_compat/diff/__init__.py": {
+        "summary": {
+          "covered_lines": 2,
+          "num_statements": 2,
+          "percent_covered": 100.0,
+          "percent_covered_display": "100",
+          "missing_lines": 0,
+          "excluded_lines": 0,
+          "percent_statements_covered": 100.0,
+          "percent_statements_covered_display": "100",
+          "num_branches": 0,
+          "num_partial_branches": 0,
+          "covered_branches": 0,
+          "missing_branches": 0,
+          "percent_branches_covered": 100.0,
+          "percent_branches_covered_display": "100"
+        },
+        "missing_lines": [],
+        "missing_branches": []
+      },
+      "src/mcp_compat/diff/engine.py": {
+        "summary": {
+          "covered_lines": 160,
+          "num_statements": 160,
+          "percent_covered": 100.0,
+          "percent_covered_display": "100",
+          "missing_lines": 0,
+          "excluded_lines": 0,
+          "percent_statements_covered": 100.0,
+          "percent_statements_covered_display": "100",
+          "num_branches": 90,
+          "num_partial_branches": 0,
+          "covered_branches": 90,
+          "missing_branches": 0,
+          "percent_branches_covered": 100.0,
+          "percent_branches_covered_display": "100"
+        },
+        "missing_lines": [],
+        "missing_branches": []
+      },
+      "src/mcp_compat/domain/__init__.py": {
+        "summary": {
+          "covered_lines": 5,
+          "num_statements": 5,
+          "percent_covered": 100.0,
+          "percent_covered_display": "100",
+          "missing_lines": 0,
+          "excluded_lines": 0,
+          "percent_statements_covered": 100.0,
+          "percent_statements_covered_display": "100",
+          "num_branches": 0,
+          "num_partial_branches": 0,
+          "covered_branches": 0,
+          "missing_branches": 0,
+          "percent_branches_covered": 100.0,
+          "percent_branches_covered_display": "100"
+        },
+        "missing_lines": [],
+        "missing_branches": []
+      },
+      "src/mcp_compat/domain/calls.py": {
+        "summary": {
+          "covered_lines": 25,
+          "num_statements": 25,
+          "percent_covered": 100.0,
+          "percent_covered_display": "100",
+          "missing_lines": 0,
+          "excluded_lines": 0,
+          "percent_statements_covered": 100.0,
+          "percent_statements_covered_display": "100",
+          "num_branches": 4,
+          "num_partial_branches": 0,
+          "covered_branches": 4,
+          "missing_branches": 0,
+          "percent_branches_covered": 100.0,
+          "percent_branches_covered_display": "100"
+        },
+        "missing_lines": [],
+        "missing_branches": []
+      },
+      "src/mcp_compat/domain/contracts.py": {
+        "summary": {
+          "covered_lines": 35,
+          "num_statements": 35,
+          "percent_covered": 100.0,
+          "percent_covered_display": "100",
+          "missing_lines": 0,
+          "excluded_lines": 0,
+          "percent_statements_covered": 100.0,
+          "percent_statements_covered_display": "100",
+          "num_branches": 6,
+          "num_partial_branches": 0,
+          "covered_branches": 6,
+          "missing_branches": 0,
+          "percent_branches_covered": 100.0,
+          "percent_branches_covered_display": "100"
+        },
+        "missing_lines": [],
+        "missing_branches": []
+      },
+      "src/mcp_compat/domain/decisions.py": {
+        "summary": {
+          "covered_lines": 14,
+          "num_statements": 14,
+          "percent_covered": 100.0,
+          "percent_covered_display": "100",
+          "missing_lines": 0,
+          "excluded_lines": 0,
+          "percent_statements_covered": 100.0,
+          "percent_statements_covered_display": "100",
+          "num_branches": 2,
+          "num_partial_branches": 0,
+          "covered_branches": 2,
+          "missing_branches": 0,
+          "percent_branches_covered": 100.0,
+          "percent_branches_covered_display": "100"
+        },
+        "missing_lines": [],
+        "missing_branches": []
+      },
+      "src/mcp_compat/domain/scenarios.py": {
+        "summary": {
+          "covered_lines": 16,
+          "num_statements": 16,
+          "percent_covered": 100.0,
+          "percent_covered_display": "100",
+          "missing_lines": 0,
+          "excluded_lines": 0,
+          "percent_statements_covered": 100.0,
+          "percent_statements_covered_display": "100",
+          "num_branches": 0,
+          "num_partial_branches": 0,
+          "covered_branches": 0,
+          "missing_branches": 0,
+          "percent_branches_covered": 100.0,
+          "percent_branches_covered_display": "100"
+        },
+        "missing_lines": [],
+        "missing_branches": []
+      },
+      "src/mcp_compat/experiments.py": {
+        "summary": {
+          "covered_lines": 192,
+          "num_statements": 192,
+          "percent_covered": 100.0,
+          "percent_covered_display": "100",
+          "missing_lines": 0,
+          "excluded_lines": 0,
+          "percent_statements_covered": 100.0,
+          "percent_statements_covered_display": "100",
+          "num_branches": 52,
+          "num_partial_branches": 0,
+          "covered_branches": 52,
+          "missing_branches": 0,
+          "percent_branches_covered": 100.0,
+          "percent_branches_covered_display": "100"
+        },
+        "missing_lines": [],
+        "missing_branches": []
+      },
+      "src/mcp_compat/hybrid.py": {
+        "summary": {
+          "covered_lines": 175,
+          "num_statements": 175,
+          "percent_covered": 100.0,
+          "percent_covered_display": "100",
+          "missing_lines": 0,
+          "excluded_lines": 3,
+          "percent_statements_covered": 100.0,
+          "percent_statements_covered_display": "100",
+          "num_branches": 94,
+          "num_partial_branches": 0,
+          "covered_branches": 94,
+          "missing_branches": 0,
+          "percent_branches_covered": 100.0,
+          "percent_branches_covered_display": "100"
+        },
+        "missing_lines": [],
+        "missing_branches": []
+      },
+      "src/mcp_compat/llm.py": {
+        "summary": {
+          "covered_lines": 117,
+          "num_statements": 117,
+          "percent_covered": 100.0,
+          "percent_covered_display": "100",
+          "missing_lines": 0,
+          "excluded_lines": 6,
+          "percent_statements_covered": 100.0,
+          "percent_statements_covered_display": "100",
+          "num_branches": 40,
+          "num_partial_branches": 0,
+          "covered_branches": 40,
+          "missing_branches": 0,
+          "percent_branches_covered": 100.0,
+          "percent_branches_covered_display": "100"
+        },
+        "missing_lines": [],
+        "missing_branches": []
+      },
+      "src/mcp_compat/mcp_integration.py": {
+        "summary": {
+          "covered_lines": 66,
+          "num_statements": 66,
+          "percent_covered": 100.0,
+          "percent_covered_display": "100",
+          "missing_lines": 0,
+          "excluded_lines": 0,
+          "percent_statements_covered": 100.0,
+          "percent_statements_covered_display": "100",
+          "num_branches": 14,
+          "num_partial_branches": 0,
+          "covered_branches": 14,
+          "missing_branches": 0,
+          "percent_branches_covered": 100.0,
+          "percent_branches_covered_display": "100"
+        },
+        "missing_lines": [],
+        "missing_branches": []
+      },
+      "src/mcp_compat/providers.py": {
+        "summary": {
+          "covered_lines": 85,
+          "num_statements": 85,
+          "percent_covered": 100.0,
+          "percent_covered_display": "100",
+          "missing_lines": 0,
+          "excluded_lines": 0,
+          "percent_statements_covered": 100.0,
+          "percent_statements_covered_display": "100",
+          "num_branches": 22,
+          "num_partial_branches": 0,
+          "covered_branches": 22,
+          "missing_branches": 0,
+          "percent_branches_covered": 100.0,
+          "percent_branches_covered_display": "100"
+        },
+        "missing_lines": [],
+        "missing_branches": []
+      },
+      "src/mcp_compat/recovery.py": {
+        "summary": {
+          "covered_lines": 60,
+          "num_statements": 60,
+          "percent_covered": 100.0,
+          "percent_covered_display": "100",
+          "missing_lines": 0,
+          "excluded_lines": 4,
+          "percent_statements_covered": 100.0,
+          "percent_statements_covered_display": "100",
+          "num_branches": 20,
+          "num_partial_branches": 0,
+          "covered_branches": 20,
+          "missing_branches": 0,
+          "percent_branches_covered": 100.0,
+          "percent_branches_covered_display": "100"
+        },
+        "missing_lines": [],
+        "missing_branches": []
+      },
+      "src/mcp_compat/schema/__init__.py": {
+        "summary": {
+          "covered_lines": 3,
+          "num_statements": 3,
+          "percent_covered": 100.0,
+          "percent_covered_display": "100",
+          "missing_lines": 0,
+          "excluded_lines": 0,
+          "percent_statements_covered": 100.0,
+          "percent_statements_covered_display": "100",
+          "num_branches": 0,
+          "num_partial_branches": 0,
+          "covered_branches": 0,
+          "missing_branches": 0,
+          "percent_branches_covered": 100.0,
+          "percent_branches_covered_display": "100"
+        },
+        "missing_lines": [],
+        "missing_branches": []
+      },
+      "src/mcp_compat/schema/canonical.py": {
+        "summary": {
+          "covered_lines": 6,
+          "num_statements": 6,
+          "percent_covered": 100.0,
+          "percent_covered_display": "100",
+          "missing_lines": 0,
+          "excluded_lines": 0,
+          "percent_statements_covered": 100.0,
+          "percent_statements_covered_display": "100",
+          "num_branches": 0,
+          "num_partial_branches": 0,
+          "covered_branches": 0,
+          "missing_branches": 0,
+          "percent_branches_covered": 100.0,
+          "percent_branches_covered_display": "100"
+        },
+        "missing_lines": [],
+        "missing_branches": []
+      },
+      "src/mcp_compat/schema/validator.py": {
+        "summary": {
+          "covered_lines": 13,
+          "num_statements": 13,
+          "percent_covered": 100.0,
+          "percent_covered_display": "100",
+          "missing_lines": 0,
+          "excluded_lines": 0,
+          "percent_statements_covered": 100.0,
+          "percent_statements_covered_display": "100",
+          "num_branches": 0,
+          "num_partial_branches": 0,
+          "covered_branches": 0,
+          "missing_branches": 0,
+          "percent_branches_covered": 100.0,
+          "percent_branches_covered_display": "100"
+        },
+        "missing_lines": [],
+        "missing_branches": []
+      }
+    }
+  },
+  "clean_wheel": {
+    "passed": 253,
+    "skipped": 2,
+    "failed": 0
+  },
+  "real_provider": {
+    "passed": 2,
+    "skipped": 0,
+    "failed": 0
+  },
+  "source_digest": "fdf205dd00300b0098259a513fb2f1305e3ec0fb7ef462cdd5029e1f3de647f5",
+  "benchmark_digest": "ef002e38917804b246bdd0d9a5c104160f89b76a4f15de34499c5dcb2b2ce8de",
+  "packages": {
+    "mcp_compat-0.1.0-py3-none-any.whl": "398c8653a2008c32b4880245dcdfaf88ad47e358c9fe24d8eadc42deb95d786f",
+    "mcp_compat-0.1.0.tar.gz": "fe2c8760ac787633723c6f58489ce4951199fdc7400d609f51f0c73f09b9056e"
+  },
+  "checks": {
+    "ruff": "PASS",
+    "mypy": "PASS",
+    "packaging": "PASS",
+    "wheel_source_match": "PASS",
+    "workflow_yaml": "PASS",
+    "offline_e2e": "PASS",
+    "stdio_sdk_client": "PASS",
+    "codeagent_to_mcp": "PASS"
+  },
+  "provider": {
+    "client": "GigaCode",
+    "display_model": "CodeAgent",
+    "model": "gigacode/GigaCode",
+    "cli_version": "26.10.76",
+    "internal_model_revision": null
+  },
+  "ci": {
+    "status": "NOT RUN",
+    "reason": "Feature branch not yet published"
+  }
+}

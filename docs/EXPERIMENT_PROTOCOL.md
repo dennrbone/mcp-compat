@@ -1,7 +1,7 @@
 # Experiment protocol — Research Spec 1.1
 
 Status: engineering implementation and offline demo only. H1–H4 are **NOT
-TESTED**. Nothing in this document establishes a benefit of GigaChat, Qwen or M1.
+TESTED**. Nothing in this document establishes a benefit of the selected real models or M1.
 The Research Spec, definitions, categories, C1–C8 and metric formulas are unchanged.
 
 ## Frozen inputs
@@ -24,7 +24,7 @@ is never supplied in its place. The shipped demo binds one quote/unit pair.
 
 ## Planned main study — NOT RUN
 
-1. Record immutable GigaChat model revision and Qwen weight digest, serving image,
+1. Record exact CodeAgent model identifiers, CLI versions, provider revisions when exposed,
    quantization, hardware, endpoint identity and authorized budget. Model aliases
    alone are insufficient version evidence. Credentials remain outside manifests.
 2. Freeze independent runtime bindings and mapper/provider configuration before
@@ -44,9 +44,10 @@ is never supplied in its place. The shipped demo binds one quote/unit pair.
 7. Do not tune prompts/rules on frozen test-oracle scores. Any later benchmark
    correction gets a new version, with the previous run retained and retired.
 
-No main inference, paid request, real smoke test or comparative model experiment
-has been performed. API access, weights/resources and billing authorization are
-still absent. Git push authorization does not authorize inference charges.
+No full main study or paid request has been performed. Current real CLI smoke
+and pilot evidence is recorded in AGENT_TESTS.md. Provider versions/quotas and
+broader independent runtime bindings still limit the full comparison. Git push
+authorization does not authorize inference charges.
 
 ## Metrics and denominators
 

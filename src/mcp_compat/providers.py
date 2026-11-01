@@ -1,14 +1,20 @@
-"""Opt-in GigaChat and loopback Qwen/vLLM transports; never log credentials."""
+"""Isolated official CLI transports; credentials stay in the installed clients."""
 
+import json
 import os
-from typing import Literal, Mapping, Self
-from urllib.parse import urlsplit
+from pathlib import Path
+import shutil
+import subprocess
+from tempfile import TemporaryDirectory, TemporaryFile
+from typing import Mapping, Self
 
-import httpx
-from pydantic import Field, SecretStr, model_validator
+from pydantic import model_validator
 
 from mcp_compat import canonical_json
 from mcp_compat.llm import LLMRequest, LLMResponse, StrictModel
+
+
+MODEL_ID = "gigacode/GigaCode"  # Installed CLI catalog display name: CodeAgent.
 
 
 class ProviderError(RuntimeError):
@@ -16,69 +22,90 @@ class ProviderError(RuntimeError):
 
 
 class ProviderConfig(StrictModel):
-    provider: Literal["gigachat", "qwen"]
-    endpoint: str
-    model: str = Field(min_length=1)
-    token: SecretStr | None = Field(default=None, repr=False)
-    allow_paid: bool = False
+    model: str = MODEL_ID
+    executable: str
 
     @model_validator(mode="after")
-    def validate_endpoint(self) -> Self:
-        url = urlsplit(self.endpoint)
-        if url.username or url.password or url.query or url.fragment or not self.model.strip():
-            raise ValueError("invalid provider configuration")
-        if self.provider == "qwen":
-            if url.hostname not in ("127.0.0.1", "localhost", "::1") or url.scheme not in ("http", "https") or url.path != "/v1/chat/completions":
-                raise ValueError("Qwen requires a local vLLM chat endpoint")
-        elif url.scheme != "https" or (url.hostname, url.path) not in (
-            ("api.giga.chat", "/v1/chat/completions"),
-            ("gigachat.devices.sberbank.ru", "/api/v1/chat/completions"),
-        ) or self.token is None or not self.token.get_secret_value().strip():
-            raise ValueError("GigaChat requires a documented TLS endpoint and access token")
+    def validate_selection(self) -> Self:
+        if self.model != MODEL_ID:
+            raise ValueError("the installed CodeAgent model is required")
+        path = Path(self.executable)
+        if not path.is_absolute() or not path.is_file() or not os.access(path, os.X_OK):
+            raise ValueError("an installed executable with an absolute path is required")
         return self
 
 
-def from_env(provider: Literal["gigachat", "qwen"], *, allow_paid: bool = False,
-             environ: Mapping[str, str] | None = None) -> ProviderConfig:
+def from_env(*, environ: Mapping[str, str] | None = None) -> ProviderConfig:
     env = os.environ if environ is None else environ
-    prefix = provider.upper()
-    token = env.get(f"{prefix}_ACCESS_TOKEN")
-    return ProviderConfig(provider=provider, endpoint=env[f"{prefix}_ENDPOINT"],
-        model=env[f"{prefix}_MODEL"], token=None if token is None else SecretStr(token), allow_paid=allow_paid)
+    executable = env.get("GIGACODE_BIN") or shutil.which("gigacode", path=env.get("PATH", ""))
+    if executable is None:
+        raise ValueError("set GIGACODE_BIN to the installed CLI")
+    return ProviderConfig(executable=executable)
 
 
-class ChatProvider:
-    def __init__(self, config: ProviderConfig, http: httpx.Client | None = None):
+def _parse_events(stdout: str, model: str) -> LLMResponse:
+    # The installed extension CLI also emits non-JSON startup notices to stdout.
+    events = [json.loads(line) for line in stdout.splitlines() if line.startswith("{")]
+    if any(e["type"] not in ("step_start", "text", "reasoning", "step_finish") for e in events):
+        raise ProviderError("provider_error_or_tool_event")
+    starts = [e for e in events if e["type"] == "step_start"]
+    finishes = [e["part"] for e in events if e["type"] == "step_finish"]
+    if len(starts) != 1 or len(finishes) != 1 or finishes[0]["reason"] != "stop":
+        raise ProviderError("provider_incomplete_or_multiple_steps")
+    text = "".join(e["part"]["text"] for e in events if e["type"] == "text")
+    if not text.strip():
+        raise ProviderError("provider_empty_response")
+    finish = finishes[0]
+    tokens = finish.get("tokens", {})
+    cache = tokens.get("cache", {})
+    input_tokens = None if "input" not in tokens else tokens["input"] + cache.get("read", 0) + cache.get("write", 0)
+    output_tokens = None if "output" not in tokens else tokens["output"] + tokens.get("reasoning", 0)
+    if finish.get("cost", 0) != 0:
+        raise ProviderError("provider_nonzero_reported_cost")
+    return LLMResponse(text=text, model=model, input_tokens=input_tokens,
+                       output_tokens=output_tokens, cost=finish.get("cost"))
+
+
+class AgentProvider:
+    def __init__(self, config: ProviderConfig):
         self.config = config
-        self.http = http or httpx.Client(follow_redirects=False, trust_env=False)
-
-    def close(self) -> None:
-        self.http.close()
 
     def complete(self, request: LLMRequest, timeout: float) -> LLMResponse:
+        if not 0 < timeout <= 120:
+            raise ValueError("invalid provider timeout")
         config = self.config
-        if config.provider == "gigachat" and not config.allow_paid:
-            raise PermissionError("paid provider calls require explicit authorization")
-        headers = {"Content-Type": "application/json"}
-        if config.token is not None:
-            headers["Authorization"] = f"Bearer {config.token.get_secret_value()}"
-        payload = dict(model=config.model, temperature=0, max_tokens=request.max_tokens,
-            messages=[dict(role="system", content=request.system),
-                dict(role="user", content=canonical_json(dict(data=request.data, response_schema=request.response_schema)))])
-        if config.provider == "qwen":
-            payload["response_format"] = {"type": "json_object"}
-        try:
-            with self.http.stream("POST", config.endpoint, json=payload, headers=headers, timeout=timeout, follow_redirects=False) as response:
-                response.raise_for_status()
-                content = bytearray()
-                for chunk in response.iter_bytes():
-                    content.extend(chunk)
-                    if len(content) > 1048576:
-                        raise ValueError("response limit")
-                data = httpx.Response(200, content=bytes(content)).json()
-            usage = data.get("usage", {})
-            return LLMResponse(text=data["choices"][0]["message"]["content"],
-                model=data.get("model", config.model), input_tokens=usage.get("prompt_tokens"),
-                output_tokens=usage.get("completion_tokens"))
-        except (httpx.HTTPError, ValueError, KeyError, TypeError, IndexError):
-            raise ProviderError("provider_unavailable_or_invalid") from None
+        prefix = "KILO"
+        with TemporaryDirectory(prefix="mcp-compat-agent-") as directory, TemporaryFile() as stdout:
+            root = Path(directory)
+            (root / "config").mkdir()
+            (root / "extra").mkdir()
+            agent = dict(mode="primary", prompt=request.system, temperature=0, steps=1, permission="deny")
+            settings = dict(model=config.model, small_model=config.model, autoupdate=False, snapshot=False,
+                share="disabled", enabled_providers=["gigacode"], permission="deny", instructions=[],
+                plugin=[], mcp={}, compaction=dict(auto=False, prune=False),
+                agent=dict(mcp_mapper=agent, title=dict(disable=True), summary=dict(disable=True), compaction=dict(disable=True)))
+            env = os.environ.copy()
+            env.update(XDG_CONFIG_HOME=str(root / "config"), NODE_TLS_REJECT_UNAUTHORIZED="1")
+            env[f"{prefix}_CONFIG_DIR"] = str(root / "extra")
+            env[f"{prefix}_CONFIG_CONTENT"] = canonical_json(settings)
+            env[f"{prefix}_EXPERIMENTAL_OUTPUT_TOKEN_MAX"] = str(request.max_tokens)
+            env[f"{prefix}_SESSION_RETRY_LIMIT"] = "0"
+            for flag in ("DISABLE_AUTOUPDATE", "DISABLE_DEFAULT_PLUGINS", "DISABLE_CLAUDE_CODE",
+                         "DISABLE_EXTERNAL_SKILLS", "DISABLE_PROJECT_CONFIG", "DISABLE_LSP_DOWNLOAD", "DISABLE_AUTOCOMPACT"):
+                env[f"{prefix}_{flag}"] = "1"
+            payload = canonical_json(dict(data=request.data, response_schema=request.response_schema))
+            command = [config.executable, "run", "--pure", "--log-level", "ERROR", "--model", config.model,
+                       "--agent", "mcp_mapper", "--format", "json", "--title", "mcp-compat", request.system + "\n" + payload]
+            try:
+                result = subprocess.run(command, cwd=root, env=env, stdin=subprocess.DEVNULL,
+                    stdout=stdout, stderr=subprocess.DEVNULL, timeout=timeout, check=False)
+                if result.returncode:
+                    raise ProviderError("provider_cli_failed")
+                if stdout.tell() > 1048576:
+                    raise ProviderError("provider_output_limit")
+                stdout.seek(0)
+                return _parse_events(stdout.read().decode("utf-8"), config.model)
+            except subprocess.TimeoutExpired:
+                raise ProviderError("provider_timeout") from None
+            except (OSError, ValueError, KeyError, TypeError, IndexError, AttributeError):
+                raise ProviderError("provider_unavailable_or_invalid") from None

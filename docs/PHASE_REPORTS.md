@@ -67,7 +67,7 @@ PASS. Phase 3/4 push PASS. Master task and .vscode remain untracked.
 - Official API/deployment documentation checked; versions/credentials are
   explicit configuration. Redirects blocked; credential-bearing errors sanitized.
 - Branch `phase/06-llm-providers`, base Phase 5 `df623c6`; Phase 5 push PASS.
-- Engineering adapter/tests COMPLETE; real GigaChat/Qwen smoke and model-quality
+- Engineering adapter/tests COMPLETE; real provider smoke in the original configuration and model-quality
   experiment **NOT RUN** (no credentials/weights/paid authorization). Phase 6
   overall **PARTIAL**; this does not block independent offline phases.
 
@@ -109,7 +109,7 @@ PASS. Phase 3/4 push PASS. Master task and .vscode remain untracked.
 - Branch `phase/09-experiments`, base Phase 8 `f66141e`; Phase 8 push PASS.
 - Engineering COMPLETE. Main two-provider study/repeated real inference NOT RUN;
   phase overall PARTIAL pending resources and independently bound runtimes for
-  the full corpus. No fake run is presented as a result about GigaChat or Qwen.
+  the full corpus. No fake run is presented as a result about real models.
 
 ## Phase 10 — analysis, article and final engineering audit
 
@@ -143,3 +143,21 @@ preserve complete stacked ancestry; main stays `23a4846`. Final code run
 skipped. Exact commits/runs and initial failures are retained in CI_FOLLOWUP.md
 and validation/ci.json. Final installed-wheel gate also passed **233 + 2 skips,
 100% statements/branches**. No missing lines or branches; no failing/xfail tests.
+
+## Phase 11 — GigaCode CodeAgent and portable MCP connection
+
+- Branch `phase/11-agent-provider-tests`, based on Phase 10 `e10c7729`.
+- Replaced the former transports with installed GigaCode CLI 26.10.76, CodeAgent
+  (`gigacode/GigaCode`). Removed retired provider mentions from current files;
+  research definitions stay fixed, model-selection amendment is Spec 1.2.
+- Kept the generic LLMClient injection, added standard MCP stdio serving and a
+  runnable provider-independent decision endpoint. No global agent config edited.
+- Full source and installed-wheel gates: **253 passed, 2 opt-in skips; 100%
+  statements/branches** (1524 / 560). Ruff PASS; mypy PASS (20 modules); dependency
+  consistency, sdist/wheel/source equality, workflow YAML and offline e2e PASS.
+- Actual CodeAgent checks: **2 real pytest cases PASS**, including the agent
+  invoking our MCP tool. Earlier non-JSON output failed; prompt/harness changes
+  are explicit (`mapping-1.1`). No fenced response is silently accepted.
+- Stratified real pilot IN PROGRESS; final outcome and limitations are recorded
+  in AGENT_TESTS.md. Main repeated two-family study remains NOT RUN.
+- Task/prompt Markdown remains local/untracked. No merge into main.

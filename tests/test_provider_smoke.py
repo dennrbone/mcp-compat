@@ -1,30 +1,68 @@
-"""Real inference is opt-in and is never part of the offline quality evidence."""
+"""Real CodeAgent inference is opt-in; enabled failures must fail the test."""
 
 import os
 
 import pytest
 
+from mcp_compat.agent_checks import PROBE_PROMPT
 from mcp_compat.llm import LLMRequest, Proposal
-from mcp_compat.providers import ChatProvider, from_env
+from mcp_compat.providers import AgentProvider, from_env
 
 
 @pytest.mark.real_provider
-@pytest.mark.parametrize('provider',['qwen','gigachat'])
-def test_real_provider_smoke(provider):
-    if os.environ.get('MCP_COMPAT_RUN_PROVIDER_SMOKE') != '1' or os.environ.get('MCP_COMPAT_SMOKE_PROVIDER') != provider:
-        pytest.skip('real provider not explicitly enabled')
-    paid = os.environ.get('MCP_COMPAT_ALLOW_PAID') == '1'
-    if provider == 'gigachat' and not paid:
-        pytest.skip('paid inference not authorized')
-    required = [f'{provider.upper()}_ENDPOINT',f'{provider.upper()}_MODEL']
-    if provider == 'gigachat':
-        required.append('GIGACHAT_ACCESS_TOKEN')
-    if any(not os.environ.get(key) for key in required):
-        pytest.skip('required provider configuration missing')
-    config = from_env(provider,allow_paid=paid)
-    client = ChatProvider(config)
-    try:
-        response = client.complete(LLMRequest(system='Return only a JSON object with action ABSTAIN.',data={},response_schema=Proposal.model_json_schema()),20)
-        assert Proposal.model_validate_json(response.text).action == 'ABSTAIN'
-    finally:
-        client.close()
+def test_real_provider_smoke():
+    if os.environ.get('MCP_COMPAT_RUN_PROVIDER_SMOKE') != '1':
+        pytest.skip('real CodeAgent inference not explicitly enabled')
+    response=AgentProvider(from_env()).complete(LLMRequest(system=PROBE_PROMPT,
+        data={},response_schema=Proposal.model_json_schema()),120)
+    assert Proposal.model_validate_json(response.text).action == 'ABSTAIN'
+
+
+@pytest.mark.real_provider
+def test_codeagent_calls_project_mcp(tmp_path):
+    if os.environ.get('MCP_COMPAT_RUN_PROVIDER_SMOKE') != '1':
+        pytest.skip('real CodeAgent inference not explicitly enabled')
+    import json
+    from pathlib import Path
+    import subprocess
+    import sys
+    from mcp_compat import ToolCall, ToolContract
+    from mcp_compat.benchmark import RecoveryInput
+
+    c=ToolContract(name='echo',input_schema={'type':'object','properties':{'x':{'type':'integer'}},'required':['x']})
+    expected=RecoveryInput(old_contract=c,new_contract=c,old_call=ToolCall(tool_name='echo',arguments={'x':3}))
+    config=from_env()
+    (tmp_path/'config').mkdir()
+    (tmp_path/'extra').mkdir()
+    entry=Path(__file__).resolve().parents[1]/'examples/mcp_server.py'
+    permissions={'*':'deny','compat_check_migration':'allow'}
+    settings=dict(model=config.model,small_model=config.model,autoupdate=False,snapshot=False,share='disabled',
+        permission=permissions,enabled_providers=['gigacode'],instructions=[],plugin=[],compaction=dict(auto=False,prune=False),
+        mcp=dict(compat=dict(type='local',command=[sys.executable,str(entry)],enabled=True)),
+        agent=dict(mcp_probe=dict(mode='primary',prompt='Call the specified MCP tool exactly once. Never use other tools.',
+            temperature=0,steps=2,permission=permissions),title=dict(disable=True),summary=dict(disable=True),compaction=dict(disable=True)))
+    env={**os.environ,'XDG_CONFIG_HOME':str(tmp_path/'config'),'NODE_TLS_REJECT_UNAUTHORIZED':'1',
+        'KILO_CONFIG_DIR':str(tmp_path/'extra'),'KILO_CONFIG_CONTENT':json.dumps(settings),
+        'KILO_EXPERIMENTAL_OUTPUT_TOKEN_MAX':'2048','KILO_SESSION_RETRY_LIMIT':'0'}
+    for flag in ('DISABLE_DEFAULT_PLUGINS','DISABLE_CLAUDE_CODE','DISABLE_EXTERNAL_SKILLS','DISABLE_PROJECT_CONFIG','DISABLE_LSP_DOWNLOAD','DISABLE_AUTOCOMPACT'):
+        env['KILO_'+flag]='1'
+    prompt='Call compat_check_migration exactly once with this JSON input. Then report its actual action. Do not execute any business tool.\n'+expected.model_dump_json()
+    result=subprocess.run([config.executable,'run','--pure','--log-level','ERROR','--model',config.model,
+        '--agent','mcp_probe','--format','json','--title','mcp-compat-stdio-smoke',prompt],cwd=tmp_path,env=env,
+        capture_output=True,text=True,timeout=120,check=False)
+    events=[json.loads(line) for line in result.stdout.splitlines() if line.startswith('{')]
+    evidence=dict(scope='codeagent_to_project_mcp',model=config.model,returncode=result.returncode,events=events)
+    evidence_path=os.environ.get('MCP_COMPAT_MCP_SMOKE_EVIDENCE')
+    if evidence_path:
+        with Path(evidence_path).open('x') as handle:
+            json.dump(evidence,handle,ensure_ascii=False,indent=2)
+    assert result.returncode == 0
+    assert not any(e['type']=='error' for e in events)
+    calls=[e['part'] for e in events if e['type']=='tool_use']
+    assert len(calls) == 1 and calls[0]['tool'] == 'compat_check_migration'
+    state=calls[0]['state']
+    assert state['status'] == 'completed'
+    assert RecoveryInput.model_validate(state['input']) == expected
+    assert 'ABSTAIN' in state['output']
+    finishes=[e['part'] for e in events if e['type']=='step_finish']
+    assert finishes and all(p.get('cost')==0 for p in finishes)

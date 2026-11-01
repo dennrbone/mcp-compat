@@ -110,3 +110,48 @@ def test_fixture_configuration_errors():
         make_server(contract().model_copy(update={'name':'bad name'}),echo)
     with pytest.raises(ValueError,match='positive'):
         make_proxy(contract(),contract(),None,NoRecovery(),timeout=0)
+
+
+def test_stdio_server_lifecycle(monkeypatch):
+    from contextlib import asynccontextmanager
+    from types import SimpleNamespace
+    from mcp_compat.mcp_integration import serve_stdio
+
+    calls=[]
+    @asynccontextmanager
+    async def streams():
+        yield 'reader','writer'
+    async def run(*args):
+        calls.append(args)
+    monkeypatch.setattr('mcp_compat.mcp_integration.stdio_server',streams)
+    server=SimpleNamespace(run=run,create_initialization_options=lambda:'options')
+    anyio.run(serve_stdio,server)
+    assert calls == [('reader','writer','options')]
+
+
+def test_model_independent_stdio_example():
+    from pathlib import Path
+    import sys
+    from mcp import ClientSession, StdioServerParameters
+    from mcp.client.stdio import stdio_client
+    from mcp_compat.benchmark import RecoveryInput
+    from mcp_compat import ToolCall
+
+    async def run():
+        entry=Path(__file__).resolve().parents[1]/'examples/mcp_server.py'
+        parameters=StdioServerParameters(command=sys.executable,args=[str(entry)])
+        with anyio.fail_after(10):
+            async with stdio_client(parameters) as streams:
+                async with ClientSession(*streams) as client:
+                    await client.initialize()
+                    await client.send_ping()
+                    assert [t.name for t in (await client.list_tools()).tools] == ['check_migration']
+                    c=contract()
+                    request=RecoveryInput(old_contract=c,new_contract=c,old_call=ToolCall(tool_name='echo',arguments={'x':3}))
+                    result=await client.call_tool('check_migration',request.model_dump(mode='json'))
+                    assert not result.isError
+                    assert result.structuredContent['action'] == 'ABSTAIN'
+                    assert 'verifier_unavailable' in result.structuredContent['reasons']
+                    invalid=await client.call_tool('check_migration',{})
+                    assert invalid.isError
+    anyio.run(run)

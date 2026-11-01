@@ -4,9 +4,9 @@ MCP-Compat is a research project about safely restoring LLM-agent compatibility 
 
 The engineering prototype includes typed contracts/calls, conservative C1–C8
 diffs, a frozen 2160-case synthetic benchmark, B0–B3, provider-neutral mapping,
-opt-in GigaChat/local Qwen transports, verified adapters, an official-SDK local
-MCP proxy, resumable experiments, metrics and statistical artifacts. Real model
-experiments have **not run**. See [actual status](docs/RESULTS_STATUS.md),
+isolated GigaCode CodeAgent CLI transport and a generic model interface, verified adapters, an official-SDK local
+MCP proxy, resumable experiments, metrics and statistical artifacts. The full scientific study has **not run**. Real CLI checks are recorded in
+[agent test results](docs/AGENT_TESTS.md). See [actual status](docs/RESULTS_STATUS.md),
 [phase reports](docs/PHASE_REPORTS.md) and [reproduction commands](docs/REPRODUCIBILITY.md).
 
 ## Setup
@@ -64,6 +64,8 @@ pytest -q --cov=mcp_compat --cov-branch --cov-report=term-missing --cov-report=x
 All source modules retain the Phase 2 requirement of 100% statement and branch
 coverage. GitHub Actions includes tests, lint, types, packaging and offline e2e.
 Real provider smoke tests are opt-in and otherwise report SKIP / NOT RUN.
+The installed GigaCode uses CodeAgent; other models and agents connect through
+the generic model interface and standard MCP. See [provider setup and test commands](docs/PROVIDERS.md).
 
 Phase 3–10 development uses separate stacked branches; no merge into main has
 been performed. Review dependencies are listed in docs/IMPLEMENTATION_PLAN.md.

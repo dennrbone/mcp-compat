@@ -152,7 +152,8 @@ def artifacts(directory: Path, output: Path, *, seed: int = 42, draws: int = 200
         for field in ("latency","calls","input_tokens","output_tokens","cost"):
             left,right = [getattr(r,field) for r in a],[getattr(r,field) for r in b]
             comparisons[baseline]["continuous"][field] = dict(status="unknown_measurements",pvalue=None) if any(v is None for v in left+right) else wilcoxon_paired(left,right)
-    label = "OFFLINE DEMO ONLY — no model inference" if manifest["config"]["kind"] == "offline_demo" else "Experiment results — assumptions require review"
+    labels = {"offline_demo":"OFFLINE DEMO ONLY — no model inference", "pilot":"REAL PILOT — one repeat; limited runtime bindings"}
+    label = labels.get(manifest["config"]["kind"], "Experiment results — assumptions require review")
     result = dict(label=label,seed=seed,draws=draws,bootstrap_unit="base_tool",summary=grouped,
                   intervals=intervals,comparisons=comparisons,
                   limitations=["Scenario pairs within a base tool are dependent; unadjusted McNemar is diagnostic.",

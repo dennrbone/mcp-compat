@@ -23,7 +23,7 @@ from mcp_compat.recovery import LLMBaseline, NoRecovery, RuleBased, Strategy, ab
 
 
 class RunConfig(StrictModel):
-    kind: Literal["offline_demo", "main"]
+    kind: Literal["offline_demo", "pilot", "main"]
     seed: int = 42
     benchmark_digest: str
     repeats: int = Field(default=1, ge=1)
@@ -105,7 +105,7 @@ def run(config: RunConfig, strategies: list[Strategy], benchmark: Path, output: 
     names = [s.name for s in strategies]
     if not names or len(names) != len(set(names)) or any(not re.fullmatch(r"[A-Za-z0-9_-]+",n) for n in names):
         raise ValueError("invalid or duplicate methods")
-    if config.kind == "main" and not config.model_versions:
+    if config.kind != "offline_demo" and not config.model_versions:
         raise ValueError("main experiment requires explicit model versions")
     benchmark_manifest = json.loads((benchmark/"manifest.json").read_bytes())
     if config.kind == "main" and benchmark_manifest["version"] != VERSION:
@@ -217,7 +217,7 @@ class OfflineClient:
                            input_tokens=0,output_tokens=0,cost=0.)
 
 
-def offline_methods() -> list[Strategy]:
+def recovery_methods(mapper: Mapper) -> list[Strategy]:
     # Independently authored fixture implementation, bound only to this quote/unit pair.
     old = ToolContract(name="commerce_quote",description="Synthetic commerce quote; isolated state only.",
         input_schema=dict(type="object",properties=dict(value={"type":["integer","number","null"],"semantic_unit":"RUB"},target={"type":"string"},
@@ -231,10 +231,13 @@ def offline_methods() -> list[Strategy]:
     def new_impl(a,s):
         return dict(value=a["value"]/100,target=a["target"],mode=a["mode"],notify=a["notify"],note=a.get("note",""),date=a.get("date",""),duration=a['duration'])
     verifier = SandboxVerifier(old,new,old_impl,new_impl)
-    mapper = Mapper(OfflineClient(),attempts=1)
     ablations: list[Literal["A1","A2","A3","A4"]] = ["A1","A2","A3","A4"]
     return [NoRecovery(),LLMBaseline("B1",mapper),LLMBaseline("B2",mapper),RuleBased(),Hybrid(mapper,verifier),
             *[Hybrid(mapper,verifier,ablation=a) for a in ablations]]
+
+
+def offline_methods() -> list[Strategy]:
+    return recovery_methods(Mapper(OfflineClient(),attempts=1))
 
 
 def demo_cli(argv: list[str] | None = None) -> None:

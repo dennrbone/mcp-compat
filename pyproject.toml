@@ -17,6 +17,7 @@ dependencies = [
 [project.scripts]
 mcp-compat-demo = "mcp_compat.experiments:demo_cli"
 mcp-compat-analyze = "mcp_compat.analysis:analysis_cli"
+mcp-compat-agents = "mcp_compat.agent_checks:agent_cli"
 
 [project.optional-dependencies]
 dev = [

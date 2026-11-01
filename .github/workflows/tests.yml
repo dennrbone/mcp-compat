@@ -11,16 +11,7 @@ on:
   workflow_dispatch:
     inputs:
       real_provider_smoke:
-        description: "Run configured real provider smoke (may incur billing)"
-        type: boolean
-        default: false
-      provider:
-        description: "Provider"
-        type: choice
-        options: [qwen, gigachat]
-        default: qwen
-      allow_paid:
-        description: "Explicit authorization for GigaChat billing"
+        description: "Run selected CLI smoke on an authenticated self-hosted runner"
         type: boolean
         default: false
 
@@ -47,7 +38,7 @@ jobs:
           --cov-report=term-missing
           --cov-report=xml
           --cov-fail-under=100
-      - run: ruff check src tests
+      - run: ruff check src tests examples
       - run: mypy src
       - run: python -m build
 
@@ -67,7 +58,7 @@ jobs:
 
   provider-smoke:
     if: github.event_name == 'workflow_dispatch' && inputs.real_provider_smoke
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - uses: actions/checkout@v5.0.0
         with:
@@ -80,10 +71,4 @@ jobs:
       - run: python -m pytest -q -rs -m real_provider tests/test_provider_smoke.py
         env:
           MCP_COMPAT_RUN_PROVIDER_SMOKE: "1"
-          MCP_COMPAT_SMOKE_PROVIDER: ${{ inputs.provider }}
-          MCP_COMPAT_ALLOW_PAID: ${{ inputs.allow_paid && '1' || '0' }}
-          GIGACHAT_ENDPOINT: ${{ vars.GIGACHAT_ENDPOINT }}
-          GIGACHAT_MODEL: ${{ vars.GIGACHAT_MODEL }}
-          GIGACHAT_ACCESS_TOKEN: ${{ secrets.GIGACHAT_ACCESS_TOKEN }}
-          QWEN_ENDPOINT: ${{ vars.QWEN_ENDPOINT }}
-          QWEN_MODEL: ${{ vars.QWEN_MODEL }}
+          GIGACODE_BIN: ${{ vars.GIGACODE_BIN }}

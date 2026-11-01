@@ -12,7 +12,7 @@ Research Spec is immutable during this work. No merge into main is authorized.
 | 48 tools, 1920+240 cases, 8 domains (§13–16) | 3 | benchmark.py | test_benchmark.py | diversity, valid calls, deterministic freeze, integrity, isolated oracle | COMPLETE (synthetic scope) |
 | B0/B3 (§17) | 4 | recovery.py | test_recovery.py | comparable traces; no semantic guesses | COMPLETE |
 | Model-independent mapping (§18) | 5 | llm.py | test_llm.py | strict output, bounded retries, offline injection tests | COMPLETE |
-| B1/B2, GigaChat/Qwen (§17–18) | 6 | providers.py, recovery.py | test_providers.py | documented APIs; mock integration; real opt-in only | PARTIAL: engineering complete, real smoke NOT RUN |
+| B1/B2, CLI providers (CodeAgent) (§17–18) | 6 | providers.py, recovery.py | test_providers.py | documented APIs; mock integration; real opt-in only | PARTIAL: CLI engineering complete; current real checks in AGENT_TESTS.md |
 | M1, independent verification, gate (§10) | 7 | hybrid.py | test_hybrid.py | schema-valid semantic errors blocked; no oracle access | COMPLETE (injected trusted runtimes) |
 | MCP SDK proxy (§25,27) | 8 | mcp_integration.py | test_mcp.py | local handshake/discovery/calls/errors/timeout | COMPLETE (local in-memory) |
 | Frozen paired runner, metrics, A1–A4 (§19–23) | 9 | experiments.py | test_experiments.py | offline e2e, resumability, undefined denominators explicit | PARTIAL: engineering/demo complete, main study NOT RUN |

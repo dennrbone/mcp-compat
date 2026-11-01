@@ -9,6 +9,7 @@ from typing import Any, Awaitable, Callable
 import anyio
 from mcp import ClientSession, types
 from mcp.server import Server
+from mcp.server.stdio import stdio_server
 
 from mcp_compat import MigrationDecision, ToolCall, ToolContract, canonical_json
 from mcp_compat.benchmark import RecoveryInput
@@ -16,6 +17,12 @@ from mcp_compat.recovery import Strategy
 from mcp_compat.schema import validate_instance
 
 Implementation = Callable[[dict, dict], Awaitable[dict | types.CallToolResult]]
+
+
+async def serve_stdio(server: Server) -> None:
+    """Expose an existing server to any standard MCP stdio client."""
+    async with stdio_server() as (read_stream, write_stream):
+        await server.run(read_stream, write_stream, server.create_initialization_options())
 
 
 def _error(reason: str, decision: MigrationDecision | None = None) -> types.CallToolResult:

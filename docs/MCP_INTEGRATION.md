@@ -19,3 +19,12 @@ Run `.venv/bin/python -m pytest -q tests/test_mcp.py` for actual SDK protocol
 handshake/ping, discovery, schemas, v1/v2 calls, verified RUB→kopecks compatibility,
 bad payloads/names/results, abstention, server errors, timeouts and disconnects.
 These tests do not contact an external MCP server or use user data.
+
+## Standard stdio clients
+
+`serve_stdio(server)` runs an existing SDK Server through the official stdio
+transport. The runnable `examples/mcp_server.py` exposes a model-independent
+migration-decision endpoint. A real subprocess/client test verifies handshake,
+ping, discovery, structured abstention and invalid input. The additional opt-in
+CodeAgent smoke verifies that the installed agent actually calls that MCP tool.
+See CLIENT_INTEGRATION.md for model injection and agent connection instructions.

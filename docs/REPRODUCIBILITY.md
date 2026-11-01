@@ -11,7 +11,7 @@ python3.11 -m venv .venv
 .venv/bin/python -m pip install --require-hashes -r requirements.lock
 .venv/bin/python -m pip install --no-deps -e .
 .venv/bin/python -m pytest -q -rs --cov=mcp_compat --cov-branch --cov-report=term-missing --cov-report=xml --cov-fail-under=100
-.venv/bin/ruff check src tests
+.venv/bin/ruff check src tests examples
 .venv/bin/mypy src
 .venv/bin/python -m build
 ```
@@ -56,22 +56,20 @@ Changing source/config/dependencies rejects resume; use a new directory. Duratio
 and UTC timestamps are measurements, so re-running does not promise identical
 latency bytes. Dataset regeneration does promise identical bytes.
 
-## Real providers — opt-in, NOT RUN
+## Real providers — explicitly enabled
 
-Configuration is documented in PROVIDERS.md. Only a deliberate smoke opt-in can
-contact a configured provider. GigaChat additionally requires explicit billing
-authorization; no such authorization was given in this implementation session.
-The `real_provider` tests otherwise skip with a reason. Qwen requires an existing
-loopback vLLM server and pinned weights. GitHub-hosted runners have no such server
-by default; the manual smoke workflow is not proof of local model availability.
+See [PROVIDERS.md](PROVIDERS.md) and [AGENT_TESTS.md](AGENT_TESTS.md) for the
+current CodeAgent selection, installed versions and actual results.
+Default CI/offline tests skip both real-model cases. A skip is NOT RUN.
+An explicitly selected case fails on missing installation, credentials, quota,
+timeout or invalid JSON; configuration failures are never converted into a pass.
 
-The Python API `experiments.run(RunConfig(...), strategies, frozen_path, output)`
-supports main experiments with injected ChatProvider/Mapper and independent
-runtime verification. Set explicit actual model identifiers and trusted binding
-versions before any authorized study. No runtime binder may read oracle files.
+Use the installed CLI credential store. Do not put tokens in repository files.
+The real pilot uses the active frozen benchmark and its integrity checks, one
+preselected case per available family/category stratum, plus the independently
+bound quote/unit fixture, and B0–B3/M1/A1–A4. It has one repeat and incomplete
+runtime coverage. Its descriptive results do not replace the full study.
 
-CI uses verified Node.js 24 actions:
-[checkout v5.0.0](https://github.com/actions/checkout/releases/tag/v5.0.0) and
-[setup-python v6.0.0](https://github.com/actions/setup-python/releases/tag/v6.0.0).
-Offline tests/coverage/types/lint/build and e2e are separate from manually opted-in
-provider smoke. A skipped smoke test is **NOT RUN**, even if its job exits zero.
+Manual provider smoke in GitHub Actions requires a configured self-hosted runner
+with the selected official CLI and its local authentication. Default checks run
+on GitHub-hosted runners and make no model calls.

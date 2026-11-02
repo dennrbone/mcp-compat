@@ -76,3 +76,21 @@ revalidation and source-specific results are in [IMPROVEMENTS.md](IMPROVEMENTS.m
 Manual provider smoke in GitHub Actions requires a configured self-hosted runner
 with the selected official CLI and its local authentication. Default checks run
 on GitHub-hosted runners and make no model calls.
+
+## Full CodeAgent benchmark
+
+```bash
+GIGACODE_BIN=/absolute/path/to/gigacode mcp-compat-agents --full --workers 8 --output experiments/codeagent-full
+# Resume without rerunning or replacing completed decisions:
+GIGACODE_BIN=/absolute/path/to/gigacode mcp-compat-agents --full --workers 8 --resume --output experiments/codeagent-full
+mcp-compat-analyze --run experiments/codeagent-full/main --output experiments/codeagent-full/analysis --seed 42 --draws 2000
+```
+
+The run contains 2160 cases × nine methods, one repeat. Every required mapping
+uses the real installed client; no fake response or response cache is substituted.
+Deterministic methods and verified identity candidates may use no model call.
+Full input-call recovery and outcome equivalence are tested; output-schema
+adaptation is not a separate benchmark in this dataset. Generation is unchanged.
+Run source, dependencies, worker count and model/CLI aliases are fingerprinted;
+an immutable backend model revision is not available. Do not mix these loaded
+latencies with serial pilot latency or label an incomplete run as completed.

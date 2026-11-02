@@ -223,3 +223,41 @@ def test_runner_counts_every_preview_attempt(tmp_path,frozen):
     config=RunConfig(kind='offline_demo',benchmark_digest=digest,scenario_ids=[cases[0].scenario_id])
     record=run(config,[Previewed()],directory,tmp_path/'out')[0]
     assert record.validation_stages==2 and record.calls==0
+
+
+def test_parallel_run_is_bounded_paired_and_resumable(tmp_path,frozen):
+    from threading import Barrier, Lock
+    directory,digest,_=frozen
+    barrier,lock=Barrier(2),Lock()
+    class Concurrent:
+        name='PARALLEL'
+        active=0
+        peak=0
+        calls=0
+        def recover(self,request):
+            with lock:
+                self.active+=1
+                self.peak=max(self.peak,self.active)
+                self.calls+=1
+            barrier.wait(timeout=5)
+            barrier.wait(timeout=5)
+            with lock:
+                self.active-=1
+            return NoRecovery().recover(request)
+    method=Concurrent()
+    config=RunConfig(kind='offline_demo',benchmark_digest=digest,workers=2)
+    output=tmp_path/'parallel'
+    records=run(config,[method],directory,output)
+    assert method.peak==2 and method.calls==4 and len(records)==4
+    assert len({r.scenario_id for r in records})==4
+    before={p.name:p.read_bytes() for p in output.glob('*.json')}
+    assert run(config,[method],directory,output)==records and method.calls==4
+    assert before=={p.name:p.read_bytes() for p in output.glob('*.json')}
+    with pytest.raises(ValueError,match='configuration mismatch'):
+        run(config.model_copy(update={'workers':1}),[method],directory,output)
+
+
+@pytest.mark.parametrize('workers',[0,9])
+def test_workers_are_bounded(workers):
+    with pytest.raises(ValidationError):
+        RunConfig(kind='offline_demo',benchmark_digest='test',workers=workers)

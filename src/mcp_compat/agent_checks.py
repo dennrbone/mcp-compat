@@ -1,4 +1,4 @@
-"""Real CLI smoke and a stratified pilot; never a full scientific study."""
+"""Real CLI smoke, a stratified pilot, or a resumable full CodeAgent benchmark."""
 
 import argparse
 from hashlib import sha256
@@ -42,11 +42,41 @@ def cli_version(config: ProviderConfig) -> str:
 def agent_cli(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True)
-    parser.add_argument("--pilot", action="store_true")
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument("--pilot", action="store_true")
+    mode.add_argument("--full", action="store_true")
+    parser.add_argument("--workers", type=int, choices=range(1,9), default=1)
+    parser.add_argument("--resume", action="store_true")
     parser.add_argument("--index", type=Path, default=Path("benchmark/manifest.json"))
     args = parser.parse_args(argv)
+    if args.resume and not (args.full or args.pilot):
+        parser.error("--resume requires --full or --pilot")
     args.output.mkdir(parents=True, exist_ok=True)
-    if (args.output / "smoke.json").exists():
+    if args.resume:
+        report = json.loads((args.output / "smoke.json").read_bytes())
+        config = from_env()
+        if report["status"] != "PASS" or report["cli_version"] != cli_version(config):
+            raise ValueError("resume requires a passed smoke with the same CLI version")
+    else:
+        report = smoke(args.output)
+        config = from_env()
+    if args.pilot or args.full:
+        index = json.loads(args.index.read_bytes())
+        benchmark = Path(index["path"])
+        scenarios = load(benchmark, index["digest"])
+        run_config = RunConfig(kind="main" if args.full else "pilot", benchmark_digest=index["digest"],
+            scenario_ids=None if args.full else pilot_ids(scenarios), workers=args.workers,
+            model_versions={"gigacode":config.model, "cli":str(report["cli_version"])}, interval_seconds=1)
+        mapper = Mapper(AgentProvider(config), attempts=2, timeout=120)
+        verifier = fixture_verifier()
+        methods = recovery_methods(mapper,verifier)
+        print(f"REAL {'FULL BENCHMARK' if args.full else 'PILOT'}: {len(scenarios) if args.full else len(run_config.scenario_ids or [])} scenarios; {len(methods)} methods; one repeat; {args.workers} workers", flush=True)
+        records = run(run_config, methods, benchmark, args.output / run_config.kind)
+        print(f"COMPLETED: {len(records)} decisions; one repeat; {len(verifier.bindings)} trusted synthetic runtime bindings", flush=True)
+
+
+def smoke(output: Path) -> dict[str, Any]:
+    if (output / "smoke.json").exists():
         raise FileExistsError("smoke evidence already exists; use the runner API to resume its pilot")
     report: dict[str, Any] = dict(scope="strict_json_smoke", provider="gigacode", model=MODEL_ID, status="FAIL")
     try:
@@ -61,18 +91,9 @@ def agent_cli(argv: list[str] | None = None) -> None:
     except Exception as exc:
         report["error_type"] = type(exc).__name__
         report["reason"] = str(exc) if isinstance(exc, ProviderError) else "configuration_or_response_invalid"
-    with (args.output / "smoke.json").open("xb") as handle:
+    with (output / "smoke.json").open("xb") as handle:
         handle.write(canonical_bytes(report))
     print(json.dumps(report))
     if report["status"] != "PASS":
         raise SystemExit(1)
-    if args.pilot:
-        index = json.loads(args.index.read_bytes())
-        benchmark = Path(index["path"])
-        scenarios = load(benchmark, index["digest"])
-        run_config = RunConfig(kind="pilot", benchmark_digest=index["digest"], scenario_ids=pilot_ids(scenarios),
-            model_versions={"gigacode":config.model, "cli":str(report["cli_version"])}, interval_seconds=1)
-        mapper = Mapper(client, attempts=2, timeout=120)
-        verifier = fixture_verifier()
-        records = run(run_config, recovery_methods(mapper,verifier), benchmark, args.output / "pilot")
-        print(f"REAL PILOT ONLY: {len(records)} decisions; one repeat; {len(verifier.bindings)} trusted synthetic runtime bindings")
+    return report

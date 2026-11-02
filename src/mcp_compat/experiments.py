@@ -1,6 +1,7 @@
 """Frozen paired runs, durable resume, exact metric denominators, offline demo."""
 
 import argparse
+from concurrent.futures import as_completed, FIRST_COMPLETED, ThreadPoolExecutor, wait
 from datetime import datetime, timezone
 from hashlib import sha256
 from importlib.metadata import PackageNotFoundError, version
@@ -16,7 +17,7 @@ from pydantic import Field, model_validator
 
 from mcp_compat import MigrationDecision, ToolCall, canonical_bytes
 from mcp_compat.benchmark import VERSION, equivalent, load, recovery_input
-from mcp_compat.domain.scenarios import GroundTruth, MutationFamily
+from mcp_compat.domain.scenarios import EvolutionScenario, GroundTruth, MutationFamily
 from mcp_compat.hybrid import Hybrid, RuntimeVerifier
 from mcp_compat.llm import LLMRequest, LLMResponse, Mapper, PROMPT_VERSION, StrictModel
 from mcp_compat.recovery import LLMBaseline, NoRecovery, RuleBased, Strategy, abstain
@@ -32,6 +33,7 @@ class RunConfig(StrictModel):
     model_versions: dict[str, str] = {}
     generation_parameters: dict[str, int | float | str] = {"temperature": 0, "max_tokens": 2048}
     interval_seconds: float = Field(default=0, ge=0, allow_inf_nan=False)
+    workers: int = Field(default=1, ge=1, le=8)
 
     @model_validator(mode="after")
     def fixed_generation(self):
@@ -102,6 +104,54 @@ def _atomic(path: Path, value: Any) -> None:
     temporary.replace(path)
 
 
+def _evaluate(scenario: EvolutionScenario, strategy: Strategy, repeat: int, interval: float) -> Record:
+    request = recovery_input(scenario)
+    started = perf_counter()
+    try:
+        decision = strategy.recover(request.model_copy(deep=True))
+    except Exception as exc:
+        decision = abstain("strategy_error",error_type=type(exc).__name__,usage_unknown=True)
+    latency = perf_counter() - started
+    candidate = decision.adapted_call
+    valid = None
+    if candidate is None and "candidate" in decision.evidence:
+        try:
+            candidate = ToolCall.model_validate(decision.evidence["candidate"])
+        except ValueError:
+            valid = False
+    if candidate is not None:
+        try:
+            candidate.validate_against(scenario.new_contract)
+            valid = True
+        except ValueError:
+            valid = False
+    semantic = None
+    if decision.action == "EXECUTE":
+        assert decision.adapted_call is not None
+        semantic = equivalent(scenario,decision.adapted_call)
+    trace = decision.evidence.get("llm", {})
+    calls, responses = trace.get("calls",0), trace.get("responses",[])
+    if decision.evidence.get("usage_unknown"):
+        calls = None
+    def usage(field):
+        if calls is None:
+            return None
+        if not calls:
+            return 0
+        return None if len(responses) != calls or any(r.get(field) is None for r in responses) else sum(r[field] for r in responses)
+    record = Record(scenario_id=scenario.scenario_id,method=strategy.name,repeat=repeat,
+        mutation_family=scenario.mutation_family,ground_truth=scenario.ground_truth,
+        recoverable=scenario.metadata["recoverable"],base_tool=scenario.metadata["base_tool"],
+        composed=scenario.metadata["composed"],decision=decision,schema_valid=valid,
+        semantic_equivalent=semantic,latency=latency,calls=calls,input_tokens=usage("input_tokens"),
+        output_tokens=usage("output_tokens"),cost=usage("cost"),
+        validation_stages=int(valid is not None)+decision.evidence.get("verification_attempts", int("verification" in decision.evidence)),
+        recovery=request.model_dump())
+    if interval:
+        sleep(interval)
+    return record
+
+
 def run(config: RunConfig, strategies: list[Strategy], benchmark: Path, output: Path) -> list[Record]:
     names = [s.name for s in strategies]
     if not names or len(names) != len(set(names)) or any(not re.fullmatch(r"[A-Za-z0-9_-]+",n) for n in names):
@@ -142,71 +192,45 @@ def run(config: RunConfig, strategies: list[Strategy], benchmark: Path, output: 
         _atomic(manifest_path,dict(identity, fingerprint=fingerprint, created_at=datetime.now(timezone.utc).isoformat()))
     digests_path = output/"result-digests.json"
     prior_digests = json.loads(digests_path.read_bytes()) if digests_path.exists() else {}
-    records = []
+    records: dict[str, Record] = {}
+    order = []
+    pending = []
     for repeat in range(config.repeats):
         for scenario in scenarios:
             for strategy in strategies:
                 path = output/f"{repeat}-{strategy.name}-{scenario.scenario_id}.json"
                 key = path.stem
+                order.append(key)
                 if path.exists():
                     record = Record.model_validate_json(path.read_bytes())
                     if key in prior_digests and sha256(canonical_bytes(record.model_dump())).hexdigest() != prior_digests[key]:
                         raise ValueError("corrupt resume record digest")
                     if (record.scenario_id,record.method,record.repeat) != (scenario.scenario_id,strategy.name,repeat):
                         raise ValueError("corrupt resume record")
-                    records.append(record)
-                    continue
-                if key in prior_digests:
+                    records[key] = record
+                elif key in prior_digests:
                     raise ValueError("missing completed record")
-                request = recovery_input(scenario)
-                started = perf_counter()
-                try:
-                    decision = strategy.recover(request.model_copy(deep=True))
-                except Exception as exc:
-                    decision = abstain("strategy_error",error_type=type(exc).__name__,usage_unknown=True)
-                latency = perf_counter() - started
-                candidate = decision.adapted_call
-                valid = None
-                if candidate is None and "candidate" in decision.evidence:
-                    try:
-                        candidate = ToolCall.model_validate(decision.evidence["candidate"])
-                    except ValueError:
-                        valid = False
-                if candidate is not None:
-                    try:
-                        candidate.validate_against(scenario.new_contract)
-                        valid = True
-                    except ValueError:
-                        valid = False
-                semantic = None
-                if decision.action == "EXECUTE":
-                    assert decision.adapted_call is not None
-                    semantic = equivalent(scenario,decision.adapted_call)
-                trace = decision.evidence.get("llm", {})
-                calls, responses = trace.get("calls",0), trace.get("responses",[])
-                if decision.evidence.get("usage_unknown"):
-                    calls = None
-                def usage(field):
-                    if calls is None:
-                        return None
-                    if not calls:
-                        return 0
-                    return None if len(responses) != calls or any(r.get(field) is None for r in responses) else sum(r[field] for r in responses)
-                record = Record(scenario_id=scenario.scenario_id,method=strategy.name,repeat=repeat,
-                    mutation_family=scenario.mutation_family,ground_truth=scenario.ground_truth,
-                    recoverable=scenario.metadata["recoverable"],base_tool=scenario.metadata["base_tool"],
-                    composed=scenario.metadata["composed"],decision=decision,schema_valid=valid,
-                    semantic_equivalent=semantic,latency=latency,calls=calls,input_tokens=usage("input_tokens"),
-                    output_tokens=usage("output_tokens"),cost=usage("cost"),
-                    validation_stages=int(valid is not None)+decision.evidence.get("verification_attempts", int("verification" in decision.evidence)),
-                    recovery=request.model_dump())
-                _atomic(path,record.model_dump(mode="json"))
-                records.append(record)
-                if config.interval_seconds:
-                    sleep(config.interval_seconds)
-    _atomic(output/"summary.json",summaries(records))
-    _atomic(output/"result-digests.json",{f"{r.repeat}-{r.method}-{r.scenario_id}":sha256(canonical_bytes(r.model_dump())).hexdigest() for r in records})
-    return records
+                else:
+                    pending.append((path, scenario, strategy, repeat))
+    def save(future, running):
+        path = running.pop(future)
+        record = future.result()
+        _atomic(path,record.model_dump(mode="json"))
+        records[path.stem] = record
+    with ThreadPoolExecutor(max_workers=config.workers) as executor:
+        running = {}
+        for path, scenario, strategy, repeat in pending:
+            running[executor.submit(_evaluate,scenario,strategy,repeat,config.interval_seconds)] = path
+            if len(running) >= config.workers:
+                done, _ = wait(running,return_when=FIRST_COMPLETED)
+                for future in done:
+                    save(future,running)
+        for future in as_completed(running):
+            save(future,running)
+    ordered = [records[key] for key in order]
+    _atomic(output/"summary.json",summaries(ordered))
+    _atomic(output/"result-digests.json",{f"{r.repeat}-{r.method}-{r.scenario_id}":sha256(canonical_bytes(r.model_dump())).hexdigest() for r in ordered})
+    return ordered
 
 
 class OfflineClient:

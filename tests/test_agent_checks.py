@@ -31,29 +31,43 @@ def test_cli_version(monkeypatch):
         cli_version(config)
 
 
-@pytest.mark.parametrize('pilot',[False,True])
-def test_real_cli_smoke_and_pilot_wiring(tmp_path,monkeypatch,capsys,pilot):
+@pytest.mark.parametrize('mode',['smoke','pilot','full'])
+def test_real_cli_smoke_and_pilot_wiring(tmp_path,monkeypatch,capsys,mode):
     output=tmp_path/'out'
     monkeypatch.setenv('GIGACODE_BIN',sys.executable)
     monkeypatch.setattr('mcp_compat.agent_checks.cli_version',lambda c:'26.10.76')
     monkeypatch.setattr('mcp_compat.agent_checks.AgentProvider.complete',lambda *a:LLMResponse(text='{"action":"ABSTAIN"}',model='gigacode/GigaCode'))
     called=[]
     def run(config,strategies,benchmark,out):
-        assert config.kind == 'pilot' and config.repeats == 1
-        assert config.scenario_ids == pilot_ids(generate(42))
+        assert config.kind == ('main' if mode=='full' else 'pilot') and config.repeats == 1
+        assert config.scenario_ids == (None if mode=='full' else pilot_ids(generate(42)))
+        assert config.workers == 1
         assert [s.name for s in strategies] == ['B0','B1','B2','B3','M1','A1','A2','A3','A4']
         assert strategies[2].mapper.client.config.model == 'gigacode/GigaCode'
         assert strategies[2].mapper.attempts == 2
         called.append(out)
         return []
     monkeypatch.setattr('mcp_compat.agent_checks.run',run)
-    agent_cli(['--output',str(output)]+(['--pilot'] if pilot else []))
-    assert bool(called) == pilot
+    command=['--output',str(output)]+([] if mode=='smoke' else ['--'+mode])
+    agent_cli(command)
+    assert bool(called) == (mode!='smoke')
     report=json.loads((output/'smoke.json').read_bytes())
     assert report['status'] == 'PASS' and report['scope'] == 'strict_json_smoke'
     assert 'PASS' in capsys.readouterr().out
     with pytest.raises(FileExistsError):
         agent_cli(['--output',str(output)])
+    if mode!='smoke':
+        agent_cli(command+['--resume'])
+        assert len(called)==2
+        report['cli_version']='different'
+        (output/'smoke.json').write_text(json.dumps(report))
+        with pytest.raises(ValueError,match='resume requires'):
+            agent_cli(command+['--resume'])
+
+
+def test_resume_needs_an_experiment_mode(tmp_path):
+    with pytest.raises(SystemExit):
+        agent_cli(['--output',str(tmp_path),'--resume'])
 
 
 @pytest.mark.parametrize('result',[ProviderError('provider_timeout'),LLMResponse(text='{"action":"EXECUTE","operations":[]}',model='test'),LLMResponse(text='```json\n{}\n```',model='test')])

@@ -18,15 +18,27 @@ The adapter does not change global authentication or shell profiles.
 ```sh
 mcp-compat-agents --output experiments/codeagent-smoke
 mcp-compat-agents --pilot --output experiments/codeagent-pilot
+mcp-compat-agents --full --workers 8 --output experiments/codeagent-full
+# Continue the exact same run after interruption:
+mcp-compat-agents --full --workers 8 --resume --output experiments/codeagent-full
 ```
 
 Each output directory is new: smoke evidence is written exclusively. The nested
-pilot runner supports identical-configuration resume through its Python API.
+pilot/full runner supports identical-configuration resume through the CLI or Python API.
 The pilot starts only after a strict JSON smoke succeeds. The separate real
 pytest case requires `MCP_COMPAT_RUN_PROVIDER_SMOKE=1`; enabled failures fail.
 Missing credentials/configuration, quota errors, malformed JSON and timeouts
 are never converted to passes. Current results: [IMPROVEMENTS.md](IMPROVEMENTS.md).
 Historical Phase 11 failures: [AGENT_TESTS.md](AGENT_TESTS.md).
+
+`--full` selects all 2160 frozen scenarios for B0–B3/M1/A1–A4: 19440 decisions
+in one repeat. It uses the same installed CodeAgent transport, mapper limits and
+independent runtimes as the pilot. `--workers` permits 1–8 concurrent decisions
+(default 1); each worker waits one second between decisions. Workers are part of
+the frozen run identity because service load can affect latency and failures.
+Completed records are saved atomically and never replaced on resume. A resume
+requires a previously passed smoke, the same CLI version, source and configuration.
+A single full repeat does not complete the planned repeated two-family study.
 
 The adapter uses an empty temporary workspace and isolated config directories,
 `--pure`, disabled plugins/external skills/project config/title/summary/compaction,

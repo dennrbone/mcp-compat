@@ -1,0 +1,1 @@
+{"description":"Рассчитывает стоимость условного бронирования.","input_schema":{"properties":{"guests":{"type":"integer"},"nights":{"type":"integer"},"plan":{"enum":["standard","flexible"],"type":"string"}},"required":["nights","guests","plan"],"type":"object"},"metadata":{"study":"compat-case-study-1.0"},"name":"booking_quote_revised","output_schema":{"type":"object"}}

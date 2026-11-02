@@ -1,0 +1,1 @@
+{"adapted_call":{"arguments":{"content":"one two two three","minimum_length":3,"style":"distinct"},"tool_name":"documents_words"},"expected":{"count":3,"minimum_length":3,"style":"distinct"}}

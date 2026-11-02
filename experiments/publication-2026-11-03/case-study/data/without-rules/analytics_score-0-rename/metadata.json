@@ -1,0 +1,1 @@
+{"api_version":"rename","application":"analytics_score","base_tool":"analytics_score","composed":false,"ground_truth":"CONDITIONAL","mutation_family":"C1","mutation_subtype":"rename","public_context":{},"recoverable":true,"scenario_id":"analytics_score-0-rename","study":"compat-case-study-1.0"}

@@ -1,0 +1,1 @@
+{"adapted_call":{"arguments":{"policy":"linear","signal":3,"weight":2},"tool_name":"analytics_score_v2"},"expected":{"score":6,"signal":3}}

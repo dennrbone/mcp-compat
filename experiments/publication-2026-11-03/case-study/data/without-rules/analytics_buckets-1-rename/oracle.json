@@ -1,0 +1,1 @@
+{"adapted_call":{"arguments":{"samples":[2,4,8,10],"side":"below","threshold":8},"tool_name":"analytics_buckets"},"expected":{"count":2,"cutoff":8}}

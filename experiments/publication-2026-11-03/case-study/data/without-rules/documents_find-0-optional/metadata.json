@@ -1,0 +1,1 @@
+{"api_version":"optional","application":"documents_find","base_tool":"documents_find","composed":false,"ground_truth":"SAFE_AUTO","mutation_family":"C2","mutation_subtype":"optional","public_context":{},"recoverable":true,"scenario_id":"documents_find-0-optional","study":"compat-case-study-1.0"}

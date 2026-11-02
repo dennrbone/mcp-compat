@@ -1,0 +1,1 @@
+{"api_version":"encoding","application":"inventory_restock","base_tool":"inventory_restock","composed":false,"ground_truth":"CONDITIONAL","mutation_family":"C5","mutation_subtype":"encoding","public_context":{"rules":[{"op":"wrap","source":["quantity"],"target":["quantity"]}]},"recoverable":true,"scenario_id":"inventory_restock-0-encoding","study":"compat-case-study-1.0"}

@@ -1,0 +1,1 @@
+{"api_version":"encoding","application":"inventory_reserve","base_tool":"inventory_reserve","composed":false,"ground_truth":"CONDITIONAL","mutation_family":"C5","mutation_subtype":"encoding","public_context":{},"recoverable":true,"scenario_id":"inventory_reserve-1-encoding","study":"compat-case-study-1.0"}

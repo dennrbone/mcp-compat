@@ -1,0 +1,1 @@
+{"api_version":"removed","application":"documents_find","base_tool":"documents_find","composed":false,"ground_truth":"MUST_ABSTAIN","mutation_family":"C4","mutation_subtype":"removed","public_context":{},"recoverable":false,"scenario_id":"documents_find-0-removed","study":"compat-case-study-1.0"}

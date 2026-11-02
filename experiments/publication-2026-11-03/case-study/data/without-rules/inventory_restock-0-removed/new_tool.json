@@ -1,0 +1,1 @@
+{"description":"Пополняет локальный склад и журнал поступлений.","input_schema":{"properties":{"reason":{"enum":["return","delivery"],"type":"string"},"sku":{"type":"string"}},"required":["sku","reason"],"type":"object"},"metadata":{"study":"compat-case-study-1.0"},"name":"inventory_restock","output_schema":{"type":"object"}}

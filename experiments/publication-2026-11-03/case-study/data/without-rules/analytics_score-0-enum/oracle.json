@@ -1,0 +1,1 @@
+{"adapted_call":{"arguments":{"policy":"identity","signal":3,"weight":2},"tool_name":"analytics_score"},"expected":{"score":6,"signal":3}}

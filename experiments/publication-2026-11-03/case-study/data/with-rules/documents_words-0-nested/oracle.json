@@ -1,0 +1,1 @@
+{"adapted_call":{"arguments":{"payload":{"content":"a beta beta gamma","minimum_length":2,"style":"all"}},"tool_name":"documents_words"},"expected":{"count":3,"minimum_length":2,"style":"all"}}

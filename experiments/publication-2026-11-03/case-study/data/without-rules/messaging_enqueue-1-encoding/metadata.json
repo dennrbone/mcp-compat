@@ -1,0 +1,1 @@
+{"api_version":"encoding","application":"messaging_enqueue","base_tool":"messaging_enqueue","composed":false,"ground_truth":"CONDITIONAL","mutation_family":"C5","mutation_subtype":"encoding","public_context":{},"recoverable":true,"scenario_id":"messaging_enqueue-1-encoding","study":"compat-case-study-1.0"}

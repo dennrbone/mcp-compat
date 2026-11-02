@@ -1,0 +1,1 @@
+{"adapted_call":{"arguments":{"payload":{"limit":1,"match":"contains","query":"am"}},"tool_name":"documents_find"},"expected":{"matches":["gamma"],"query":"am"}}

@@ -1,0 +1,1 @@
+{"api_version":"semantic","application":"analytics_buckets","base_tool":"analytics_buckets","composed":false,"ground_truth":"MUST_ABSTAIN","mutation_family":"C8","mutation_subtype":"semantic","public_context":{"rules":[]},"recoverable":false,"scenario_id":"analytics_buckets-0-semantic","study":"compat-case-study-1.0"}

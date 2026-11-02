@@ -1,0 +1,1 @@
+{"api_version":"tool","application":"calendar_duration","base_tool":"calendar_duration","composed":false,"ground_truth":"CONDITIONAL","mutation_family":"C1","mutation_subtype":"tool","public_context":{"rules":[]},"recoverable":true,"scenario_id":"calendar_duration-0-tool","study":"compat-case-study-1.0"}

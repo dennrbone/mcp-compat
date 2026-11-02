@@ -1,0 +1,1 @@
+{"api_version":"encoding","application":"analytics_buckets","base_tool":"analytics_buckets","composed":false,"ground_truth":"CONDITIONAL","mutation_family":"C5","mutation_subtype":"encoding","public_context":{},"recoverable":true,"scenario_id":"analytics_buckets-0-encoding","study":"compat-case-study-1.0"}

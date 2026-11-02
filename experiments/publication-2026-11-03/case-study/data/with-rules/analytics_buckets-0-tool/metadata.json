@@ -1,0 +1,1 @@
+{"api_version":"tool","application":"analytics_buckets","base_tool":"analytics_buckets","composed":false,"ground_truth":"CONDITIONAL","mutation_family":"C1","mutation_subtype":"tool","public_context":{"rules":[]},"recoverable":true,"scenario_id":"analytics_buckets-0-tool","study":"compat-case-study-1.0"}

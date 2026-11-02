@@ -1,0 +1,1 @@
+{"api_version":"tool","application":"booking_cancel","base_tool":"booking_cancel","composed":false,"ground_truth":"CONDITIONAL","mutation_family":"C1","mutation_subtype":"tool","public_context":{"rules":[]},"recoverable":true,"scenario_id":"booking_cancel-0-tool","study":"compat-case-study-1.0"}

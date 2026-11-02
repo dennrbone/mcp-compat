@@ -1,0 +1,1 @@
+{"description":"Ищет названия документов в локальном каталоге.","input_schema":{"properties":{"limit":{"type":"integer"},"match":{"enum":["starts_with","substring"],"type":"string"},"query":{"type":"string"}},"required":["query","limit","match"],"type":"object"},"metadata":{"study":"compat-case-study-1.0"},"name":"documents_find","output_schema":{"type":"object"}}

@@ -1,0 +1,1 @@
+{"description":"Отзывает сообщение в локальном хранилище.","input_schema":{"properties":{"message_id":{"type":"string"},"mode":{"enum":["soft","hard"],"type":"string"},"revision":{"type":"integer"}},"required":["message_id","revision","mode"],"type":"object"},"metadata":{"study":"compat-case-study-1.0"},"name":"messaging_revoke","output_schema":{"type":"object"}}

@@ -1,0 +1,1 @@
+{"adapted_call":{"arguments":{"payload":{"cutoff":8,"samples":[2,4,8,10],"side":"below"}},"tool_name":"analytics_buckets"},"expected":{"count":2,"cutoff":8}}

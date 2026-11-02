@@ -1,0 +1,1 @@
+{"api_version":"removed","application":"calendar_room","base_tool":"calendar_room","composed":false,"ground_truth":"MUST_ABSTAIN","mutation_family":"C4","mutation_subtype":"removed","public_context":{"rules":[]},"recoverable":false,"scenario_id":"calendar_room-1-removed","study":"compat-case-study-1.0"}

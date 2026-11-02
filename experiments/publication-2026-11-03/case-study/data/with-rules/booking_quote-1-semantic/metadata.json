@@ -1,0 +1,1 @@
+{"api_version":"semantic","application":"booking_quote","base_tool":"booking_quote","composed":false,"ground_truth":"MUST_ABSTAIN","mutation_family":"C8","mutation_subtype":"semantic","public_context":{"rules":[]},"recoverable":false,"scenario_id":"booking_quote-1-semantic","study":"compat-case-study-1.0"}

@@ -1,0 +1,1 @@
+{"api_version":"optional","application":"calendar_duration","base_tool":"calendar_duration","composed":false,"ground_truth":"SAFE_AUTO","mutation_family":"C2","mutation_subtype":"optional","public_context":{},"recoverable":true,"scenario_id":"calendar_duration-1-optional","study":"compat-case-study-1.0"}

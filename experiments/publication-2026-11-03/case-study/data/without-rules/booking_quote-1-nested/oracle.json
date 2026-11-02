@@ -1,0 +1,1 @@
+{"adapted_call":{"arguments":{"payload":{"guests":2,"nights":3,"plan":"flexible"}},"tool_name":"booking_quote"},"expected":{"nights":3,"total":620}}

@@ -1,0 +1,1 @@
+{"adapted_call":{"arguments":{"reason":"return","sku":"A","units":2},"tool_name":"inventory_restock"},"expected":{"events":[{"quantity":2,"reason":"return","sku":"A"}],"stock":{"A":22,"B":10}}}

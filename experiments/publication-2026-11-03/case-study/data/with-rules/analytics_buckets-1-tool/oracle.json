@@ -1,0 +1,1 @@
+{"adapted_call":{"arguments":{"cutoff":8,"samples":[2,4,8,10],"side":"below"},"tool_name":"analytics_buckets_v2"},"expected":{"count":2,"cutoff":8}}

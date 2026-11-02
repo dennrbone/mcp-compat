@@ -1,0 +1,1 @@
+{"api_version":"rename","application":"messaging_enqueue","base_tool":"messaging_enqueue","composed":false,"ground_truth":"CONDITIONAL","mutation_family":"C1","mutation_subtype":"rename","public_context":{"rules":[{"op":"move","source":["recipient"],"target":["receiver"]}]},"recoverable":true,"scenario_id":"messaging_enqueue-0-rename","study":"compat-case-study-1.0"}

@@ -1,0 +1,1 @@
+{"api_version":"tool","application":"messaging_enqueue","base_tool":"messaging_enqueue","composed":false,"ground_truth":"CONDITIONAL","mutation_family":"C1","mutation_subtype":"tool","public_context":{},"recoverable":true,"scenario_id":"messaging_enqueue-1-tool","study":"compat-case-study-1.0"}

@@ -1,0 +1,1 @@
+{"api_version":"encoding","application":"documents_find","base_tool":"documents_find","composed":false,"ground_truth":"CONDITIONAL","mutation_family":"C5","mutation_subtype":"encoding","public_context":{"rules":[{"op":"wrap","source":["limit"],"target":["limit"]}]},"recoverable":true,"scenario_id":"documents_find-0-encoding","study":"compat-case-study-1.0"}

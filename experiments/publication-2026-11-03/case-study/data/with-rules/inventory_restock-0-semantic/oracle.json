@@ -1,0 +1,1 @@
+{"adapted_call":null,"expected":{"events":[{"quantity":2,"reason":"return","sku":"A"}],"stock":{"A":22,"B":10}}}

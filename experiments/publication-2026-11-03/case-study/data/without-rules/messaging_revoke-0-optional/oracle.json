@@ -1,0 +1,1 @@
+{"adapted_call":{"arguments":{"message_id":"m1","mode":"soft","revision":1},"tool_name":"messaging_revoke"},"expected":{"events":[{"id":"m1","mode":"soft","revision":1}],"messages":{"m1":{"deleted":true,"revision":1},"m2":{"deleted":false,"revision":2}}}}

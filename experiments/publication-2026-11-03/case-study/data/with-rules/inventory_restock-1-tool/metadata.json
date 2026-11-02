@@ -1,0 +1,1 @@
+{"api_version":"tool","application":"inventory_restock","base_tool":"inventory_restock","composed":false,"ground_truth":"CONDITIONAL","mutation_family":"C1","mutation_subtype":"tool","public_context":{"rules":[]},"recoverable":true,"scenario_id":"inventory_restock-1-tool","study":"compat-case-study-1.0"}

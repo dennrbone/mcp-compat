@@ -1,0 +1,1 @@
+{"api_version":"rename","application":"inventory_reserve","base_tool":"inventory_reserve","composed":false,"ground_truth":"CONDITIONAL","mutation_family":"C1","mutation_subtype":"rename","public_context":{},"recoverable":true,"scenario_id":"inventory_reserve-1-rename","study":"compat-case-study-1.0"}

@@ -1,0 +1,1 @@
+{"adapted_call":{"arguments":{"payload":{"limit":2,"match":"prefix","query":"al"}},"tool_name":"documents_find"},"expected":{"matches":["alpha","alphabet"],"query":"al"}}

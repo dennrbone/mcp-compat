@@ -1,0 +1,1 @@
+{"api_version":"rename","application":"analytics_buckets","base_tool":"analytics_buckets","composed":false,"ground_truth":"CONDITIONAL","mutation_family":"C1","mutation_subtype":"rename","public_context":{"rules":[{"op":"move","source":["cutoff"],"target":["threshold"]}]},"recoverable":true,"scenario_id":"analytics_buckets-1-rename","study":"compat-case-study-1.0"}

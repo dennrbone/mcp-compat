@@ -1,0 +1,1 @@
+{"api_version":"rename","application":"documents_words","base_tool":"documents_words","composed":false,"ground_truth":"CONDITIONAL","mutation_family":"C1","mutation_subtype":"rename","public_context":{"rules":[{"op":"move","source":["content"],"target":["text"]}]},"recoverable":true,"scenario_id":"documents_words-0-rename","study":"compat-case-study-1.0"}

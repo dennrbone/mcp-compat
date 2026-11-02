@@ -1,0 +1,1 @@
+{"adapted_call":{"arguments":{"fee":5,"notify":"silent","reservation_id":"r1"},"tool_name":"booking_cancel"},"expected":{"active":["r2"],"cancelled":[{"fee":5,"notify":"silent","reservation_id":"r1"}]}}

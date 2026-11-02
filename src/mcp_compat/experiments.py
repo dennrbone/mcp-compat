@@ -159,7 +159,7 @@ def run(config: RunConfig, strategies: list[Strategy], benchmark: Path, output: 
     if config.kind in ("pilot", "main") and not config.model_versions:
         raise ValueError("main experiment requires explicit model versions")
     benchmark_manifest = json.loads((benchmark/"manifest.json").read_bytes())
-    if config.kind == "main" and benchmark_manifest["version"] != VERSION:
+    if config.kind == "main" and benchmark_manifest["version"] not in (VERSION, "compat-case-study-1.0"):
         raise ValueError("retired benchmark cannot be used for a main experiment")
     scenarios = load(benchmark,config.benchmark_digest)
     if config.scenario_ids is not None:

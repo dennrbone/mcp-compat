@@ -1,0 +1,1 @@
+{"adapted_call":{"arguments":{"mode":"partial","room_id":"R2","seats":8},"tool_name":"calendar_room"},"expected":{"assigned":5,"available":true,"room":"R2"}}

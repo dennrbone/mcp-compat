@@ -1,0 +1,1 @@
+{"api_version":"rename","application":"documents_find","base_tool":"documents_find","composed":false,"ground_truth":"CONDITIONAL","mutation_family":"C1","mutation_subtype":"rename","public_context":{"rules":[{"op":"move","source":["query"],"target":["search_term"]}]},"recoverable":true,"scenario_id":"documents_find-0-rename","study":"compat-case-study-1.0"}

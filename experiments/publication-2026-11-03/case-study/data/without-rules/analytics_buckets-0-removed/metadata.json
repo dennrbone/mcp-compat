@@ -1,0 +1,1 @@
+{"api_version":"removed","application":"analytics_buckets","base_tool":"analytics_buckets","composed":false,"ground_truth":"MUST_ABSTAIN","mutation_family":"C4","mutation_subtype":"removed","public_context":{},"recoverable":false,"scenario_id":"analytics_buckets-0-removed","study":"compat-case-study-1.0"}

@@ -1,0 +1,1 @@
+{"description":"Отменяет условную бронь в локальном состоянии.","input_schema":{"properties":{"notify":{"enum":["silent","email"],"type":"string"},"reservation_id":{"type":"string"}},"required":["reservation_id","notify"],"type":"object"},"metadata":{"study":"compat-case-study-1.0"},"name":"booking_cancel","output_schema":{"type":"object"}}

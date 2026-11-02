@@ -1,0 +1,1 @@
+{"description":"Рассчитывает конец временного интервала в минутах.","input_schema":{"properties":{"display":{"enum":["short","full"],"type":"string"},"length":{"type":"integer"}},"required":["length","display"],"type":"object"},"metadata":{"study":"compat-case-study-1.0"},"name":"calendar_duration","output_schema":{"type":"object"}}

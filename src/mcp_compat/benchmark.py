@@ -346,6 +346,9 @@ def simulate(arguments: dict, view: dict, operation: int, initial: dict, domain:
 
 def equivalent(scenario: EvolutionScenario, call: ToolCall) -> bool:
     """Evaluator-only oracle; called after a strategy's decision."""
+    if scenario.metadata.get("study") == "compat-case-study-1.0":
+        from mcp_compat.case_study import equivalent as case_equivalent
+        return case_equivalent(scenario, call)
     try:
         call.validate_against(scenario.new_contract)
         o = scenario.oracle
@@ -356,8 +359,10 @@ def equivalent(scenario: EvolutionScenario, call: ToolCall) -> bool:
         return False
 
 
-def freeze(scenarios: list[EvolutionScenario], directory: Path, seed: int) -> str:
+def freeze(scenarios: list[EvolutionScenario], directory: Path, seed: int, *, version: str = VERSION) -> str:
     """Exclusive creation: never overwrite a frozen benchmark."""
+    if version not in (VERSION, "compat-case-study-1.0"):
+        raise ValueError("unsupported new benchmark version")
     directory.mkdir(parents=True, exist_ok=False)
     hashes: dict[str, dict[str, str]] = {}
     for s in scenarios:
@@ -374,7 +379,7 @@ def freeze(scenarios: list[EvolutionScenario], directory: Path, seed: int) -> st
             data = canonical_bytes(payload)
             (folder / f"{name}.json").write_bytes(data)
             hashes[s.scenario_id][name] = sha256(data).hexdigest()
-    manifest = dict(version=VERSION, seed=seed, count=len(scenarios), files=hashes)
+    manifest = dict(version=version, seed=seed, count=len(scenarios), files=hashes)
     digest = sha256(canonical_bytes(manifest)).hexdigest()
     manifest["digest"] = digest
     (directory / "manifest.json").write_bytes(canonical_bytes(manifest))
@@ -385,7 +390,7 @@ def load(directory: Path, expected_digest: str) -> list[EvolutionScenario]:
     manifest = json.loads((directory / "manifest.json").read_bytes())
     hashes = manifest["files"]
     content = {key: value for key, value in manifest.items() if key != "digest"}
-    if manifest["version"] not in ("evobench-1.0", "evobench-1.1", VERSION) or sha256(canonical_bytes(content)).hexdigest() != expected_digest or manifest["digest"] != expected_digest:
+    if manifest["version"] not in ("evobench-1.0", "evobench-1.1", VERSION, "compat-case-study-1.0") or sha256(canonical_bytes(content)).hexdigest() != expected_digest or manifest["digest"] != expected_digest:
         raise ValueError("manifest integrity failure")
     scenarios = []
     for sid, files in sorted(hashes.items()):

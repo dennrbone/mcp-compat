@@ -1,0 +1,1 @@
+{"api_version":"rename","application":"booking_cancel","base_tool":"booking_cancel","composed":false,"ground_truth":"CONDITIONAL","mutation_family":"C1","mutation_subtype":"rename","public_context":{},"recoverable":true,"scenario_id":"booking_cancel-1-rename","study":"compat-case-study-1.0"}

@@ -1,0 +1,1 @@
+{"adapted_call":{"arguments":{"fulfillment":"collection","quantity":4,"sku":"B"},"tool_name":"inventory_reserve"},"expected":{"reservations":[{"fulfillment":"pickup","quantity":4,"sku":"B"}],"stock":{"A":20,"B":6}}}

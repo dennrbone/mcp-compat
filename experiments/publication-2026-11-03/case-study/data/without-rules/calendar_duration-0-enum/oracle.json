@@ -1,0 +1,1 @@
+{"adapted_call":{"arguments":{"display":"brief","length":90,"start_minute":600},"tool_name":"calendar_duration"},"expected":{"end":690,"label":"90 min","start":600}}

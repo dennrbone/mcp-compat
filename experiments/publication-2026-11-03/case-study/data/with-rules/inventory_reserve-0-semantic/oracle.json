@@ -1,0 +1,1 @@
+{"adapted_call":null,"expected":{"reservations":[{"fulfillment":"ship","quantity":3,"sku":"A"}],"stock":{"A":17,"B":10}}}

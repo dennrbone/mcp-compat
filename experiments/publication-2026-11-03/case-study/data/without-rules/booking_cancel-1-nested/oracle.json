@@ -1,0 +1,1 @@
+{"adapted_call":{"arguments":{"payload":{"fee":10,"notify":"email","reservation_id":"r2"}},"tool_name":"booking_cancel"},"expected":{"active":["r1"],"cancelled":[{"fee":10,"notify":"email","reservation_id":"r2"}]}}

@@ -1,0 +1,1 @@
+{"description":"Резервирует товар в локальном состоянии склада.","input_schema":{"properties":{"fulfillment":{"enum":["ship","pickup"],"type":"string"},"quantity":{"type":"integer"},"sku":{"type":"string"}},"required":["sku","quantity","fulfillment"],"type":"object"},"metadata":{"study":"compat-case-study-1.0"},"name":"inventory_reserve_v2","output_schema":{"type":"object"}}

@@ -1,0 +1,1 @@
+{"api_version":"optional","application":"messaging_enqueue","base_tool":"messaging_enqueue","composed":false,"ground_truth":"SAFE_AUTO","mutation_family":"C2","mutation_subtype":"optional","public_context":{"rules":[]},"recoverable":true,"scenario_id":"messaging_enqueue-1-optional","study":"compat-case-study-1.0"}

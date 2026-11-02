@@ -5,6 +5,7 @@ import csv
 from hashlib import sha256
 import json
 import math
+from itertools import product
 from pathlib import Path
 import random
 from typing import Any
@@ -88,6 +89,48 @@ def paired(records: list[Record], method_a: str, method_b: str) -> tuple[list[Re
     return left,right
 
 
+def clustered_recovery_comparison(records: list[Record], method_a: str, method_b: str,
+                                  *, seed: int = 42, draws: int = 2000,
+                                  permutations: int = 9999, cluster_by: str = "base_tool") -> dict:
+    """Парная разность CRR с сохранением наблюдений внутри их кластеров."""
+    if draws < 1 or permutations < 1 or cluster_by not in ("base_tool", "domain"):
+        raise ValueError("invalid clustered comparison configuration")
+    left,right = paired(records,method_a,method_b)
+    groups: dict[str,list[int]] = {}
+    for a,b in zip(left,right):
+        if a.recoverable:
+            cluster = a.base_tool if cluster_by == "base_tool" else a.base_tool.split("_")[0]
+            counts = groups.setdefault(cluster,[0,0])
+            counts[0] += int(a.decision.action == "EXECUTE" and a.semantic_equivalent is True) - int(b.decision.action == "EXECUTE" and b.semantic_equivalent is True)
+            counts[1] += 1
+    units = list(groups.values())
+    total = sum(n for _,n in units)
+    observed = sum(d for d,_ in units)
+    result = dict(difference=None if not total else observed/total, low=None, high=None,
+                  clusters=len(units), recoverable=total, confidence=.95, seed=seed,
+                  draws=draws, cluster_unit=cluster_by, pvalue=None,
+                  assumption="method labels exchangeable within each cluster under the null")
+    if len(units) < 2:
+        return dict(result,status="insufficient_clusters")
+    rng = random.Random(seed)
+    samples = []
+    for _ in range(draws):
+        sample = rng.choices(units,k=len(units))
+        samples.append(sum(d for d,_ in sample)/sum(n for _,n in sample))
+    low,high = np.quantile(samples,[.025,.975],method="linear")
+    result.update(low=float(low),high=float(high))
+    differences = [d for d,_ in units if d]
+    if len(differences) <= 16:
+        signs = product((-1,1),repeat=len(differences))
+        extreme = sum(abs(sum(s*d for s,d in zip(sign,differences))) >= abs(observed) for sign in signs)
+        result.update(pvalue=extreme/(2**len(differences)),test="exact_cluster_sign_flip",permutations=2**len(differences))
+    else:
+        rng = random.Random(seed)
+        extreme = sum(abs(sum(rng.choice((-1,1))*d for d in differences)) >= abs(observed) for _ in range(permutations))
+        result.update(pvalue=(extreme+1)/(permutations+1),test="monte_carlo_cluster_sign_flip",permutations=permutations)
+    return dict(result,status="computed")
+
+
 def read_results(directory: Path) -> tuple[dict,list[Record]]:
     manifest = json.loads((directory/"manifest.json").read_bytes())
     identity = {key:value for key,value in manifest.items() if key not in ("fingerprint","created_at")}
@@ -116,12 +159,25 @@ def _table(path: Path, rows: list[dict]) -> None:
         writer.writerows(rows)
 
 
-def artifacts(directory: Path, output: Path, *, seed: int = 42, draws: int = 2000) -> dict:
+def artifacts(directory: Path, output: Path, *, seed: int = 42, draws: int = 2000,
+              additional_runs: list[Path] | None = None) -> dict:
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
 
     manifest,records = read_results(directory)
+    provenance = [dict(path=str(directory),manifest=manifest)]
+    for path in additional_runs or []:
+        extra,extra_records = read_results(path)
+        keys = ("benchmark_digest","scenario_ids","repeats","seed")
+        if any(extra["config"][k] != manifest["config"][k] for k in keys):
+            raise ValueError("cannot combine different benchmark selections or repeats")
+        if {r.method for r in records} & {r.method for r in extra_records}:
+            raise ValueError("duplicate methods across runs")
+        if {(r.scenario_id,r.repeat) for r in records} != {(r.scenario_id,r.repeat) for r in extra_records}:
+            raise ValueError("incomplete paired coverage across runs")
+        records.extend(extra_records)
+        provenance.append(dict(path=str(path),manifest=extra))
     output.mkdir(parents=True,exist_ok=True)
     grouped = summaries(records)
     rows, family_rows, category_rows = [], [], []
@@ -138,7 +194,7 @@ def artifacts(directory: Path, output: Path, *, seed: int = 42, draws: int = 200
         for category,values in summary["categories"].items():
             category_rows.append(dict(method=method,category=category,samples=values["samples"],**{m:values[m]["value"] for m in RATES}))
     comparisons: dict[str, Any] = {}
-    for baseline in ("B0","B1","B2","B3"):
+    for baseline in ("B0","B1","B2","B3","D0","D1"):
         if "M1" not in grouped or baseline not in grouped:
             comparisons[baseline] = dict(status="missing_methods")
             continue
@@ -147,14 +203,16 @@ def artifacts(directory: Path, output: Path, *, seed: int = 42, draws: int = 200
         comparisons[baseline] = dict(
             recovery_mcnemar=mcnemar([x.decision.action == "EXECUTE" and x.semantic_equivalent is True for x,y in recoverable],
                                      [y.decision.action == "EXECUTE" and y.semantic_equivalent is True for x,y in recoverable]),
+            clustered_recovery=clustered_recovery_comparison(records,"M1",baseline,seed=seed,draws=draws),
+            clustered_recovery_by_domain=clustered_recovery_comparison(records,"M1",baseline,seed=seed,draws=draws,cluster_by="domain"),
             continuous={},
         )
         for field in ("latency","calls","input_tokens","output_tokens","cost"):
             left,right = [getattr(r,field) for r in a],[getattr(r,field) for r in b]
             comparisons[baseline]["continuous"][field] = dict(status="unknown_measurements",pvalue=None) if any(v is None for v in left+right) else wilcoxon_paired(left,right)
-    labels = {"offline_demo":"OFFLINE DEMO ONLY — no model inference", "pilot":"REAL PILOT — one repeat; limited runtime bindings"}
+    labels = {"offline_demo":"OFFLINE DEMO ONLY — no model inference", "deterministic":"DETERMINISTIC CONTROLS — no model inference", "pilot":"REAL PILOT — one repeat; limited runtime bindings"}
     label = labels.get(manifest["config"]["kind"], "Experiment results — assumptions require review")
-    result = dict(label=label,seed=seed,draws=draws,bootstrap_unit="base_tool",summary=grouped,
+    result = dict(label=label,seed=seed,draws=draws,bootstrap_unit="base_tool",summary=grouped,provenance=provenance,
                   intervals=intervals,comparisons=comparisons,
                   limitations=["Scenario pairs within a base tool are dependent; unadjusted McNemar is diagnostic.",
                                "Wilcoxon withheld without confirmed symmetry; repeats are not independent samples."])
@@ -196,6 +254,7 @@ def analysis_cli(argv: list[str] | None = None) -> None:
     parser.add_argument("--output",type=Path,default=Path("experiments/analysis-offline-demo"))
     parser.add_argument("--seed",type=int,default=42)
     parser.add_argument("--draws",type=int,default=2000)
+    parser.add_argument("--additional-run",type=Path,action="append",default=[])
     args = parser.parse_args(argv)
-    result = artifacts(args.run,args.output,seed=args.seed,draws=args.draws)
+    result = artifacts(args.run,args.output,seed=args.seed,draws=args.draws,additional_runs=args.additional_run)
     print(result["label"])

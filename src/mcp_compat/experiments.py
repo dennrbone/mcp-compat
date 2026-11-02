@@ -25,7 +25,7 @@ from mcp_compat.runtime_fixtures import fixture_verifier
 
 
 class RunConfig(StrictModel):
-    kind: Literal["offline_demo", "pilot", "main"]
+    kind: Literal["offline_demo", "deterministic", "pilot", "main"]
     seed: int = 42
     benchmark_digest: str
     repeats: int = Field(default=1, ge=1)
@@ -156,7 +156,7 @@ def run(config: RunConfig, strategies: list[Strategy], benchmark: Path, output: 
     names = [s.name for s in strategies]
     if not names or len(names) != len(set(names)) or any(not re.fullmatch(r"[A-Za-z0-9_-]+",n) for n in names):
         raise ValueError("invalid or duplicate methods")
-    if config.kind != "offline_demo" and not config.model_versions:
+    if config.kind in ("pilot", "main") and not config.model_versions:
         raise ValueError("main experiment requires explicit model versions")
     benchmark_manifest = json.loads((benchmark/"manifest.json").read_bytes())
     if config.kind == "main" and benchmark_manifest["version"] != VERSION:

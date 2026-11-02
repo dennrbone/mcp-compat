@@ -1,0 +1,56 @@
+{
+  "date": "2026-11-03",
+  "origin": "https://github.com/dennrbone/mcp-compat",
+  "main_unchanged": "23a4846b446a0df7817a798e12cfc71250fdee81",
+  "runs": [
+    {
+      "branch": "phase/11-agent-provider-tests",
+      "sha": "275db19532137a149cf127b7d713f7e954fb9819",
+      "run_id": 41504972644,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/dennrbone/mcp-compat/actions/runs/41504972644"
+    },
+    {
+      "branch": "phase/12-structured-mapping",
+      "sha": "59c6dbd0627f53ca1f48125d4b56da7bffc6bc09",
+      "run_id": 41504973427,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/dennrbone/mcp-compat/actions/runs/41504973427"
+    },
+    {
+      "branch": "phase/13-runtime-registry",
+      "sha": "9b11772c229a8da83d10293eb1fcb3b9acd87251",
+      "run_id": 41504973295,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/dennrbone/mcp-compat/actions/runs/41504973295"
+    },
+    {
+      "branch": "phase/14-recovery-revalidation",
+      "sha": "859187c889d8ab103d41f9f0906bdca85ec9c389",
+      "run_id": 41504972702,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/dennrbone/mcp-compat/actions/runs/41504972702"
+    },
+    {
+      "branch": "phase/15-verified-identity",
+      "sha": "6952f57ed27d5c65eeba2ec521f0f3cb65dbc60d",
+      "run_id": 41504973000,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/dennrbone/mcp-compat/actions/runs/41504973000"
+    },
+    {
+      "branch": "phase/16-full-codeagent-benchmark",
+      "sha": "8a70792c36be6fdff3ebce3bbedfdd141cdf5c13",
+      "run_id": 41504973495,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/dennrbone/mcp-compat/actions/runs/41504973495"
+    }
+  ],
+  "publication": "Author explicitly authorized pushing current work on 2026-11-03; prompt/task Markdown excluded."
+}

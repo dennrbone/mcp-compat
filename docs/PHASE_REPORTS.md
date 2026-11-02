@@ -200,3 +200,15 @@ and validation/ci.json. Final installed-wheel gate also passed **233 + 2 skips,
   mypy PASS (21 modules). **2 actual CodeAgent→MCP tests PASS**, including positive
   verified recovery and unknown-binding abstention.
 - See IMPROVEMENTS.md and validation/phase13.json. Main unchanged; no push.
+
+## Phase 14 — real revalidation
+
+- Branch `phase/14-recovery-revalidation`, code `8a5a7789`; prior data preserved.
+- Same paired 18 cases × 9 methods = 162 decisions: **94/94 mappings parsed**,
+  95 invocations including one retried transport failure. Unknown usage remains
+  null. M1: **7/10 recoveries; 0/7 unsafe executions; 8/8 required abstentions**.
+- **286 passed, 5 opt-in skips, 100% statements/branches** (1732/638), source and
+  installed wheel. **5 actual CodeAgent tests PASS**. Lint/types/build/dependency
+  checks, YAML, offline e2e and real-result integrity PASS.
+- Detailed evidence: validation/phase14.json and IMPROVEMENTS.md. No scientific
+  superiority claim; main unchanged; remote CI unavailable without publication.

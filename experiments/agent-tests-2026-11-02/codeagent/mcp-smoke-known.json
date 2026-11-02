@@ -1,0 +1,253 @@
+{
+  "scope": "codeagent_to_project_mcp",
+  "model": "gigacode/GigaCode",
+  "returncode": 0,
+  "events": [
+    {
+      "type": "step_start",
+      "timestamp": 1793600666520,
+      "sessionID": "ses_e6511d91fffeb1zbeRHoUNhQ0c",
+      "part": {
+        "id": "prt_19aee3b96001h5t7z1F3fif7SE",
+        "messageID": "msg_19aee305a001Ra4RA65vEhsj55",
+        "sessionID": "ses_e6511d91fffeb1zbeRHoUNhQ0c",
+        "type": "step-start"
+      }
+    },
+    {
+      "type": "text",
+      "timestamp": 1793600666524,
+      "sessionID": "ses_e6511d91fffeb1zbeRHoUNhQ0c",
+      "part": {
+        "id": "prt_19aee3b9a001NL05SO8VZT7E54",
+        "messageID": "msg_19aee305a001Ra4RA65vEhsj55",
+        "sessionID": "ses_e6511d91fffeb1zbeRHoUNhQ0c",
+        "type": "text",
+        "text": "\n\n",
+        "time": {
+          "start": 1793600666522,
+          "end": 1793600666523
+        }
+      }
+    },
+    {
+      "type": "tool_use",
+      "timestamp": 1793600666526,
+      "sessionID": "ses_e6511d91fffeb1zbeRHoUNhQ0c",
+      "part": {
+        "type": "tool",
+        "tool": "compat_check_migration",
+        "callID": "call_c4d140009dc844b8bb58e117",
+        "state": {
+          "status": "completed",
+          "input": {
+            "old_contract": {
+              "name": "commerce_quote",
+              "description": "Synthetic commerce quote; isolated state only.",
+              "input_schema": {
+                "type": "object",
+                "properties": {
+                  "value": {
+                    "type": [
+                      "integer",
+                      "number",
+                      "null"
+                    ],
+                    "semantic_unit": "RUB"
+                  },
+                  "target": {
+                    "type": "string"
+                  },
+                  "mode": {
+                    "type": "string",
+                    "enum": [
+                      "standard",
+                      "express"
+                    ]
+                  },
+                  "note": {
+                    "type": "string"
+                  },
+                  "notify": {
+                    "type": "boolean"
+                  },
+                  "legacy": {
+                    "type": "boolean"
+                  },
+                  "date": {
+                    "type": "string",
+                    "format": "date"
+                  },
+                  "duration": {
+                    "type": "integer",
+                    "semantic_unit": "seconds"
+                  }
+                },
+                "required": [
+                  "value",
+                  "target",
+                  "mode",
+                  "notify",
+                  "legacy"
+                ]
+              },
+              "output_schema": null,
+              "metadata": {}
+            },
+            "new_contract": {
+              "name": "commerce_quote_v2",
+              "description": "Synthetic commerce quote; isolated state only.",
+              "input_schema": {
+                "type": "object",
+                "properties": {
+                  "value": {
+                    "type": [
+                      "integer",
+                      "number",
+                      "null"
+                    ],
+                    "semantic_unit": "RUB"
+                  },
+                  "target": {
+                    "type": "string"
+                  },
+                  "mode": {
+                    "type": "string",
+                    "enum": [
+                      "standard",
+                      "express"
+                    ]
+                  },
+                  "note": {
+                    "type": "string"
+                  },
+                  "notify": {
+                    "type": "boolean"
+                  },
+                  "legacy": {
+                    "type": "boolean"
+                  },
+                  "date": {
+                    "type": "string",
+                    "format": "date"
+                  },
+                  "duration": {
+                    "type": "integer",
+                    "semantic_unit": "seconds"
+                  }
+                },
+                "required": [
+                  "value",
+                  "target",
+                  "mode",
+                  "notify",
+                  "legacy"
+                ]
+              },
+              "output_schema": null,
+              "metadata": {}
+            },
+            "old_call": {
+              "tool_name": "commerce_quote",
+              "arguments": {
+                "value": 2,
+                "target": "development",
+                "mode": "express",
+                "notify": true,
+                "legacy": true,
+                "duration": 60
+              }
+            },
+            "context": {}
+          },
+          "output": "{\"action\":\"EXECUTE\",\"adapted_call\":{\"arguments\":{\"duration\":60,\"legacy\":true,\"mode\":\"express\",\"notify\":true,\"target\":\"development\",\"value\":2},\"tool_name\":\"commerce_quote_v2\"},\"evidence\":{\"candidate\":{\"arguments\":{\"duration\":60,\"legacy\":true,\"mode\":\"express\",\"notify\":true,\"target\":\"development\",\"value\":2},\"tool_name\":\"commerce_quote_v2\"},\"candidates\":[\"date\",\"duration\",\"legacy\",\"mode\",\"note\",\"notify\",\"target\",\"value\"],\"diff\":{\"changes\":[{\"details\":{},\"family\":\"C1\",\"new_value\":\"commerce_quote_v2\",\"old_value\":\"commerce_quote\",\"path\":\"name\",\"subtype\":\"tool_renamed\"}],\"opaque\":[]},\"method\":\"M1\",\"schema_valid\":true,\"semantic_verified\":true,\"verification\":{\"evidence\":{\"new_outcome\":\"f947ccb7ab9be876d8b3e2c27732f9d4e78c2f20ae27696fdf5b9aee512ab0d5\",\"old_outcome\":\"f947ccb7ab9be876d8b3e2c27732f9d4e78c2f20ae27696fdf5b9aee512ab0d5\"},\"passed\":true,\"reason\":\"equivalent\"}},\"metadata\":{},\"reasons\":[\"verified\"]}",
+          "metadata": {
+            "truncated": false
+          },
+          "title": "",
+          "time": {
+            "start": 1793600666523,
+            "end": 1793600666525
+          },
+          "attachments": []
+        },
+        "id": "prt_19aee3b9a003pQxgqOdYEWiY0z",
+        "sessionID": "ses_e6511d91fffeb1zbeRHoUNhQ0c",
+        "messageID": "msg_19aee305a001Ra4RA65vEhsj55"
+      }
+    },
+    {
+      "type": "step_finish",
+      "timestamp": 1793600666528,
+      "sessionID": "ses_e6511d91fffeb1zbeRHoUNhQ0c",
+      "part": {
+        "id": "prt_19aee3b9f00117oMMt0Kf16pd4",
+        "reason": "tool-calls",
+        "messageID": "msg_19aee305a001Ra4RA65vEhsj55",
+        "sessionID": "ses_e6511d91fffeb1zbeRHoUNhQ0c",
+        "type": "step-finish",
+        "tokens": {
+          "total": 6875,
+          "input": 6386,
+          "output": 489,
+          "reasoning": 0,
+          "cache": {
+            "write": 0,
+            "read": 0
+          }
+        },
+        "cost": 0
+      }
+    },
+    {
+      "type": "step_start",
+      "timestamp": 1793600671034,
+      "sessionID": "ses_e6511d91fffeb1zbeRHoUNhQ0c",
+      "part": {
+        "id": "prt_19aee4d39001iiVx4uaZOUo2Ms",
+        "messageID": "msg_19aee3ba2001seYwtF1bh2Un22",
+        "sessionID": "ses_e6511d91fffeb1zbeRHoUNhQ0c",
+        "type": "step-start"
+      }
+    },
+    {
+      "type": "text",
+      "timestamp": 1793600671039,
+      "sessionID": "ses_e6511d91fffeb1zbeRHoUNhQ0c",
+      "part": {
+        "id": "prt_19aee4d3a002lHhZpbiqWWcEME",
+        "messageID": "msg_19aee3ba2001seYwtF1bh2Un22",
+        "sessionID": "ses_e6511d91fffeb1zbeRHoUNhQ0c",
+        "type": "text",
+        "text": "\n\nThe `compat_check_migration` tool returned the following:\n\n- **Action:** `EXECUTE`\n- **Adapted call:** The tool invocation was adapted to use the new contract name `commerce_quote_v2` while preserving all original arguments (`value: 2`, `target: \"development\"`, `mode: \"express\"`, `notify: true`, `legacy: true`, `duration: 60`).\n- **Evidence summary:**\n  - **Method:** `M1` — schema is valid and semantically verified.\n  - **Diff:** The only change detected is a tool rename (`commerce_quote` → `commerce_quote_v2`), classified under family `C1`.\n  - **Verification:** Passed — old and new outcomes are equivalent (`f947ccb7ab9be876d8b3e2c27732f9d4e78c2f20ae27696fdf5b9aee512ab0d5`).\n  - **Reasons:** `[\"verified\"]`",
+        "time": {
+          "start": 1793600671034,
+          "end": 1793600671038
+        }
+      }
+    },
+    {
+      "type": "step_finish",
+      "timestamp": 1793600671040,
+      "sessionID": "ses_e6511d91fffeb1zbeRHoUNhQ0c",
+      "part": {
+        "id": "prt_19aee4d3f001xN9pZnfQQxYYek",
+        "reason": "stop",
+        "messageID": "msg_19aee3ba2001seYwtF1bh2Un22",
+        "sessionID": "ses_e6511d91fffeb1zbeRHoUNhQ0c",
+        "type": "step-finish",
+        "tokens": {
+          "total": 7440,
+          "input": 7194,
+          "output": 246,
+          "reasoning": 0,
+          "cache": {
+            "write": 0,
+            "read": 0
+          }
+        },
+        "cost": 0
+      }
+    }
+  ]
+}

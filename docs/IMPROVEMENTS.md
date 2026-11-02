@@ -50,3 +50,26 @@ Full suite: **285 passed, 5 opt-in skips, 100% statements/branches** (1730/636).
 Two real CodeAgent→MCP tests PASS: known binding returns verified EXECUTE, unknown
 binding returns ABSTAIN. Source/type/lint and protocol/state safety checks pass.
 Machine-readable evidence: validation/phase13.json.
+
+## Phase 14 — paired real revalidation
+
+Branch: `phase/14-recovery-revalidation`; code `8a5a7789`. Same 18 scenario IDs,
+nine methods and benchmark digest as Phase 11; one repeat. Mapper limits are now
+fingerprinted, and an existing output refuses new inference before contacting
+the model. Frozen evidence is not overwritten.
+
+- **94/94 mapping decisions parsed successfully**, using 95 wrapper invocations.
+  One transport failure was retried. Its response usage is unknown, not zero.
+- M1: **7/10 correct recoveries**, **0/7 unsafe executions**, 8/8 MUST_ABSTAIN
+  cases blocked. Earlier M1 was 0/10 with no executions; its UHR was undefined.
+- Two recoverable unchanged-argument candidates were declined by the model. One
+  remaining recoverable encoding case has no unambiguous runtime binding.
+- **286 tests PASS, 5 opt-in skips, 100% coverage** (1732 statements/638 branches),
+  both source and separately installed wheel. Five real CodeAgent tests PASS.
+- Ruff, mypy (21 modules), build, dependency consistency, workflow YAML, offline
+  e2e and result/manifest integrity PASS. Artifacts: agent-tests-2026-11-02/codeagent.
+
+These are descriptive engineering results on a previously observed small corpus.
+Protocol, retry budget, runtime coverage and evaluation validation changed. The
+service exposes no immutable underlying model revision. No causal attribution or
+H1–H4 confirmation is claimed. Full repeated real-model research remains NOT RUN.

@@ -1,0 +1,19 @@
+{
+  "source_digest": "ccd2591e512801b45a81d0a1c426c802a5b380ec680ae03c13c2fd31efd24397",
+  "source_commit": "fda300069fc264f7ef97b7e3b85c76b03353c27e",
+  "base_project_commit": "a5f6e22602cba05ffb605201be07e490d72e7fce",
+  "helper_files": {
+    "examples/terra_case_study.py": "86131a1b374d68088f982f36d57d4c12198b09ecb90ea9c01067a23ef1b99f63",
+    "examples/codex_transport.py": "a5708b880f25dccb9bd56ce1a74504510484bbc299bdb17336f2576983f11a29"
+  },
+  "helper_digest": "fa6d4b9faea179931686fa5809f44a2597dfb651004dcce68143cc484d5f0f4c",
+  "client_version": "codex-cli 0.164.0",
+  "model": "gpt-6.1-terra",
+  "auth_mode": "chatgpt",
+  "server_revision": "unknown",
+  "protocol_sha256": "f408fe9cf2daad56505211bd56fa31bbf17ad6a265f10270246c582a70efea54",
+  "pilot_decisions": 80,
+  "planned_main_decisions": 5760,
+  "publication_scope": "synthetic benchmark requests only; no auth/config files",
+  "failed_preflights_preserved": true
+}

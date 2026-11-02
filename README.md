@@ -67,7 +67,7 @@ Real provider smoke tests are opt-in and otherwise report SKIP / NOT RUN.
 The installed GigaCode uses CodeAgent; other models and agents connect through
 the generic model interface and standard MCP. See [provider setup and test commands](docs/PROVIDERS.md).
 
-Phase 3–10 development uses separate stacked branches; no merge into main has
+Development and recovery improvements use separate stacked branches; no merge into main has
 been performed. Review dependencies are listed in docs/IMPLEMENTATION_PLAN.md.
 
 ## Offline demo

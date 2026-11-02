@@ -1,0 +1,176 @@
+{
+  "scope": "codeagent_to_project_mcp",
+  "model": "gigacode/GigaCode",
+  "returncode": 0,
+  "events": [
+    {
+      "type": "step_start",
+      "timestamp": 1793602307239,
+      "sessionID": "ses_e64f8ce9affeRURy4yUbOfzySi",
+      "part": {
+        "id": "prt_19b0744a40011LsldeFC7ZF3yE",
+        "messageID": "msg_19b073be9001DIPHL5B185JN85",
+        "sessionID": "ses_e64f8ce9affeRURy4yUbOfzySi",
+        "type": "step-start"
+      }
+    },
+    {
+      "type": "text",
+      "timestamp": 1793602307245,
+      "sessionID": "ses_e64f8ce9affeRURy4yUbOfzySi",
+      "part": {
+        "id": "prt_19b0744aa002JsaF4Xo75rBURh",
+        "messageID": "msg_19b073be9001DIPHL5B185JN85",
+        "sessionID": "ses_e64f8ce9affeRURy4yUbOfzySi",
+        "type": "text",
+        "text": "\n\n",
+        "time": {
+          "start": 1793602307242,
+          "end": 1793602307244
+        }
+      }
+    },
+    {
+      "type": "tool_use",
+      "timestamp": 1793602307250,
+      "sessionID": "ses_e64f8ce9affeRURy4yUbOfzySi",
+      "part": {
+        "type": "tool",
+        "tool": "compat_check_migration",
+        "callID": "call_a0f33655dd564e47a4ff2a11",
+        "state": {
+          "status": "completed",
+          "input": {
+            "old_contract": {
+              "name": "echo",
+              "description": null,
+              "input_schema": {
+                "type": "object",
+                "properties": {
+                  "x": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "x"
+                ]
+              },
+              "output_schema": null,
+              "metadata": {}
+            },
+            "new_contract": {
+              "name": "echo",
+              "description": null,
+              "input_schema": {
+                "type": "object",
+                "properties": {
+                  "x": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "x"
+                ]
+              },
+              "output_schema": null,
+              "metadata": {}
+            },
+            "old_call": {
+              "tool_name": "echo",
+              "arguments": {
+                "x": 3
+              }
+            },
+            "context": {}
+          },
+          "output": "{\"action\":\"ABSTAIN\",\"adapted_call\":null,\"evidence\":{\"candidate\":{\"arguments\":{\"x\":3},\"tool_name\":\"echo\"},\"candidate_source\":\"structural\",\"candidates\":[\"x\"],\"diff\":{\"changes\":[],\"opaque\":[]},\"method\":\"M1\",\"schema_valid\":true,\"semantic_verified\":false,\"verification\":{\"evidence\":{},\"passed\":false,\"reason\":\"unbound_runtime\"},\"verification_attempts\":1},\"metadata\":{},\"reasons\":[\"unbound_runtime\"]}",
+          "metadata": {
+            "truncated": false
+          },
+          "title": "",
+          "time": {
+            "start": 1793602307245,
+            "end": 1793602307248
+          },
+          "attachments": []
+        },
+        "id": "prt_19b0744ab0011Tkt7sBAP5kFeG",
+        "sessionID": "ses_e64f8ce9affeRURy4yUbOfzySi",
+        "messageID": "msg_19b073be9001DIPHL5B185JN85"
+      }
+    },
+    {
+      "type": "step_finish",
+      "timestamp": 1793602307253,
+      "sessionID": "ses_e64f8ce9affeRURy4yUbOfzySi",
+      "part": {
+        "id": "prt_19b0744b3001aII4kAI5vrPn2v",
+        "reason": "tool-calls",
+        "messageID": "msg_19b073be9001DIPHL5B185JN85",
+        "sessionID": "ses_e64f8ce9affeRURy4yUbOfzySi",
+        "type": "step-finish",
+        "tokens": {
+          "total": 6375,
+          "input": 6152,
+          "output": 223,
+          "reasoning": 0,
+          "cache": {
+            "write": 0,
+            "read": 0
+          }
+        },
+        "cost": 0
+      }
+    },
+    {
+      "type": "step_start",
+      "timestamp": 1793602308633,
+      "sessionID": "ses_e64f8ce9affeRURy4yUbOfzySi",
+      "part": {
+        "id": "prt_19b074a15001ETP3IeRjUrSVLA",
+        "messageID": "msg_19b0744b7001JclSYrheiOxwxp",
+        "sessionID": "ses_e64f8ce9affeRURy4yUbOfzySi",
+        "type": "step-start"
+      }
+    },
+    {
+      "type": "text",
+      "timestamp": 1793602308644,
+      "sessionID": "ses_e64f8ce9affeRURy4yUbOfzySi",
+      "part": {
+        "id": "prt_19b074a1b0011dvKkwi9B0Sqr6",
+        "messageID": "msg_19b0744b7001JclSYrheiOxwxp",
+        "sessionID": "ses_e64f8ce9affeRURy4yUbOfzySi",
+        "type": "text",
+        "text": "\n\nThe `compat_check_migration` tool returned the following:\n\n- **Action:** `ABSTAIN`\n- **Reason:** `unbound_runtime` — the tool could not verify semantic compatibility because no runtime was available to execute the tool.\n- **Evidence:** The candidate call `{ \"tool_name\": \"echo\", \"arguments\": { \"x\": 3 } }` was structurally valid and matched the old/new contracts, but semantic verification failed due to the unbound runtime. No adapted call was produced.",
+        "time": {
+          "start": 1793602308635,
+          "end": 1793602308642
+        }
+      }
+    },
+    {
+      "type": "step_finish",
+      "timestamp": 1793602308646,
+      "sessionID": "ses_e64f8ce9affeRURy4yUbOfzySi",
+      "part": {
+        "id": "prt_19b074a25001pGHpBIYp94lMet",
+        "reason": "stop",
+        "messageID": "msg_19b0744b7001JclSYrheiOxwxp",
+        "sessionID": "ses_e64f8ce9affeRURy4yUbOfzySi",
+        "type": "step-finish",
+        "tokens": {
+          "total": 6609,
+          "input": 341,
+          "output": 124,
+          "reasoning": 0,
+          "cache": {
+            "write": 0,
+            "read": 6144
+          }
+        },
+        "cost": 0
+      }
+    }
+  ]
+}

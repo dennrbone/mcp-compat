@@ -45,6 +45,12 @@ ABSTAIN. It does not automatically trust arbitrary production contracts. Registe
 your own SandboxVerifier implementations in RuntimeRegistry when embedding the
 engine, then pass that registry and your mapper to Hybrid.
 
+When structural rules decline, Hybrid may preview the unchanged arguments against
+the registered old/new implementations before asking a model. Both schema checks
+and equivalent outcomes are required; a failed preview falls back to mapping.
+Unit changes still require explicit conversion rules. The preview uses isolated
+state and must never invoke a live side-effecting service.
+
 In installed GigaCode use `gigacode mcp add`, select a local stdio server and set
 the executable/arguments above. Other MCP clients use their own server settings;
 the wire protocol is the same. This project does not edit global agent settings.

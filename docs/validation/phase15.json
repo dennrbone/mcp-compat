@@ -1,0 +1,114 @@
+{
+  "date": "2026-11-02",
+  "phase": 15,
+  "code_commit": "25040b53",
+  "source_digest": "d882ed36e9dba799b949d36f61ccd00c438afd8d8ec33c4edfee19a30dfcab10",
+  "pytest": {
+    "passed": 294,
+    "failed": 0,
+    "skipped": 5
+  },
+  "coverage": {
+    "covered_lines": 1749,
+    "num_statements": 1749,
+    "percent_covered": 100.0,
+    "percent_covered_display": "100",
+    "missing_lines": 0,
+    "excluded_lines": 13,
+    "percent_statements_covered": 100.0,
+    "percent_statements_covered_display": "100",
+    "num_branches": 648,
+    "num_partial_branches": 0,
+    "covered_branches": 648,
+    "missing_branches": 0,
+    "percent_branches_covered": 100.0,
+    "percent_branches_covered_display": "100"
+  },
+  "clean_wheel": {
+    "passed": 294,
+    "failed": 0,
+    "skipped": 5
+  },
+  "clean_coverage": {
+    "covered_lines": 1749,
+    "num_statements": 1749,
+    "percent_covered": 100.0,
+    "percent_covered_display": "100",
+    "missing_lines": 0,
+    "excluded_lines": 13,
+    "percent_statements_covered": 100.0,
+    "percent_statements_covered_display": "100",
+    "num_branches": 648,
+    "num_partial_branches": 0,
+    "covered_branches": 648,
+    "missing_branches": 0,
+    "percent_branches_covered": 100.0,
+    "percent_branches_covered_display": "100"
+  },
+  "real_provider": {
+    "passed": 5,
+    "failed": 0,
+    "skipped": 0
+  },
+  "pilot": {
+    "scope": "M1 only; previous 18 IDs; one repeat; separate source/config",
+    "decisions": 18,
+    "mapping_decisions": 14,
+    "wrapper_calls": 14,
+    "terminal_mapping_failures": 0,
+    "attempt_errors": {},
+    "correct_recoveries": {
+      "value": 0.8,
+      "numerator": 8,
+      "denominator": 10
+    },
+    "unsafe_executions": {
+      "value": 0.0,
+      "numerator": 0,
+      "denominator": 8
+    },
+    "required_abstentions": {
+      "value": 1.0,
+      "numerator": 8,
+      "denominator": 8
+    },
+    "false_blocks": {
+      "value": 0.2,
+      "numerator": 2,
+      "denominator": 10
+    },
+    "no_inference_identity_recoveries": [
+      "analytics-3-C2-1",
+      "calendar-4-C4-0"
+    ],
+    "remaining_recoverable_abstentions": [
+      {
+        "scenario_id": "inventory-5-C8-0",
+        "reasons": [
+          "mapping_abstain"
+        ]
+      },
+      {
+        "scenario_id": "messaging-3-C5-1",
+        "reasons": [
+          "unbound_runtime"
+        ]
+      }
+    ]
+  },
+  "checks": {
+    "ruff": "PASS",
+    "mypy": "PASS",
+    "packaging": "PASS",
+    "dependency_consistency": "PASS",
+    "workflow_yaml": "PASS",
+    "wheel_source_equality": "PASS",
+    "result_integrity": "PASS",
+    "offline_e2e": "PASS"
+  },
+  "ci": "NOT RUN: publication authorization covers Phase 3\u201310 only",
+  "packages": {
+    "mcp_compat-0.1.0-py3-none-any.whl": "c5f7b755f63274d639b1f7abc69ab1df28347ca02c8ce9db48ed25fdef46a687",
+    "mcp_compat-0.1.0.tar.gz": "18eaef9a251679bc05d0a313c2d1f8a30c19fcb6ade872be50362665946f4410"
+  }
+}

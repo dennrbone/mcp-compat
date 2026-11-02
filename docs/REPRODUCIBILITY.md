@@ -44,12 +44,14 @@ MPLCONFIGDIR=/tmp/mcp-matplotlib .venv/bin/mcp-compat-analyze --run /tmp/mcp-off
 
 The demo has 45 identical frozen scenarios for nine methods, yielding 405 records.
 It uses `offline-demo-no-inference`; no inference API, GPU or user data is used.
-It binds one independently implemented unit/quote pair; unbound M1 cases abstain.
+It now uses the 1536-binding trusted synthetic registry; unbound M1 cases abstain.
 Generated CI/p-values are diagnostic, with explicit assumptions/statuses. The
 single base-tool cluster does not support a bootstrap CI. Actual tracked run:
 `experiments/offline-demo-final/`; tables/PNG/SVG/LaTeX:
-`experiments/analysis-offline-demo/`. The older offline-demo directory is historical
-1.1 evidence; never mix its records with 1.2 or present either as the main study.
+`experiments/analysis-offline-demo/`. Those Phase 10 artifacts used one runtime
+pair; a current rerun has a different source fingerprint and runtime coverage.
+The older offline-demo directory is historical 1.1 evidence; never mix versions
+or source fingerprints or present these demos as the main study.
 
 Resume uses the same command/config directory and preserves completed records.
 Changing source/config/dependencies rejects resume; use a new directory. Duration
@@ -60,7 +62,7 @@ latency bytes. Dataset regeneration does promise identical bytes.
 
 See [PROVIDERS.md](PROVIDERS.md) and [AGENT_TESTS.md](AGENT_TESTS.md) for the
 current CodeAgent selection, installed versions and actual results.
-Default CI/offline tests skip both real-model cases. A skip is NOT RUN.
+Default CI/offline tests skip five real-model cases. A skip is NOT RUN.
 An explicitly selected case fails on missing installation, credentials, quota,
 timeout or invalid JSON; configuration failures are never converted into a pass.
 
@@ -68,7 +70,8 @@ Use the installed CLI credential store. Do not put tokens in repository files.
 The real pilot uses the active frozen benchmark and its integrity checks, one
 preselected case per available family/category stratum, plus the independently
 bound quote/unit fixture, and B0–B3/M1/A1–A4. It has one repeat and incomplete
-runtime coverage. Its descriptive results do not replace the full study.
+runtime coverage. Its descriptive results do not replace the full study. Current
+revalidation and source-specific results are in [IMPROVEMENTS.md](IMPROVEMENTS.md).
 
 Manual provider smoke in GitHub Actions requires a configured self-hosted runner
 with the selected official CLI and its local authentication. Default checks run

@@ -73,3 +73,50 @@ These are descriptive engineering results on a previously observed small corpus.
 Protocol, retry budget, runtime coverage and evaluation validation changed. The
 service exposes no immutable underlying model revision. No causal attribution or
 H1–H4 confirmation is claimed. Full repeated real-model research remains NOT RUN.
+
+## Phase 15 — verified unchanged-argument candidate
+
+Branch: `phase/15-verified-identity`; code `25040b53`, source digest
+`d882ed36e9dba799b949d36f61ccd00c438afd8d8ec33c4edfee19a30dfcab10`.
+
+When structural rules decline, M1 can test the original arguments under the new
+contract using the same independent verifier. A schema-valid, equivalent preview
+is reused without contacting the model or running the callbacks twice. A failed
+preview falls back to mapping. Unit changes skip this shortcut and retain explicit
+rule checks, including for zero values. A1/A2 keep their declared exclusions.
+Traces identify the candidate source and count all actual preview attempts.
+
+One new real run evaluates **M1 only**, on the same 18 IDs and one repeat. It is
+stored separately; Phase 14's nine-method data is preserved and is not combined
+with the newer source for paired statistics.
+
+| Observed result | Phase 11 | Phase 14 | Phase 15 |
+|---|---|---|---|
+| Correct recoveries | 0/10 | 7/10 | **8/10** |
+| Unsafe executions | undefined (no executions) | 0/7 | **0/8** |
+| MUST_ABSTAIN blocked | 8/8 | 8/8 | **8/8** |
+| M1 wrapper calls | 16 | 16 | **14** |
+
+The two former false blocks (`analytics-3-C2-1`, `calendar-4-C4-0`) now pass an
+independent identity preview without inference. The model declined
+`inventory-5-C8-0`, which it had solved in Phase 14; no deterministic-model claim
+is made. `messaging-3-C5-1` stays blocked because the contract cannot identify its
+runtime implementation. Thus two recoverable cases remain blocked.
+
+All **14/14 received model responses parsed successfully**, with 14 wrapper
+invocations and no retry errors. Reported input/output tokens: 99476/10449;
+reported cost: 0, not an independent billing audit. A schema-invalid proposal in
+one MUST_ABSTAIN case was rejected; successful proposal parsing is not semantic
+or schema correctness of a candidate.
+
+Full source and separately installed wheel: **294 passed, 5 opt-in skips; 100%
+statements/branches** (1749/648). The 2160-case fake-client audit still has 1056
+correct recoveries and zero unsafe executions. Five actual CodeAgent tests PASS.
+Ruff/mypy (21 modules), packaging/source equality, dependencies, workflow YAML,
+405-record offline e2e/analysis and frozen-result integrity PASS.
+
+Artifacts: `experiments/agent-tests-2026-11-02/codeagent-identity/`.
+Machine-readable checks: `validation/phase15.json`. The two repeated pilot runs
+are development revalidations on observed cases, not a fresh holdout or the full
+scientific study. Unknown/ambiguous runtime bindings remain fail-closed; the
+registry does not establish that arbitrary production tools are safe.

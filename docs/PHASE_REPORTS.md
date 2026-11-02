@@ -212,3 +212,20 @@ and validation/ci.json. Final installed-wheel gate also passed **233 + 2 skips,
   checks, YAML, offline e2e and real-result integrity PASS.
 - Detailed evidence: validation/phase14.json and IMPROVEMENTS.md. No scientific
   superiority claim; main unchanged; remote CI unavailable without publication.
+
+## Phase 15 — independently verified identity candidate
+
+- Branch `phase/15-verified-identity`, code `25040b53`. Schema-valid unchanged
+  arguments may pass the independent verifier before model mapping. Failed
+  previews fall back; unit rules and ablation exclusions remain active. All
+  preview attempts are counted; passing previews are reused once.
+- M1-only real revalidation, same 18 IDs: **8/10 correct recoveries, 0/8 unsafe
+  executions, 8/8 required abstentions**. All **14/14 model replies parsed**;
+  14 invocations, no retry errors. Two earlier false blocks now pass without
+  inference; one previously solved unit case was declined by the service.
+- **294 passed, 5 opt-in skips; 100% statements/branches** (1749/648), source
+  and clean wheel. **5 actual CodeAgent tests PASS**. Lint/types/build/package
+  equality/dependencies/YAML, offline e2e/analysis and result integrity PASS.
+- Prior paired data preserved; different-source runs are not pooled. Full
+  scientific study remains NOT RUN. See IMPROVEMENTS.md and phase15.json.
+- Main unchanged; Phase 11–15 branches remain local, task/prompt Markdown untracked.

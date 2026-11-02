@@ -25,7 +25,8 @@ pilot runner supports identical-configuration resume through its Python API.
 The pilot starts only after a strict JSON smoke succeeds. The separate real
 pytest case requires `MCP_COMPAT_RUN_PROVIDER_SMOKE=1`; enabled failures fail.
 Missing credentials/configuration, quota errors, malformed JSON and timeouts
-are never converted to passes. Actual results: [AGENT_TESTS.md](AGENT_TESTS.md).
+are never converted to passes. Current results: [IMPROVEMENTS.md](IMPROVEMENTS.md).
+Historical Phase 11 failures: [AGENT_TESTS.md](AGENT_TESTS.md).
 
 The adapter uses an empty temporary workspace and isolated config directories,
 `--pure`, disabled plugins/external skills/project config/title/summary/compaction,

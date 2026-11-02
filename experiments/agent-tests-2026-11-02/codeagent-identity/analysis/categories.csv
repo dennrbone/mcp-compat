@@ -1,0 +1,4 @@
+method,category,samples,CRR,UHR,FBR,AbstentionAccuracy,SchemaValidityRate,SemanticEquivalenceRate
+M1,SAFE_AUTO,2,1.0,0.0,0.0,,1.0,1.0
+M1,CONDITIONAL,8,0.75,0.0,0.25,,1.0,1.0
+M1,MUST_ABSTAIN,8,,,,1.0,0.0,

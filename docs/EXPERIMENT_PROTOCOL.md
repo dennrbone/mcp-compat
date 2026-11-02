@@ -1,6 +1,6 @@
 # Experiment protocol — Research Spec 1.3
 
-Status: engineering implementation and offline demo only. H1–H4 are **NOT
+Status: engineering implementation, offline demo and small real pilot. H1–H4 are **NOT
 TESTED**. Nothing in this document establishes a benefit of the selected real models or M1.
 The Research Spec, definitions, categories, C1–C8 and metric formulas are unchanged.
 
@@ -48,7 +48,8 @@ their original source fingerprint and must not be silently recomputed.
    correction gets a new version, with the previous run retained and retired.
 
 No full main study or paid request has been performed. Current real CLI smoke
-and pilot evidence is recorded in AGENT_TESTS.md. Provider versions/quotas and
+and pilot evidence is recorded in IMPROVEMENTS.md; AGENT_TESTS.md preserves
+historical Phase 11 failures. Provider versions/quotas and
 broader independent runtime bindings still limit the full comparison. Git push
 authorization does not authorize inference charges.
 
@@ -72,7 +73,10 @@ known zero use. Repeats are attempts, paired by (scenario_id, repeat). C1–C8 u
 the primary mutation family; composed cases retain their composed flag and use
 C8 as primary, without double-counting secondary C1. Categories are separate.
 Operational metrics include measured latency, calls, token/cost totals and
-validation-stage counts. Working UHR thresholds 1% and 2% remain sensitivity
+validation-stage counts. Current Hybrid traces count every verifier attempt,
+including a rejected identity probe; a successful probe is reused once. This
+operational count is source-specific and does not change CRR/UHR/FBR. Working
+UHR thresholds 1% and 2% remain sensitivity
 criteria, not established safety guarantees; undefined UHR proves no bound.
 
 ## Analysis and assumptions

@@ -1,3 +1,7 @@
 # Preserve standard CSV line endings and generated SVG glyph whitespace.
 experiments/**/analysis/*.csv whitespace=cr-at-eol
 experiments/**/analysis/*.svg -whitespace
+
+# Сгенерированные таблицы CSV и контуры шрифтов SVG.
+experiments/publication-*/**/*.csv whitespace=cr-at-eol
+experiments/publication-*/**/*.svg -whitespace

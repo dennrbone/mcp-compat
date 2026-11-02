@@ -70,9 +70,10 @@ the declared LLM extra. CI repair was propagated through the feature stack, addi
 the MCP extra where required. **All Phase 3–10 verified code runs now PASS**;
 run ids/commits are recorded in CI_FOLLOWUP.md and `docs/validation/ci.json`.
 Phase 10 tests and offline-e2e PASS; provider-smoke is skipped / NOT RUN.
-Local PASS is never substituted for a remote Actions result. Phase 11–16 are
-locally committed; automatic approval review rejected Phase 11's push because
-prior permission covers Phase 3–10 only. Phase 11–16 remote CI remains NOT RUN.
+Local PASS is never substituted for a remote Actions result. Phase 11–16 опубликованы в разрешённый origin. Аутентифицированная проверка
+GitHub API подтвердила успешное завершение всех шести workflows; точные SHA и
+ссылки: `validation/ci-2026-11-03.json`. Это проверка CI, а не запуск реальной
+модели в GitHub Actions.
 
 Phase branches are stacked; no merge/rebase/squash into main was performed.
 Only ordinary forward propagation of CI fixes between feature branches is used.

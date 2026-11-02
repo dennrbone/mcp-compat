@@ -1,0 +1,13 @@
+{
+  "historical_commit": "8a70792c",
+  "controls_commit": "65d8c7609e81103d0e37c0564a1d65428f438a27",
+  "identical_files": {
+    "hybrid.py": "21b0f16e1aef6662adf67a4c233e7c9913c2f2f5584ba0bfcb9347c48d869837",
+    "llm.py": "7ec2d3af4b4737dd8c9557ee54525ca756402d5b1e4f02c949fcd603f81c18f5",
+    "runtime_fixtures.py": "f6233c821ddac8c9a46977620e05804d9bc9ef6e2c5545cc349533632e79421a",
+    "recovery.py": "ef61ed793cbdb99fb2a567205de5271c6e589d8e02158f3d7d01250bbca3b4c9",
+    "schema/validator.py": "0ba6fe333d4eb28ca5da7c779fa3649db6bb1f2f5ee139fa97835f144cdeb95a",
+    "benchmark.py": "7b46140bb4fa64c1fb489d899e67df360e0206c216ed6cf3ff848d9058626cdf"
+  },
+  "condition": "same evobench-1.2 data and declared context; controls are sequential with no model calls; compare quality, not loaded latency"
+}

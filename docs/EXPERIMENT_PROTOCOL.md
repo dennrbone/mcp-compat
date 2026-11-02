@@ -1,7 +1,8 @@
 # Experiment protocol — Research Spec 1.3
 
-Status: engineering implementation, offline demo and small real pilot. H1–H4 are **NOT
-TESTED**. Nothing in this document establishes a benefit of the selected real models or M1.
+Status: engineering implementation, pilots and one complete CodeAgent benchmark
+(2160 scenarios × nine methods, one repeat). The planned repeated study and H1–H4
+confirmation remain incomplete. Observed descriptive results are in IMPROVEMENTS.md.
 The Research Spec, definitions, categories, C1–C8 and metric formulas are unchanged.
 
 ## Frozen inputs
@@ -47,8 +48,9 @@ their original source fingerprint and must not be silently recomputed.
 7. Do not tune prompts/rules on frozen test-oracle scores. Any later benchmark
    correction gets a new version, with the previous run retained and retired.
 
-No full main study or paid request has been performed. Current real CLI smoke
-and pilot evidence is recorded in IMPROVEMENTS.md; AGENT_TESTS.md preserves
+One full CodeAgent repeat completed on 2026-11-02; no paid request was authorized.
+This does not complete the planned multi-repeat study. Current real CLI smoke,
+pilot and full-run evidence is recorded in IMPROVEMENTS.md; AGENT_TESTS.md preserves
 historical Phase 11 failures. Provider versions/quotas and
 broader independent runtime bindings still limit the full comparison. Git push
 authorization does not authorize inference charges.

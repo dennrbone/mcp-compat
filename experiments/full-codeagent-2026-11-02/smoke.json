@@ -1,0 +1,1 @@
+{"cli_version":"26.10.76","model":"gigacode/GigaCode","provider":"gigacode","response":{"cost":0.0,"details":{"cli_steps":1,"transport":"gigacode-cli-json-2"},"input_tokens":6291,"model":"gigacode/GigaCode","output_tokens":60,"text":"\n\n{\"action\":\"ABSTAIN\"}"},"scope":"strict_json_smoke","status":"PASS"}

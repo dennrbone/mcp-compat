@@ -120,3 +120,72 @@ Machine-readable checks: `validation/phase15.json`. The two repeated pilot runs
 are development revalidations on observed cases, not a fresh holdout or the full
 scientific study. Unknown/ambiguous runtime bindings remain fail-closed; the
 registry does not establish that arbitrary production tools are safe.
+
+## Phase 16 — complete CodeAgent benchmark
+
+Branch: `phase/16-full-codeagent-benchmark`; frozen experiment code `7fc2627e`,
+source digest `5fe53754734795ebe92a13553d810559320c58dc24a9fed8c2156e3406053405`.
+All 2160 scenarios were evaluated for nine methods in one repeat, eight workers:
+**19440 decisions**. Every B2 scenario contacted real CodeAgent. All 19440 result
+digests, run/dataset manifests, exact method/scenario matrix, labels, source and
+recomputed summaries passed integrity checks. No failed decisions were replaced.
+
+Finished **2026-11-02 23:37:43 Asia/Omsk**, about **10 h 27 min** after the run
+manifest was created. Completion timing is measured from result-digests.json's
+filesystem mtime on the original host, preserved in the validation report.
+
+| Method | Correct recovery / 1248 recoverable | Unsafe / executed | MUST_ABSTAIN blocked / 912 |
+|---|---|---|---|
+| B0 | 384 (30.8%) | 480/864 (55.6%) | 528 |
+| B1 | 799 (64.0%) | 769/1568 (49.0%) | 361 |
+| B2 | 906 (72.6%) | 575/1481 (38.8%) | 434 |
+| B3 | 336 (26.9%) | 0/336 | 912 |
+| **M1** | **1001 (80.2%)** | **0/1001** | **912** |
+| A1 | 908 (72.8%) | 16/924 (1.7%) | 896 |
+| A2 | 589 (47.2%) | 0/589 | 912 |
+| A3 | 432 (34.6%) | 0/432 | 912 |
+| A4 | 1127 (90.3%) | 33/1162 (2.8%) | 879 |
+
+M1 has **247/1248 false blocks (19.8%)**. All **192** recoverable ambiguous
+encoding signatures remain unsupported: 143 reached unbound-runtime rejection,
+34 received a parsed model abstention, 13 had no usable parsed response, and two
+proposals were schema-invalid. In C5 this means **0/144** correct recoveries.
+The other **55** false blocks occur among 1056 independently bound recoverable
+cases: 36 unusable responses, 17 parsed model abstentions and two unproven literal
+values. Supported-only recovery is **1001/1056 (94.8%)**; the primary denominator
+remains 1248 and includes every unsupported case.
+
+The clustered 95% CRR interval is **78.77–81.49%**, resampling 48 base-tool
+clusters with seed 42 and 2000 draws. Exact scenario-paired McNemar against B2
+has p=1.15e-7, retained as a diagnostic because scenarios within a tool are
+dependent. Wilcoxon remains withheld without confirmed symmetry.
+
+Successful M1 candidates came from structural rules (336), verified identity (96)
+and model mapping (569). Mean decision latency is 20.89 s, median 11.29 s, with
+timeouts near 120 s. These are loaded CLI-harness timings with eight workers;
+early local validation and separate connectivity diagnostics ran concurrently.
+
+There were **10896 mapping decisions**, **11731 recorded wrapper invocations**,
+and **10303 parsed decisions**; **593** ended without a usable parsed proposal.
+Attempt errors: 1366 ProviderError, 54 ValueError, eight JSONDecodeError. These
+counts include retried attempts, not just final failures. M1 alone: 1728 mapping
+decisions, 1873 invocations, 104 final unparsed/unavailable decisions; two guarded
+pipeline errors on MUST_ABSTAIN cases. All returned responses identify the actual
+installed CodeAgent transport; no fake client or response cache was substituted.
+
+All 10365 received responses report cost zero. Usage is unknown in 945 decision
+records, so total tokens/cost remain null rather than a fabricated zero. Wrapper
+counts are not an independent audit of hidden backend retries or billing.
+
+Pre-run source and installed-wheel gates: **300 passed, five opt-in skips; 100%
+statements/branches (1787/662)**. Verification after completion also passed lint,
+types and dependency consistency. This records one full run, not three repeats
+or independent model families. The opaque backend revision and synthetic repeated
+templates limit interpretation. A zero observed UHR, including a degenerate
+bootstrap interval, does not establish a production safety bound. H1–H4 are not
+confirmed by this single development run.
+
+Raw data and diagnostic tables/figures: `experiments/full-codeagent-2026-11-02/`.
+Machine-readable checks: `validation/phase16.json`. The temporary background
+supervisor and its tests were removed at the user's request; no helper is needed
+to read the completed evidence. Main remains unchanged; no publication performed.

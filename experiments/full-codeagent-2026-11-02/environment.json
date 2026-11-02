@@ -1,0 +1,16 @@
+{
+  "code_commit": "7fc2627e",
+  "python": "3.11.4",
+  "system": "Darwin",
+  "os_version": "27.0",
+  "architecture": "arm64",
+  "logical_cpus": 10,
+  "cli_version": "26.10.76",
+  "cli_sha256": "2a1ea46340804d727b072ab49e66777b38896184fcf374804a324ea4ce1eae0f",
+  "model_id": "gigacode/GigaCode",
+  "backend_revision": null,
+  "backend_hardware": null,
+  "quantization": null,
+  "workers": 8,
+  "limits": "One full repeat, one opaque model alias; not a fresh holdout. Local source and wheel validation ran concurrently during early decisions; background OS load is not controlled."
+}

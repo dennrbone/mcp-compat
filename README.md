@@ -5,7 +5,7 @@ MCP-Compat is a research project about safely restoring LLM-agent compatibility 
 The engineering prototype includes typed contracts/calls, conservative C1–C8
 diffs, a frozen 2160-case synthetic benchmark, B0–B3, provider-neutral mapping,
 isolated GigaCode CodeAgent CLI transport and a generic model interface, verified adapters, an official-SDK local
-MCP proxy, resumable experiments, metrics and statistical artifacts. The full scientific study has **not run**. Real CLI checks are recorded in
+MCP proxy, resumable experiments, metrics and statistical artifacts. One full CodeAgent benchmark is complete; the planned repeated scientific study remains incomplete. Real CLI checks are recorded in
 [current agent test results](docs/IMPROVEMENTS.md). See [actual status](docs/RESULTS_STATUS.md),
 [phase reports](docs/PHASE_REPORTS.md) and [reproduction commands](docs/REPRODUCIBILITY.md).
 

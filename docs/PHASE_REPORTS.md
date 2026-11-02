@@ -239,7 +239,18 @@ and validation/ci.json. Final installed-wheel gate also passed **233 + 2 skips,
 - Source and clean-wheel gates: **300 passed, 5 opt-in skips; 100% statements
   and branches** (1787/662). A deterministic small-batch regression removes a
   timing-dependent coverage gap observed in the initial clean-wheel gate.
-- Full benchmark **RUNNING**, not yet accepted: 2160 scenarios × nine methods,
-  one repeat, eight workers. Every required mapping uses real inference.
-  Results/status: `experiments/full-codeagent-2026-11-02/`.
-- See validation/phase16.json. Main unchanged; no push or remote CI.
+- Full benchmark **COMPLETED**: 2160 scenarios × nine methods = 19440 decisions,
+  one repeat, eight workers. All result hashes, the complete paired matrix,
+  dataset labels, source fingerprint and regenerated summaries verified PASS.
+- M1: **1001/1248 correct recoveries (80.2%), 0/1001 unsafe executions,
+  912/912 required abstentions**. Its 247 false blocks include all 192 ambiguous
+  runtime signatures; supported-only recovery is 1001/1056 (94.8%), a diagnostic
+  subset rather than a replacement for the primary denominator.
+- Recorded 11731 wrapper invocations; 10303/10896 mapping decisions parsed.
+  593 ended without a usable parsed proposal. ProviderError dominates attempted
+  errors; missing usage stays unknown. No failed case was replaced or omitted.
+- Finished 2026-11-02 23:37:43 Asia/Omsk; observed wall time about 10 h 27 min.
+  Raw evidence: `experiments/full-codeagent-2026-11-02/`. This is a complete
+  single-model, single-repeat benchmark; the planned repeated study remains open.
+- See IMPROVEMENTS.md and validation/phase16.json. Main unchanged; no push or
+  remote CI. Removed background helper code was not part of this experiment.

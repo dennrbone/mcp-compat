@@ -47,12 +47,90 @@
   },
   "initial_clean_gate": "299 passed; 99.92% coverage because draining a small parallel batch depended on timing. Added deterministic small-batch regression; final full gate passes.",
   "benchmark": {
-    "status": "RUNNING",
+    "status": "COMPLETED",
     "scenarios": 2160,
     "expected_decisions": 19440,
     "methods": 9,
     "repeats": 1,
-    "workers": 8
+    "workers": 8,
+    "decisions": 19440,
+    "completed_at_omsk": "2026-11-02T23:37:43.407461+06:00",
+    "observed_wall_seconds": 37621.27176737785,
+    "completion_time_source": "result-digests.json filesystem mtime on original host",
+    "mapping_decisions": 10896,
+    "wrapper_invocations": 11731,
+    "parsed_decisions": 10303,
+    "terminal_unparsed_decisions": 593,
+    "attempt_errors": {
+      "ValueError": 54,
+      "ProviderError": 1366,
+      "JSONDecodeError": 8
+    },
+    "received_responses": 10365,
+    "unknown_usage_records": 945,
+    "every_b2_case_used_codeagent": true,
+    "pipeline_errors": 8,
+    "m1_metrics": {
+      "CRR": {
+        "value": 0.8020833333333334,
+        "numerator": 1001,
+        "denominator": 1248
+      },
+      "UHR": {
+        "value": 0.0,
+        "numerator": 0,
+        "denominator": 1001
+      },
+      "FBR": {
+        "value": 0.19791666666666666,
+        "numerator": 247,
+        "denominator": 1248
+      },
+      "AbstentionAccuracy": {
+        "value": 1.0,
+        "numerator": 912,
+        "denominator": 912
+      },
+      "SchemaValidityRate": {
+        "value": 0.9745065789473685,
+        "numerator": 1185,
+        "denominator": 1216
+      },
+      "SemanticEquivalenceRate": {
+        "value": 1.0,
+        "numerator": 1001,
+        "denominator": 1001
+      },
+      "latency_mean": 20.8878340333656,
+      "calls": 1873,
+      "input_tokens": null,
+      "output_tokens": null,
+      "cost": null,
+      "validation_stages": 2641,
+      "samples": 2160
+    },
+    "m1_mapping_decisions": 1728,
+    "m1_terminal_unparsed": 104,
+    "m1_false_blocks": {
+      "ambiguous": 192,
+      "supported": 55
+    },
+    "m1_supported_false_blocks": {
+      "unparsed_or_unavailable": 36,
+      "parsed_model_abstention": 17,
+      "unproven_literal": 2
+    },
+    "m1_crr_clustered_ci": {
+      "confidence": 0.95,
+      "draws": 2000,
+      "high": 0.8149038461538461,
+      "low": 0.7876602564102564,
+      "point": 0.8020833333333334,
+      "seed": 42,
+      "status": "computed",
+      "undefined_resamples": 0,
+      "units": 48
+    }
   },
   "checks": {
     "ruff": "PASS",
@@ -60,11 +138,37 @@
     "packaging": "PASS",
     "dependency_consistency": "PASS",
     "workflow_yaml": "PASS",
-    "wheel_source_equality": "PASS"
+    "wheel_source_equality": "PASS",
+    "result_integrity": "PASS",
+    "complete_paired_matrix": "PASS",
+    "dataset_labels": "PASS",
+    "source_fingerprint": "PASS",
+    "summary_recomputation": "PASS",
+    "full_analysis": "PASS",
+    "figure_visual_inspection": "PASS"
   },
   "ci": "NOT RUN: new feature branches have no publication permission",
   "packages": {
     "mcp_compat-0.1.0-py3-none-any.whl": "9a02c674f019d11d30935fd83bf4b3821367120fd2f88a4b42d29be37410aba5",
     "mcp_compat-0.1.0.tar.gz": "f8b7680f58b0efb792c360ef51684d8facb0b58c0f520a2fdbdb81d97188f3ac"
-  }
+  },
+  "verified_date": "2026-11-03",
+  "analysis_artifacts": {
+    "ablations.csv": "a05d67efc95f46ecee600c1dc63fdac717b4c6805f4c65da3d58c5f6221eb731",
+    "analysis.json": "9a9a0749f6a8c44c454780a6b2a8423f0dac92fdabb6ccffa9a3aad1b0aafa38",
+    "categories.csv": "1a595393ce002fff58244fdcbab4bb5db52b0ce54d69e97811aedb0b47f2aa44",
+    "families.csv": "7598d82a48c1920c29369ae32828001d2c2740fd2081591b133e113c891ebdee",
+    "rates.png": "c6771cdf1bd9f500351221112aa402bcc69e9591a1e629efe6d9e6635b0dcb63",
+    "rates.svg": "55ec0f9af95183bdbf6fbb6a3caa3a4a8f6407b08bad237f08d10f5fcdad7f86",
+    "summary.csv": "7390da46c8b4be0b871387379eb0927af7916c0b4967fe67c8bd4df1981ff121",
+    "summary.tex": "6aac860bcadd7a9fb73539c8943b7368dd56c31a16cf5dbf53d78ea120aa366d"
+  },
+  "limitations": [
+    "One model alias, one repeat; planned repeated multi-family study incomplete.",
+    "Previously observed synthetic benchmark with repeated tool templates; not a fresh holdout.",
+    "Backend revision and serving hardware unknown; concurrent local validation and diagnostics affect timing.",
+    "Zero observed unsafe executions and degenerate bootstrap intervals do not establish a production safety bound.",
+    "945 decision records have unknown usage; total cost and tokens are unknown, although received responses report cost zero.",
+    "Post-run update changes documentation only; package hashes identify the pre-run tested build."
+  ]
 }

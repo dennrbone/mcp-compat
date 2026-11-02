@@ -1,23 +1,24 @@
-# Results status — 2026-11-02
+# Results status — 2026-11-03
 
 ## Confirmed local engineering checks
 
 | Check | Status | Evidence |
 |---|---|---|
-| Full pytest, Python 3.11.4 | PASS | 294 passed, 5 real-provider skips |
-| Statement + branch coverage | PASS | 1749 statements / 648 branches; 100%; no missing coverage |
-| Clean wheel install, Python 3.11.4 | PASS | 294 passed, 5 skips; 100% in separate /tmp environment |
+| Full pytest, Python 3.11.4 | PASS | Pre-run freeze: 300 passed, 5 real-provider skips |
+| Statement + branch coverage | PASS | 1787 statements / 662 branches; 100%; no missing coverage |
+| Clean wheel install, Python 3.11.4 | PASS | Same frozen code: 300 passed, 5 skips; 100% in separate /tmp environment |
 | Ruff / mypy | PASS | Source/tests/examples lint; all 21 source modules type checked |
 | Packaging | PASS | sdist + wheel built; wheel Python files equal source |
 | Workflow YAML | PASS | Parsed and required jobs present; remote execution is a separate check |
 | Frozen benchmark replay | PASS | 2160 cases regenerated with identical pinned digest |
 | Local official MCP SDK integration | PASS | handshake/discovery/v1/v2/proxy/errors/timeout/disconnect |
 | Offline demo / actual diagnostic artifacts | PASS | 45 cases × 9 methods = 405 records, no inference |
-| Actual CodeAgent tests | PASS | 5 passed, including positive mapping/B2 and known/unknown MCP bindings |
+| Actual CodeAgent tests | PASS | Phase 15: 5 passed, including positive mapping/B2 and known/unknown MCP bindings |
 | Full-corpus runtime audit | PASS | Fake declared-rule client; 1056 correct recoveries, 0 unsafe, 192 unbound recoverable cases |
+| Complete real benchmark integrity | PASS | All 19440 hashes, 2160 × nine matrix, labels, source and summary verified |
 
 Historical Phase 10 evidence: `docs/validation/local.json`. Current checks:
-`docs/validation/phase15.json` and [IMPROVEMENTS.md](IMPROVEMENTS.md).
+`docs/validation/phase16.json` and [IMPROVEMENTS.md](IMPROVEMENTS.md).
 Earlier failures remain in [AGENT_TESTS.md](AGENT_TESTS.md) and phase11.json.
 Active benchmark: **evobench-1.2**, digest
 `ef002e38917804b246bdd0d9a5c104160f89b76a4f15de34499c5dcb2b2ce8de`.
@@ -33,10 +34,11 @@ evaluation versions. Frozen data and prior scores are preserved.
 | Current real CLI checks | PASS | installed GigaCode CodeAgent; five opt-in cases |
 | Paired real pilot, Phase 14 | COMPLETED | 18 cases × 9 methods; 94/94 mappings parsed; M1 7/10 recoveries |
 | M1-only real revalidation, Phase 15 | COMPLETED | Same 18 IDs; 14/14 mappings parsed; 8/10 recoveries, 0/8 unsafe |
-| Full real model quality comparison | NOT RUN | Pilot checks do not establish scientific conclusions |
+| Full CodeAgent benchmark, Phase 16 | COMPLETED | 2160 scenarios × nine methods; one repeat, eight workers |
+| M1 primary metrics | OBSERVED | CRR 1001/1248 (80.2%); UHR 0/1001; FBR 247/1248; required refusals 912/912 |
+| Main descriptive intervals/tables | COMPLETED | Cluster bootstrap: 48 tools, 2000 draws; CRR interval 78.8–81.5% |
 | Two-family primary study and LLM variability | NOT RUN | Requires actual providers and frozen runtime conditions |
-| Main CRR/UHR/FBR, confidence intervals and hypothesis tests | NOT RUN | No main results exist |
-| H1–H4 / superiority over baseline | NOT TESTED | Unit tests and fake responses cannot establish these |
+| H1–H4 confirmation / general superiority | NOT ESTABLISHED | One observed synthetic run; diagnostic McNemar; Wilcoxon withheld |
 
 Default offline suite: no failures or xfails.
 The five cases in `tests/test_provider_smoke.py` skip by default because real
@@ -57,8 +59,8 @@ and [AGENT_TESTS.md](AGENT_TESTS.md).
 | 6 | PARTIAL | CodeAgent protocol/B1/B2 tested; full family study NOT RUN |
 | 7 | COMPLETE | Pipeline/gates tested with independently injected trusted runtimes |
 | 8 | COMPLETE | Official SDK, isolated local integration |
-| 9 | PARTIAL | Runner/metrics/ablations/demo complete; main study NOT RUN |
-| 10 | PARTIAL | Analysis/docs/draft complete; scientific results/conclusions pending |
+| 9 | PARTIAL | One full CodeAgent repeat complete; repeated multi-family study NOT RUN |
+| 10 | PARTIAL | Actual tables/intervals and descriptive results complete; full scientific conclusions pending |
 
 ## GitHub Actions and Git
 
@@ -68,9 +70,9 @@ the declared LLM extra. CI repair was propagated through the feature stack, addi
 the MCP extra where required. **All Phase 3–10 verified code runs now PASS**;
 run ids/commits are recorded in CI_FOLLOWUP.md and `docs/validation/ci.json`.
 Phase 10 tests and offline-e2e PASS; provider-smoke is skipped / NOT RUN.
-Local PASS is never substituted for a remote Actions result. Phase 11–15 are
+Local PASS is never substituted for a remote Actions result. Phase 11–16 are
 locally committed; automatic approval review rejected Phase 11's push because
-prior permission covers Phase 3–10 only. Phase 11–15 remote CI remains NOT RUN.
+prior permission covers Phase 3–10 only. Phase 11–16 remote CI remains NOT RUN.
 
 Phase branches are stacked; no merge/rebase/squash into main was performed.
 Only ordinary forward propagation of CI fixes between feature branches is used.
@@ -85,9 +87,12 @@ The publication destination is the explicitly authorized existing origin.
 - The current registry supplies 1536 independently authored synthetic bindings
   across 48 tools. Identical-contract ambiguous implementations remain unbound
   (192 recoverable cases). The evaluator oracle is never used as the verifier.
-- The final small pilot has two false blocks: a model abstention and an unbound
-  ambiguous encoding. It is development evidence, not an untouched holdout;
-  service variability is visible between runs and no safety bound is established.
+- Full M1 has 247 false blocks: 192 ambiguous signatures and 55 supported cases
+  (36 unusable responses, 17 parsed model abstentions, two unproven literals).
+  Type-conversion family C5 has zero recoveries out of 144 recoverable cases.
+- The full run has one repeat and one opaque model alias. It is development
+  evidence, not an untouched holdout; service variability and load are visible.
+  Zero observed unsafe executions does not establish a production safety bound.
 - Trusted preview functions must terminate; elapsed-time checks detect overruns
   after return and do not sandbox arbitrary hostile Python.
 - Main studies need pinned model/serving conditions, sufficient free-service

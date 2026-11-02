@@ -50,6 +50,22 @@
       "status": "completed",
       "conclusion": "success",
       "url": "https://github.com/dennrbone/mcp-compat/actions/runs/41504973495"
+    },
+    {
+      "branch": "phase/17-publication-methodology",
+      "sha": "48bb2707e53b036d03107e1fbd62953f167464f5",
+      "run_id": 41511178264,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/dennrbone/mcp-compat/actions/runs/41511178264"
+    },
+    {
+      "branch": "phase/18-independent-case-study",
+      "sha": "fda300069fc264f7ef97b7e3b85c76b03353c27e",
+      "run_id": 41511930652,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/dennrbone/mcp-compat/actions/runs/41511930652"
     }
   ],
   "publication": "Author explicitly authorized pushing current work on 2026-11-03; prompt/task Markdown excluded."

@@ -212,3 +212,14 @@ def test_resume_rejects_changed_mapper_limits_before_inference(tmp_path,frozen):
     with pytest.raises(ValueError,match='resume configuration mismatch'):
         run(cfg,[LLMBaseline('B2',changed)],directory,output)
     assert not client.requests
+
+
+def test_runner_counts_every_preview_attempt(tmp_path,frozen):
+    directory,digest,cases=frozen
+    class Previewed:
+        name='PREVIEWED'
+        def recover(self,request):
+            return abstain('semantic_mismatch',verification_attempts=2)
+    config=RunConfig(kind='offline_demo',benchmark_digest=digest,scenario_ids=[cases[0].scenario_id])
+    record=run(config,[Previewed()],directory,tmp_path/'out')[0]
+    assert record.validation_stages==2 and record.calls==0

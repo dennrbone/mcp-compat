@@ -170,3 +170,52 @@ def test_composed_unit_rule_with_explicit_context_constant():
     v = verifier(r)
     result = Hybrid(mapper(r.context['rules']),v).recover(r)
     assert result.action == 'EXECUTE' and result.adapted_call.arguments['tag'] == 'local'
+
+
+def optional_drop_request():
+    old=ToolContract(name='t',input_schema=dict(type='object',properties=dict(value={'type':'integer'},unused={'type':'string'}),required=['value']))
+    new=old.model_copy(deep=True)
+    new.input_schema['properties'].pop('unused')
+    return RecoveryInput(old_contract=old,new_contract=new,old_call=ToolCall(tool_name='t',arguments={'value':2}))
+
+
+@pytest.mark.parametrize('ablation',[None,'A1','A2','A3','A4'])
+def test_unchanged_candidate_can_be_proven_without_model_guessing(ablation):
+    r=optional_drop_request()
+    calls=[]
+    def implementation(a,s):
+        calls.append(a)
+        return {'value':a['value']}
+    v=SandboxVerifier(r.old_contract,r.new_contract,implementation,implementation)
+    fake=FakeClient('{"action":"ABSTAIN"}')
+    engine=Hybrid(Mapper(fake,attempts=1),v,ablation=ablation)
+    decision=engine.recover(r)
+    if ablation in ('A1','A2'):
+        assert decision.action=='ABSTAIN' and len(fake.requests)==1
+    else:
+        assert decision.action=='EXECUTE' and not fake.requests
+        assert decision.evidence['candidate_source']=='verified_identity'
+        assert decision.evidence['verification_attempts']==1
+        assert len(calls)==2
+
+
+def test_failed_identity_probe_falls_back_to_mapping():
+    old=ToolContract(name='t',input_schema=dict(type='object',properties={'old_field':{'type':'integer'}}))
+    new=ToolContract(name='t',input_schema=dict(type='object',properties={'renamed':{'type':'integer'}}))
+    r=RecoveryInput(old_contract=old,new_contract=new,old_call=ToolCall(tool_name='t',arguments={'old_field':7}))
+    v=SandboxVerifier(old,new,lambda a,s:a.get('old_field',0),lambda a,s:a.get('renamed',0))
+    fake=FakeClient('{"action":"EXECUTE","operations":[{"op":"move","source":["old_field"],"target":["renamed"]}]}')
+    result=Hybrid(Mapper(fake,attempts=1),v).recover(r)
+    assert result.action=='EXECUTE' and len(fake.requests)==1
+    assert result.evidence['identity_probe']['passed'] is False
+    assert result.evidence['verification_attempts']==2
+
+
+def test_zero_unit_values_still_require_an_explicit_conversion_rule():
+    r=unit_request()
+    r.old_call.arguments['value']=0
+    r.context={}
+    fake=FakeClient('{"action":"EXECUTE","operations":[]}')
+    result=Hybrid(Mapper(fake,attempts=1),verifier(r)).recover(r)
+    assert result.reasons==['unit_rule_missing'] and len(fake.requests)==1
+    assert 'identity_probe' not in result.evidence

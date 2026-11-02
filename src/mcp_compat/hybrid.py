@@ -161,11 +161,24 @@ class Hybrid:
                 return abstain("opaque", **stages)
             stages["candidates"] = sorted(set(request.old_contract.input_schema.get("properties", {})) & set(request.new_contract.input_schema.get("properties", {})))
             operations = []
+            call = None
+            verification = None
+            stages["verification_attempts"] = 0
             deterministic = RuleBased().recover(request)
             if deterministic.action == "EXECUTE" and self.ablation != "A2":
                 call = deterministic.adapted_call
                 assert call is not None
-            else:
+                stages["candidate_source"] = "structural"
+            elif self.verifier is not None and self.ablation not in ("A1", "A2") and not any(c.family == "C8" for c in diff.changes):
+                identity = ToolCall(tool_name=request.new_contract.name, arguments=request.old_call.arguments)
+                if validate_candidate(request, identity, self.name).action == "EXECUTE":
+                    stages["verification_attempts"] += 1
+                    probe = self.verifier.verify(request, identity)
+                    stages["identity_probe"] = probe.model_dump()
+                    if probe.passed:
+                        call, verification = identity, probe
+                        stages["candidate_source"] = "verified_identity"
+            if call is None:
                 if self.ablation == "A3":
                     return abstain("no_deterministic_candidate", **stages)
                 if self.mapper is None:
@@ -177,13 +190,16 @@ class Hybrid:
                 operations = mapping.proposal.operations
                 stages["adapter"] = [op.model_dump(exclude_unset=True) for op in operations]
                 call = adapt(request, operations)
+                stages["candidate_source"] = "llm"
             decision = validate_candidate(request, call, self.name)
             stages.update(decision.evidence)
             if decision.action != "EXECUTE":
                 return abstain("schema_invalid", **stages)
-            verification = Verification(passed=False, reason="verifier_unavailable")
-            if self.ablation != "A1" and self.verifier is not None:
-                verification = self.verifier.verify(request, call)
+            if verification is None:
+                verification = Verification(passed=False, reason="verifier_unavailable")
+                if self.ablation != "A1" and self.verifier is not None:
+                    stages["verification_attempts"] += 1
+                    verification = self.verifier.verify(request, call)
             stages["verification"] = verification.model_dump()
             if self.ablation != "A4":
                 if self.ablation != "A1" and not verification.passed:

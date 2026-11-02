@@ -198,7 +198,7 @@ def run(config: RunConfig, strategies: list[Strategy], benchmark: Path, output: 
                     composed=scenario.metadata["composed"],decision=decision,schema_valid=valid,
                     semantic_equivalent=semantic,latency=latency,calls=calls,input_tokens=usage("input_tokens"),
                     output_tokens=usage("output_tokens"),cost=usage("cost"),
-                    validation_stages=int(valid is not None)+int("verification" in decision.evidence),
+                    validation_stages=int(valid is not None)+decision.evidence.get("verification_attempts", int("verification" in decision.evidence)),
                     recovery=request.model_dump())
                 _atomic(path,record.model_dump(mode="json"))
                 records.append(record)

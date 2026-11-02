@@ -1,0 +1,70 @@
+{
+  "date": "2026-11-02",
+  "phase": 16,
+  "code_commit": "7fc2627e",
+  "source_digest": "5fe53754734795ebe92a13553d810559320c58dc24a9fed8c2156e3406053405",
+  "pytest": {
+    "passed": 300,
+    "failed": 0,
+    "skipped": 5
+  },
+  "coverage": {
+    "covered_lines": 1787,
+    "num_statements": 1787,
+    "percent_covered": 100.0,
+    "percent_covered_display": "100",
+    "missing_lines": 0,
+    "excluded_lines": 13,
+    "percent_statements_covered": 100.0,
+    "percent_statements_covered_display": "100",
+    "num_branches": 662,
+    "num_partial_branches": 0,
+    "covered_branches": 662,
+    "missing_branches": 0,
+    "percent_branches_covered": 100.0,
+    "percent_branches_covered_display": "100"
+  },
+  "clean_wheel": {
+    "passed": 300,
+    "failed": 0,
+    "skipped": 5
+  },
+  "clean_coverage": {
+    "covered_lines": 1787,
+    "num_statements": 1787,
+    "percent_covered": 100.0,
+    "percent_covered_display": "100",
+    "missing_lines": 0,
+    "excluded_lines": 13,
+    "percent_statements_covered": 100.0,
+    "percent_statements_covered_display": "100",
+    "num_branches": 662,
+    "num_partial_branches": 0,
+    "covered_branches": 662,
+    "missing_branches": 0,
+    "percent_branches_covered": 100.0,
+    "percent_branches_covered_display": "100"
+  },
+  "initial_clean_gate": "299 passed; 99.92% coverage because draining a small parallel batch depended on timing. Added deterministic small-batch regression; final full gate passes.",
+  "benchmark": {
+    "status": "RUNNING",
+    "scenarios": 2160,
+    "expected_decisions": 19440,
+    "methods": 9,
+    "repeats": 1,
+    "workers": 8
+  },
+  "checks": {
+    "ruff": "PASS",
+    "mypy": "PASS",
+    "packaging": "PASS",
+    "dependency_consistency": "PASS",
+    "workflow_yaml": "PASS",
+    "wheel_source_equality": "PASS"
+  },
+  "ci": "NOT RUN: new feature branches have no publication permission",
+  "packages": {
+    "mcp_compat-0.1.0-py3-none-any.whl": "9a02c674f019d11d30935fd83bf4b3821367120fd2f88a4b42d29be37410aba5",
+    "mcp_compat-0.1.0.tar.gz": "f8b7680f58b0efb792c360ef51684d8facb0b58c0f520a2fdbdb81d97188f3ac"
+  }
+}

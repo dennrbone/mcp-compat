@@ -229,3 +229,17 @@ and validation/ci.json. Final installed-wheel gate also passed **233 + 2 skips,
 - Prior paired data preserved; different-source runs are not pooled. Full
   scientific study remains NOT RUN. See IMPROVEMENTS.md and phase15.json.
 - Main unchanged; Phase 11–15 branches remain local, task/prompt Markdown untracked.
+
+## Phase 16 — full CodeAgent benchmark
+
+- Branch `phase/16-full-codeagent-benchmark`; frozen experiment code `7fc2627e`.
+- Added `--full`, bounded workers (1–8) and CLI resume using the existing runner,
+  mapper and actual installed CodeAgent. Completed records are saved atomically;
+  resume preserves them and checks the source/configuration fingerprint.
+- Source and clean-wheel gates: **300 passed, 5 opt-in skips; 100% statements
+  and branches** (1787/662). A deterministic small-batch regression removes a
+  timing-dependent coverage gap observed in the initial clean-wheel gate.
+- Full benchmark **RUNNING**, not yet accepted: 2160 scenarios × nine methods,
+  one repeat, eight workers. Every required mapping uses real inference.
+  Results/status: `experiments/full-codeagent-2026-11-02/`.
+- See validation/phase16.json. Main unchanged; no push or remote CI.

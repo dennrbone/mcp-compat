@@ -261,3 +261,13 @@ def test_parallel_run_is_bounded_paired_and_resumable(tmp_path,frozen):
 def test_workers_are_bounded(workers):
     with pytest.raises(ValidationError):
         RunConfig(kind='offline_demo',benchmark_digest='test',workers=workers)
+
+
+def test_small_batch_finishes_when_there_are_more_workers_than_cases(tmp_path,frozen):
+    directory,digest,cases=frozen
+    selected=[s.scenario_id for s in cases[:2]]
+    config=RunConfig(kind='offline_demo',benchmark_digest=digest,workers=3,scenario_ids=selected)
+    output=tmp_path/'small-batch'
+    records=run(config,[NoRecovery()],directory,output)
+    assert {r.scenario_id for r in records}==set(selected)
+    assert len(json.loads((output/'result-digests.json').read_bytes()))==2

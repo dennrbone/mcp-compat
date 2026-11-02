@@ -74,6 +74,25 @@
       "status": "completed",
       "conclusion": "success",
       "url": "https://github.com/dennrbone/mcp-compat/actions/runs/41516023390"
+    },
+    {
+      "branch": "phase/18-independent-case-study",
+      "sha": "aa87c956b5cb9d5353deef5dd5b8f4e5c9cb7596",
+      "run_id": 41517585136,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/dennrbone/mcp-compat/actions/runs/41517585136"
+    },
+    {
+      "branch": "phase/18-independent-case-study",
+      "sha": "0b3626647459073740551d4fea4e7b33eb1311b8",
+      "run_id": 41531684810,
+      "status": "completed",
+      "conclusion": "failure",
+      "url": "https://github.com/dennrbone/mcp-compat/actions/runs/41531684810",
+      "stage": "actions/setup-python; tests not run",
+      "reason": "Python 3.11.4 unavailable on Ubuntu 26.04 after ubuntu-latest migration",
+      "resolution": "Phase 19 pins hosted jobs to ubuntu-24.04; no frozen experimental code changed"
     }
   ],
   "publication": "Author explicitly authorized pushing current work on 2026-11-03; prompt/task Markdown excluded."

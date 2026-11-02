@@ -63,3 +63,17 @@ apply independently of which agent/model connects.
 `test_model_independent_stdio_example` starts a real subprocess and verifies
 handshake, ping, discovery, a structured ABSTAIN and invalid-input handling through
 the official SDK client. It does not claim every third-party agent has been tested.
+
+## Уточнения исследовательской версии 1.4
+
+При достоверных готовых операциях можно использовать
+`VerifiedDeclaredRules(verifier)` из `mcp_compat.declared_rules` и передать их
+через `context.rules`. Эта стратегия сохраняет независимую проверку и не
+обращается к модели. На завершённом исходном наборе она восстановила больше
+случаев, чем M1 с генератором; результаты и границы вывода приведены в статье.
+
+Протокольные проверки закреплены на SDK 1.30.0 и протоколе 2025-11-25. Подключение
+относится к клиентам, поддерживающим этот обмен; вся спецификация MCP
+2026-07-28 здесь не испытана. Фактически проверен установленный CodeAgent,
+а переносимость интерфейса подтверждена инъекцией клиентов и стандартным
+transport, без утверждения о тестировании каждого внешнего агента.

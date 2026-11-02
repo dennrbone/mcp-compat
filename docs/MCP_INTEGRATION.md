@@ -28,3 +28,9 @@ migration-decision endpoint. A real subprocess/client test verifies handshake,
 ping, discovery, structured abstention and invalid input. The additional opt-in
 CodeAgent smoke verifies that the installed agent actually calls that MCP tool.
 See CLIENT_INTEGRATION.md for model injection and agent connection instructions.
+
+Версия научного прототипа закреплена на SDK 1.30.0. Актуальная спецификация
+2026-07-28 меняет протокольное ядро; успешный тест прежнего handshake не является
+проверкой всех возможностей новой редакции. Массовый runner вызывает стратегии
+напрямую. Протокольные тесты, включая 192 прикладных сценария, учитываются
+отдельно от количества модельных решений.

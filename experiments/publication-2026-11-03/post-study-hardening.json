@@ -1,0 +1,10 @@
+{
+  "experiment_source": "fda300069fc264f7ef97b7e3b85c76b03353c27e",
+  "experiment_digest": "ccd2591e512801b45a81d0a1c426c802a5b380ec680ae03c13c2fd31efd24397",
+  "release_digest": "1ed0c6b2cc243c6fb3e85aa1f593a1efcfb9cc97c55fffb6333cf7df04fc5f7d",
+  "fix": "D0 handles AttributeError as invalid_adapter, no model or hybrid changes",
+  "regression_before": "FAIL AttributeError",
+  "regression_after": "PASS",
+  "unchanged_recorded_D0_decisions": 1152,
+  "additional_model_calls": 0
+}

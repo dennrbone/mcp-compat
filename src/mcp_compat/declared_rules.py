@@ -34,7 +34,7 @@ class DeclaredRules:
             decision = validate_candidate(request, call, self.name)
             decision.evidence["declared_rules"] = result.trace
             return decision
-        except (ValueError, KeyError, TypeError):
+        except (ValueError, KeyError, TypeError, AttributeError):
             return abstain("invalid_adapter", method=self.name, declared_rules=result.trace)
 
 

@@ -2,7 +2,6 @@
   "branch": "phase/18-independent-case-study",
   "experiment_source_commit": "fda300069fc264f7ef97b7e3b85c76b03353c27e",
   "source_digest": "ccd2591e512801b45a81d0a1c426c802a5b380ec680ae03c13c2fd31efd24397",
-  "finished_observed_utc": "2026-11-02T21:48:09.873894+00:00",
   "status": "COMPLETED_DATA_VALIDATED",
   "decisions": 5760,
   "source_tests": {
@@ -3446,5 +3445,10 @@
     "MCP wire tests separate from mass strategy runner",
     "Post-hoc B2V is not full M1 policy or live end-to-end latency",
     "Private repository; no public-access claim"
-  ]
+  ],
+  "validation_report_created_utc": "2026-11-02T21:48:09.873894+00:00",
+  "last_record_write_utc": {
+    "with-rules": "2026-11-02T20:50:14.717653+00:00",
+    "without-rules": "2026-11-02T21:38:22.903381+00:00"
+  }
 }

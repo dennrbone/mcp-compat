@@ -1,105 +1,114 @@
-# Results status — 2026-11-03
+# Подтверждённое состояние проекта — 3 ноября 2026 года
 
-## Confirmed local engineering checks
+Автор рукописи: Россинский Андрей Евгеньевич, Франкфурт,
+dennrbone@gmail.com. Организация пока не указана.
 
-| Check | Status | Evidence |
+## Финальные проверки
+
+- Исходники: **325 passed, 0 skipped, 0 failed**, включая шесть реальных
+  проверок установленного GigaCode CodeAgent. Python 3.11.4.
+- Отдельно установленный wheel: **319 passed, 6 opt-in skipped, 0 failed**.
+  Пропуски относятся только к реальному провайдеру, уже проверенному в исходниках.
+- В обоих случаях **100% строк и ветвей пакета mcp_compat**, 2064 statements,
+  784 branches, непокрытых строк/ветвей нет. Примеры проверяются отдельно;
+  процент покрытия не выдаётся за доказательство правильности всех входов.
+- Ruff, mypy (24 модуля), сборка и согласованность зависимостей прошли.
+- 192 прикладных сценария прошли через официальный MCP SDK/proxy без модели.
+  Дополнительная реальная проверка объединила CodeAgent mapping и business proxy.
+- Выявленный AttributeError у D0 на пути через скаляр: тест до исправления FAIL,
+  после PASS. Все 1152 ранее записанных решения D0 совпали после исправления.
+
+Подробные машинные отчёты: `validation/phase17.json`, `validation/phase18.json`
+и `validation/phase19.json`. История ошибок и проверок: `PHASE_REPORTS.md`.
+
+## Завершённые исследования
+
+| Опыт | Матрица | Решения | Статус |
+|---|---|---:|---|
+| Исходный CodeAgent | 2160 сценариев × 9 методов × 1 повтор | 19440 | Завершён, проверен |
+| Контроль готовых правил | 2160 × D0/D1 | 4320 | Без модельных запросов, проверен |
+| Прикладной CodeAgent | 192 × 5 методов × 3 повтора × 2 условия | 5760 | Завершён, проверен |
+
+Разные наборы и условия не объединяются в один средний показатель.
+
+| Условие | M1: CRR / UHR | D1: CRR / UHR | B2V: CRR / UHR |
+|---|---|---|---|
+| Исходный набор | 1001/1248; 0/1001 | 1056/1248; 0/1056 | 820/1248; 0/820 |
+| Прикладной, правила переданы | 365/432; 0/365 | 432/432; 0/432 | 330/432; 0/330 |
+| Прикладной, готовых правил нет | 308/432; 0/308 | 144/432; 0/144 | 359/432; 0/359 |
+
+B2V — производная проверка уже полученных кандидатов B2, без новой генерации;
+его показатель задержки является суммой компонентов, а не живым сквозным замером.
+Полный гибрид не оказался лучшим во всех условиях. При готовых операциях
+модель не нужна для лучшего наблюдаемого результата. Без готовых операций M1
+обходит ограниченные правила, но уступает B2V. B2V не включает полную политику
+риска M1 и не объявляется готовой продукционной заменой.
+
+В прикладном опыте зарегистрировано 2126 CLI-обращений в сохранённых решениях,
+468 ProviderError попыток и одна ValueError. Сетевые нарушения и отказы сохранены.
+Одно прерывание оставило неизвестным полный учёт запросов в работе; завершённые
+ответы не заменялись. Неизвестные стоимость и токены остаются null.
+Историческая диагностическая проба FAIL и последующая PASS хранятся отдельно.
+
+## Фазы 0–10 и дальнейшая работа
+
+Статусы ниже отделяют инженерную реализацию от полного первоначального
+научного плана с несколькими семействами моделей.
+
+| Фаза | Статус | Основание |
 |---|---|---|
-| Full pytest, Python 3.11.4 | PASS | Pre-run freeze: 300 passed, 5 real-provider skips |
-| Statement + branch coverage | PASS | 1787 statements / 662 branches; 100%; no missing coverage |
-| Clean wheel install, Python 3.11.4 | PASS | Same frozen code: 300 passed, 5 skips; 100% in separate /tmp environment |
-| Ruff / mypy | PASS | Source/tests/examples lint; all 21 source modules type checked |
-| Packaging | PASS | sdist + wheel built; wheel Python files equal source |
-| Workflow YAML | PASS | Parsed and required jobs present; remote execution is a separate check |
-| Frozen benchmark replay | PASS | 2160 cases regenerated with identical pinned digest |
-| Local official MCP SDK integration | PASS | handshake/discovery/v1/v2/proxy/errors/timeout/disconnect |
-| Offline demo / actual diagnostic artifacts | PASS | 45 cases × 9 methods = 405 records, no inference |
-| Actual CodeAgent tests | PASS | Phase 15: 5 passed, including positive mapping/B2 and known/unknown MCP bindings |
-| Full-corpus runtime audit | PASS | Fake declared-rule client; 1056 correct recoveries, 0 unsafe, 192 unbound recoverable cases |
-| Complete real benchmark integrity | PASS | All 19440 hashes, 2160 × nine matrix, labels, source and summary verified |
+| 0 | COMPLETE | Спецификация изучена, исходные определения сохранены |
+| 1 | COMPLETE | Модели и валидация проверены, известные дефекты исправлены |
+| 2 | COMPLETE | Консервативный diff, безопасный opaque и 100% gate |
+| 3 | COMPLETE | Заморожен 1.2, 48 инструментов, 2160 сценариев |
+| 4 | COMPLETE | B0/B3 реализованы и проверены |
+| 5 | COMPLETE | Независимый клиент, строгие предложения, лимиты и тесты |
+| 6 | COMPLETE для текущего scope | Реальный CodeAgent и B1/B2 проверены; H3 не исследована |
+| 7 | COMPLETE в локальной модели | Pipeline, доверенные callback и ограничения проверены |
+| 8 | COMPLETE для SDK 1.30.0 | MCP 2025-11-25, stdio/in-memory, proxy и реальные вызовы |
+| 9 | PARTIAL к исходному плану | Один полный старый набор и повторный прикладной опыт выполнены; два семейства и три полных старых прогона не выполнены |
+| 10 | PARTIAL к исходному плану | Анализ и рукопись готовы, обобщение H1–H4 целиком не подтверждено |
+| 11–16 | COMPLETE в объявленном объёме | История интеграции, улучшений и полного одиночного прогона сохранена |
+| 17 | COMPLETE | D0/D1, парная кластерная статистика, 4320 решений |
+| 18 | COMPLETE эксперимент | 5760 решений, две матрицы, три повтора, независимые эталоны |
+| 19 | Материалы и локальные проверки готовы | Рукопись, обзор, графики, исправление D0 и финальный тестовый gate |
 
-Historical Phase 10 evidence: `docs/validation/local.json`. Current checks:
-`docs/validation/phase16.json` and [IMPROVEMENTS.md](IMPROVEMENTS.md).
-Earlier failures remain in [AGENT_TESTS.md](AGENT_TESTS.md) and phase11.json.
-Active benchmark: **evobench-1.2**, digest
-`ef002e38917804b246bdd0d9a5c104160f89b76a4f15de34499c5dcb2b2ce8de`.
-Definitions: `benchmark/definitions/tools.json` (48 distinct old contracts).
-Benchmark size and scientific metric definitions are unchanged. Research Spec 1.3
-records the date/date-time assertion correction; source fingerprints distinguish
-evaluation versions. Frozen data and prior scores are preserved.
+Текущий scope по указанию автора — только CodeAgent. Интерфейс LLMClient и
+стандартное MCP-подключение не являются доказательством качества других моделей.
+Гипотезы не объявляются подтверждёнными только потому, что реализация готова.
 
-## Scientific/provider checks
+## Git и доступность
 
-| Check | Status | Reason |
-|---|---|---|
-| Current real CLI checks | PASS | installed GigaCode CodeAgent; five opt-in cases |
-| Paired real pilot, Phase 14 | COMPLETED | 18 cases × 9 methods; 94/94 mappings parsed; M1 7/10 recoveries |
-| M1-only real revalidation, Phase 15 | COMPLETED | Same 18 IDs; 14/14 mappings parsed; 8/10 recoveries, 0/8 unsafe |
-| Full CodeAgent benchmark, Phase 16 | COMPLETED | 2160 scenarios × nine methods; one repeat, eight workers |
-| M1 primary metrics | OBSERVED | CRR 1001/1248 (80.2%); UHR 0/1001; FBR 247/1248; required refusals 912/912 |
-| Main descriptive intervals/tables | COMPLETED | Cluster bootstrap: 48 tools, 2000 draws; CRR interval 78.8–81.5% |
-| Two-family primary study and LLM variability | NOT RUN | Requires actual providers and frozen runtime conditions |
-| H1–H4 confirmation / general superiority | NOT ESTABLISHED | One observed synthetic run; diagnostic McNemar; Wilcoxon withheld |
+`main` остаётся `23a4846b446a0df7817a798e12cfc71250fdee81`; merge не выполнялся.
+Phase 11–18 отправлены в разрешённый origin. Точные проверенные удалённые CI:
+`validation/ci-2026-11-03.json`. Финальная ветка материалов —
+`phase/19-publication-package`; её push/CI фиксируются после коммита.
+Финальный Phase 18 CI упал до тестов на отсутствии Python 3.11.4 для Ubuntu
+26.04; в Phase 19 образ закреплён на Ubuntu 24.04. Успех локального pytest
+не подменяет удалённый CI; реальный provider job
+в GitHub не запускался, локальные реальные проверки проведены отдельно.
 
-Default offline suite: no failures or xfails.
-The five cases in `tests/test_provider_smoke.py` skip by default because real
-inference is explicitly opt-in. A skipped case is NOT RUN. Current real checks
-and historical failures are recorded separately in [IMPROVEMENTS.md](IMPROVEMENTS.md)
-and [AGENT_TESTS.md](AGENT_TESTS.md).
+Экспериментальный код Phase 18 — `fda30006`, fingerprint
+`ccd2591e512801b45a81d0a1c426c802a5b380ec680ae03c13c2fd31efd24397`.
+Поздний патч D0 имеет другой fingerprint и не приписывается старым измерениям.
+Исходный код опыта сохранён в Git и отдельно включается в пакет воспроизводимости.
 
-## Phase acceptance
+Репозиторий **приватный**, публичный доступ и лицензия не объявлены.
+Markdown с локальным мастер-заданием исключён через .gitignore и аудит push.
+Настройки доступа, глобальные настройки агента и `main` не изменялись.
 
-| Phase | Status | Boundary |
-|---|---|---|
-| 0 | COMPLETE | Specification read and preserved |
-| 1 | COMPLETE | Domain/schema regression gates retained; proven JSON/reference defects fixed |
-| 2 | COMPLETE | Conservative diff and 100% coverage retained |
-| 3 | COMPLETE | Active 1.2 freeze, diversity/integrity/replay and oracle tests |
-| 4 | COMPLETE | B0/B3 and comparable traces |
-| 5 | COMPLETE | Strict mapper/provider interfaces and offline safety tests |
-| 6 | PARTIAL | CodeAgent protocol/B1/B2 tested; full family study NOT RUN |
-| 7 | COMPLETE | Pipeline/gates tested with independently injected trusted runtimes |
-| 8 | COMPLETE | Official SDK, isolated local integration |
-| 9 | PARTIAL | One full CodeAgent repeat complete; repeated multi-family study NOT RUN |
-| 10 | PARTIAL | Actual tables/intervals and descriptive results complete; full scientific conclusions pending |
+## Материалы и ограничения
 
-## GitHub Actions and Git
+- `ARTICLE_DRAFT.md` — полная русскоязычная рукопись для авторской проверки.
+- `LITERATURE_REVIEW.md` — 14 первичных источников и честные границы обзора.
+- `PUBLICATION_SUPPLEMENT.md` — данные, словарь и точные команды.
+- `figures/` — русскоязычные PNG/SVG из фактических чисел.
+- `STUDY_PROTOCOL_1_4.md` — зафиксированные условия и события прерывания.
 
-Authenticated GitHub API inspection confirmed initial Phase 3/4/5 CI PASS and
-Phase 6/7/8/9 CI FAIL. Phase 6 logs showed missing `httpx`: the workflow omitted
-the declared LLM extra. CI repair was propagated through the feature stack, adding
-the MCP extra where required. **All Phase 3–10 verified code runs now PASS**;
-run ids/commits are recorded in CI_FOLLOWUP.md and `docs/validation/ci.json`.
-Phase 10 tests and offline-e2e PASS; provider-smoke is skipped / NOT RUN.
-Local PASS is never substituted for a remote Actions result. Phase 11–16 опубликованы в разрешённый origin. Аутентифицированная проверка
-GitHub API подтвердила успешное завершение всех шести workflows; точные SHA и
-ссылки: `validation/ci-2026-11-03.json`. Это проверка CI, а не запуск реальной
-модели в GitHub Actions.
-
-Phase branches are stacked; no merge/rebase/squash into main was performed.
-Only ordinary forward propagation of CI fixes between feature branches is used.
-Markdown containing prompts/master tasks and .vscode stay local/untracked.
-The publication destination is the explicitly authorized existing origin.
-
-## Remaining limits and required resources
-
-- Synthetic functions are simplified, with repeated mutation templates and
-  dependence inside tool clusters. Frozen 1.0/1.1 have documented oracle/base
-  contract defects and are retired, preserved for audit, and blocked in main runs.
-- The current registry supplies 1536 independently authored synthetic bindings
-  across 48 tools. Identical-contract ambiguous implementations remain unbound
-  (192 recoverable cases). The evaluator oracle is never used as the verifier.
-- Full M1 has 247 false blocks: 192 ambiguous signatures and 55 supported cases
-  (36 unusable responses, 17 parsed model abstentions, two unproven literals).
-  Type-conversion family C5 has zero recoveries out of 144 recoverable cases.
-- The full run has one repeat and one opaque model alias. It is development
-  evidence, not an untouched holdout; service variability and load are visible.
-  Zero observed unsafe executions does not establish a production safety bound.
-- Trusted preview functions must terminate; elapsed-time checks detect overruns
-  after return and do not sandbox arbitrary hostile Python.
-- Main studies need pinned model/serving conditions, sufficient free-service
-  quota and broader independent runtime bindings. Current authorization covers
-  installed GigaCode CodeAgent only; paid inference is excluded.
-- Merge into main remains subject to the user's separate permission.
-
-Commands: REPRODUCIBILITY.md. Protocol: EXPERIMENT_PROTOCOL.md. Article structure:
-ARTICLE_DRAFT.md. Per-phase changes/checks: PHASE_REPORTS.md.
+Не выполнены выбор журнала, подача, внешнее рецензирование и независимая
+внешняя репликация. Нет проверки несколькими семействами, production-серверов,
+всей спецификации MCP 2026-07-28 или универсальной адаптации выходных схем.
+Требуются доверенные реализации, полное наблюдаемое состояние и их завершение;
+таймер не является изоляцией враждебного Python. Нулевой наблюдаемый UHR не
+устанавливает нулевой риск. Организацию и авторские декларации перед подачей
+подтверждает автор; эти сведения не выдуманы.

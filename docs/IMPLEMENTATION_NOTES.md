@@ -252,3 +252,15 @@ resample accounting, exact conditional McNemar and assumption-gated Wilcoxon.
 Tables, category/family breakdowns, ablations and PNG/SVG/LaTeX come from actual
 runner files with verified hashes. Undefined plot rates are labeled N/A. No
 main model-quality or hypothesis conclusions are supplied.
+
+
+## Исправление D0 после замороженного исследования
+
+Некорректный объявленный путь через скаляр, например `x.y.z` при `x=3`,
+вызывал AttributeError в адаптере. M1 уже перехватывал исключение, а контроль
+D0 не включал этот тип в обработчик. Узкий патч добавляет AttributeError к
+`invalid_adapter`; входы не изменяются и модель не вызывается. Негативная
+регрессия до исправления FAIL, после PASS. Все 1152 записанных решения D0
+прикладного опыта совпали; измерения оставлены на исходнике fda30006, а не
+переписаны под исправленную версию. Снимки трёх экспериментальных исходников
+сверены с записанными fingerprint и приложены к локальному пакету.

@@ -20,7 +20,8 @@ permissions:
 
 jobs:
   tests:
-    runs-on: ubuntu-latest
+    # Python 3.11.4 is published for this image; latest may move to Ubuntu 26.
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v5.0.0
         with:
@@ -43,7 +44,7 @@ jobs:
       - run: python -m build
 
   offline-e2e:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v5.0.0
         with:

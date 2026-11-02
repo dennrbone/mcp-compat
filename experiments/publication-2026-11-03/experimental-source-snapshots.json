@@ -1,0 +1,20 @@
+{
+  "phase16": {
+    "commit": "7fc2627e",
+    "source_digest": "5fe53754734795ebe92a13553d810559320c58dc24a9fed8c2156e3406053405",
+    "modules": 21,
+    "status": "MATCHES_RECORDED_EXPERIMENT"
+  },
+  "phase17": {
+    "commit": "65d8c760",
+    "source_digest": "f7ffa91f3b2905affe13e0284d8d0001e85d629415a087b24d4d961ca86da72f",
+    "modules": 22,
+    "status": "MATCHES_RECORDED_EXPERIMENT"
+  },
+  "phase18": {
+    "commit": "fda30006",
+    "source_digest": "ccd2591e512801b45a81d0a1c426c802a5b380ec680ae03c13c2fd31efd24397",
+    "modules": 24,
+    "status": "MATCHES_RECORDED_EXPERIMENT"
+  }
+}

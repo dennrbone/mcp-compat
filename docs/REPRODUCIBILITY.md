@@ -94,3 +94,12 @@ adaptation is not a separate benchmark in this dataset. Generation is unchanged.
 Run source, dependencies, worker count and model/CLI aliases are fingerprinted;
 an immutable backend model revision is not available. Do not mix these loaded
 latencies with serial pilot latency or label an incomplete run as completed.
+
+## Материалы статьи на русском
+
+Полные команды, словарь данных и сведения о доступе:
+[PUBLICATION_SUPPLEMENT.md](PUBLICATION_SUPPLEMENT.md). Исходники прикладного
+эксперимента закреплены на `fda30006`; поздний патч D0 меняет fingerprint,
+поэтому для точного продолжения нужен экспериментальный снимок. Репозиторий
+приватный; локальный пакет для рецензента содержит материалы и этот снимок
+без секретов и Markdown с мастер-промптом. Видимость репозитория не изменялась.

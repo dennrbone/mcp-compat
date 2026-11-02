@@ -40,3 +40,15 @@ These are verified code commits; subsequent documentation-only status commits
 may have additional runs. Historical failing runs remain visible for audit.
 Phase 10 tests and offline-e2e jobs passed; provider-smoke was **skipped**, correctly
 remaining NOT RUN. Nothing here claims a real provider/model experiment.
+
+## 3 ноября 2026: зафиксирован образ CI
+
+Финальный Phase 18 `0b362664` получил FAIL в [запуске 41531684810](https://github.com/dennrbone/mcp-compat/actions/runs/41531684810).
+Оба hosted job остановились на setup-python: Python 3.11.4 отсутствует
+для Ubuntu 26.04; тесты в этом запуске не выполнялись.
+По [официальному объявлению](https://github.com/actions/runner-images/issues/14748),
+ubuntu-latest мигрирует на 26.04. [Manifest Python](https://github.com/actions/python-versions/blob/main/versions-manifest.json)
+подтверждает 3.11.4 x64 для Ubuntu 24.04.
+В Phase 19 оба hosted job закреплены на ubuntu-24.04; версия Python,
+зависимости и экспериментальные ответы сохранены. Исторический FAIL
+не переименован в PASS. Новый CI оценивается отдельно по фактическому SHA.

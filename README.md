@@ -1,13 +1,18 @@
 # MCP-Compat
 
-MCP-Compat is a research project about safely restoring LLM-agent compatibility after MCP tool contracts evolve. It is not production-ready.
+MCP-Compat — исследовательский прототип восстановления вызовов после изменения
+контрактов MCP. Включает типизированные модели, консервативный diff C1–C8,
+контролируемые адаптеры, независимую проверку локальных реализаций и отказ при
+недостатке оснований. Реальные тесты выполняются только установленным GigaCode
+CodeAgent; интерфейс LLMClient и стандартный MCP позволяют подключать других
+клиентов без привязки ядра к конкретному поставщику.
 
-The engineering prototype includes typed contracts/calls, conservative C1–C8
-diffs, a frozen 2160-case synthetic benchmark, B0–B3, provider-neutral mapping,
-isolated GigaCode CodeAgent CLI transport and a generic model interface, verified adapters, an official-SDK local
-MCP proxy, resumable experiments, metrics and statistical artifacts. One full CodeAgent benchmark is complete; the planned repeated scientific study remains incomplete. Real CLI checks are recorded in
-[current agent test results](docs/IMPROVEMENTS.md). See [actual status](docs/RESULTS_STATUS.md),
-[phase reports](docs/PHASE_REPORTS.md) and [reproduction commands](docs/REPRODUCIBILITY.md).
+Завершены один полный исходный прогон, детерминированные контроли и отдельная
+прикладная проверка с тремя повторами в двух условиях. Первоначальный план с
+несколькими семействами моделей целиком не выполнен. Результаты, включая
+невыгодные для полного гибрида сравнения: [подтверждённое состояние](docs/RESULTS_STATUS.md),
+[рукопись](docs/ARTICLE_DRAFT.md), [отчёты фаз](docs/PHASE_REPORTS.md).
+Прототип не объявляется готовым для production; ограничения проверки — в статье.
 
 ## Setup
 
@@ -102,3 +107,14 @@ primitive additions/removals. Unsupported constructs appear in `diff.opaque`;
 `has_changes=False` does not imply a complete comparison when `is_complete=False`.
 The engine makes no EXECUTE/ABSTAIN decision. See
 [implementation conventions and limitations](docs/IMPLEMENTATION_NOTES.md).
+
+## Материалы исследования на русском
+
+- [Рукопись](docs/ARTICLE_DRAFT.md) и [обзор первичных источников](docs/LITERATURE_REVIEW.md).
+- [Данные, протокол и команды](docs/PUBLICATION_SUPPLEMENT.md).
+- [Подтверждённые результаты и ограничения](docs/RESULTS_STATUS.md).
+
+Завершены исходные 19440 решений CodeAgent, 4320 детерминированных контролей
+и отдельный прикладной опыт из 5760 решений с тремя повторами в двух условиях.
+Контроли не подтверждают универсального превосходства полного гибрида.
+Репозиторий приватный; публикация статьи и merge в main не выполнялись.

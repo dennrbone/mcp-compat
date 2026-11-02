@@ -1,0 +1,176 @@
+{
+  "scope": "codeagent_to_project_mcp",
+  "model": "gigacode/GigaCode",
+  "returncode": 0,
+  "events": [
+    {
+      "type": "step_start",
+      "timestamp": 1793656406144,
+      "sessionID": "ses_e61bf51fcffel83c2oUGNOps0y",
+      "part": {
+        "id": "prt_19e40c07f001S3thq1xI125L03",
+        "messageID": "msg_19e40b7a6001DfGFWkFTzK1fyo",
+        "sessionID": "ses_e61bf51fcffel83c2oUGNOps0y",
+        "type": "step-start"
+      }
+    },
+    {
+      "type": "text",
+      "timestamp": 1793656406148,
+      "sessionID": "ses_e61bf51fcffel83c2oUGNOps0y",
+      "part": {
+        "id": "prt_19e40c081002y9TelvBlwDsxqY",
+        "messageID": "msg_19e40b7a6001DfGFWkFTzK1fyo",
+        "sessionID": "ses_e61bf51fcffel83c2oUGNOps0y",
+        "type": "text",
+        "text": "\n\n",
+        "time": {
+          "start": 1793656406145,
+          "end": 1793656406146
+        }
+      }
+    },
+    {
+      "type": "tool_use",
+      "timestamp": 1793656406150,
+      "sessionID": "ses_e61bf51fcffel83c2oUGNOps0y",
+      "part": {
+        "type": "tool",
+        "tool": "compat_check_migration",
+        "callID": "call_67de7fa8c5e0417b9b02bf6c",
+        "state": {
+          "status": "completed",
+          "input": {
+            "old_contract": {
+              "name": "echo",
+              "description": null,
+              "input_schema": {
+                "type": "object",
+                "properties": {
+                  "x": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "x"
+                ]
+              },
+              "output_schema": null,
+              "metadata": {}
+            },
+            "new_contract": {
+              "name": "echo",
+              "description": null,
+              "input_schema": {
+                "type": "object",
+                "properties": {
+                  "x": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "x"
+                ]
+              },
+              "output_schema": null,
+              "metadata": {}
+            },
+            "old_call": {
+              "tool_name": "echo",
+              "arguments": {
+                "x": 3
+              }
+            },
+            "context": {}
+          },
+          "output": "{\"action\":\"ABSTAIN\",\"adapted_call\":null,\"evidence\":{\"candidate\":{\"arguments\":{\"x\":3},\"tool_name\":\"echo\"},\"candidate_source\":\"structural\",\"candidates\":[\"x\"],\"diff\":{\"changes\":[],\"opaque\":[]},\"method\":\"M1\",\"schema_valid\":true,\"semantic_verified\":false,\"verification\":{\"evidence\":{},\"passed\":false,\"reason\":\"unbound_runtime\"},\"verification_attempts\":1},\"metadata\":{},\"reasons\":[\"unbound_runtime\"]}",
+          "metadata": {
+            "truncated": false
+          },
+          "title": "",
+          "time": {
+            "start": 1793656406147,
+            "end": 1793656406149
+          },
+          "attachments": []
+        },
+        "id": "prt_19e40c082001VxGGKui7T3WS01",
+        "sessionID": "ses_e61bf51fcffel83c2oUGNOps0y",
+        "messageID": "msg_19e40b7a6001DfGFWkFTzK1fyo"
+      }
+    },
+    {
+      "type": "step_finish",
+      "timestamp": 1793656406152,
+      "sessionID": "ses_e61bf51fcffel83c2oUGNOps0y",
+      "part": {
+        "id": "prt_19e40c0870013MQyTsAkeU8xhc",
+        "reason": "tool-calls",
+        "messageID": "msg_19e40b7a6001DfGFWkFTzK1fyo",
+        "sessionID": "ses_e61bf51fcffel83c2oUGNOps0y",
+        "type": "step-finish",
+        "tokens": {
+          "total": 6362,
+          "input": 6152,
+          "output": 210,
+          "reasoning": 0,
+          "cache": {
+            "write": 0,
+            "read": 0
+          }
+        },
+        "cost": 0
+      }
+    },
+    {
+      "type": "step_start",
+      "timestamp": 1793656407631,
+      "sessionID": "ses_e61bf51fcffel83c2oUGNOps0y",
+      "part": {
+        "id": "prt_19e40c64d001ZOlKyJzpRdqaQl",
+        "messageID": "msg_19e40c08a001NjQ5dF7P1gZnrk",
+        "sessionID": "ses_e61bf51fcffel83c2oUGNOps0y",
+        "type": "step-start"
+      }
+    },
+    {
+      "type": "text",
+      "timestamp": 1793656407634,
+      "sessionID": "ses_e61bf51fcffel83c2oUGNOps0y",
+      "part": {
+        "id": "prt_19e40c64f002Z3Bb9SSbKF3i3X",
+        "messageID": "msg_19e40c08a001NjQ5dF7P1gZnrk",
+        "sessionID": "ses_e61bf51fcffel83c2oUGNOps0y",
+        "type": "text",
+        "text": "\n\nThe `compat_check_migration` tool returned:\n\n- **Action:** `ABSTAIN`\n- **Reason:** `unbound_runtime` — the tool `echo` is not bound to a known runtime, so no external tool was invoked and compatibility could not be verified.\n- **Evidence:** The candidate call `{tool_name: \"echo\", arguments: {x: 3}}` was structurally valid but semantically unverified because the runtime is unbound.",
+        "time": {
+          "start": 1793656407631,
+          "end": 1793656407633
+        }
+      }
+    },
+    {
+      "type": "step_finish",
+      "timestamp": 1793656407636,
+      "sessionID": "ses_e61bf51fcffel83c2oUGNOps0y",
+      "part": {
+        "id": "prt_19e40c6530010DjxjR1BzV2iDJ",
+        "reason": "stop",
+        "messageID": "msg_19e40c08a001NjQ5dF7P1gZnrk",
+        "sessionID": "ses_e61bf51fcffel83c2oUGNOps0y",
+        "type": "step-finish",
+        "tokens": {
+          "total": 6585,
+          "input": 328,
+          "output": 113,
+          "reasoning": 0,
+          "cache": {
+            "write": 0,
+            "read": 6144
+          }
+        },
+        "cost": 0
+      }
+    }
+  ]
+}

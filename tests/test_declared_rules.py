@@ -51,6 +51,20 @@ def test_declared_control_preserves_schema_rejection():
     assert DeclaredRules().recover(request).reasons==['schema_invalid']
 
 
+def test_declared_rule_target_through_scalar_abstains():
+    from mcp_compat import ToolCall, ToolContract
+    from mcp_compat.benchmark import RecoveryInput
+    old=ToolContract(name='t',input_schema=dict(type='object',properties=dict(x={'type':'integer'},value={'type':'integer'}),required=['x','value']))
+    new=ToolContract(name='t',input_schema=dict(type='object',properties=dict(x={'type':'object','properties':{'y':{'type':'object','properties':{'z':{'type':'string'}}}}},value={'type':'integer'}),required=['x','value']))
+    request=RecoveryInput(old_contract=old,new_contract=new,old_call=ToolCall(tool_name='t',arguments=dict(x=3,value=7)))
+    for target in (['x','y'],['x','y','z']):
+        request.context=dict(rules=[dict(op='string',source=['value'],target=target)])
+        snapshot=deepcopy(request)
+        decision=DeclaredRules().recover(request)
+        assert decision.action=='ABSTAIN' and decision.reasons==['invalid_adapter']
+        assert decision.evidence['declared_rules']['calls']==0 and request==snapshot
+
+
 def test_full_corpus_declared_controls_are_a_real_zero_inference_comparison(tmp_path):
     index=json.loads(Path('benchmark/manifest.json').read_bytes())
     corpus=load(Path(index['path']),index['digest'])

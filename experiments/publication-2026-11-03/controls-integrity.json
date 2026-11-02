@@ -1,0 +1,1 @@
+{"benchmark_digest":"ef002e38917804b246bdd0d9a5c104160f89b76a4f15de34499c5dcb2b2ce8de","checks":["hashes","matrix","labels","recovery_input","semantic_evaluation","summary"],"methods":["D0","D1"],"records":4320,"repeats":1,"scenarios":2160,"source_digest":"f7ffa91f3b2905affe13e0284d8d0001e85d629415a087b24d4d961ca86da72f","status":"PASS"}

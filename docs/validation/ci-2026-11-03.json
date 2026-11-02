@@ -93,6 +93,15 @@
       "stage": "actions/setup-python; tests not run",
       "reason": "Python 3.11.4 unavailable on Ubuntu 26.04 after ubuntu-latest migration",
       "resolution": "Phase 19 pins hosted jobs to ubuntu-24.04; no frozen experimental code changed"
+    },
+    {
+      "branch": "phase/19-publication-package",
+      "sha": "a465ebca17019b75c1e5082b90ed26d45e07ba44",
+      "run_id": 41535670652,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/dennrbone/mcp-compat/actions/runs/41535670652",
+      "provider_job": "skipped; six real checks passed locally"
     }
   ],
   "publication": "Author explicitly authorized pushing current work on 2026-11-03; prompt/task Markdown excluded."

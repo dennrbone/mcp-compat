@@ -76,5 +76,25 @@
     "No external peer review or replication",
     "No journal selection/submission",
     "No main merge"
-  ]
+  ],
+  "remote_ci": {
+    "code_commit": "a465ebca17019b75c1e5082b90ed26d45e07ba44",
+    "run_id": 41535670652,
+    "conclusion": "success",
+    "provider_job": "skipped; tested locally",
+    "url": "https://github.com/dennrbone/mcp-compat/actions/runs/41535670652"
+  },
+  "archive_validation": {
+    "status": "PASS",
+    "records_verified": 29520,
+    "experimental_snapshots": 3,
+    "checks": [
+      "CRC",
+      "source digests",
+      "all recorded result hashes",
+      "excluded prompts/local configs",
+      "test evidence hashes"
+    ],
+    "final_checksum": "Adjacent .zip.sha256; PACKAGE_INFO.json contains archive source commit"
+  }
 }

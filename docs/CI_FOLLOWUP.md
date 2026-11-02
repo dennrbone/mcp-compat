@@ -52,3 +52,9 @@ ubuntu-latest мигрирует на 26.04. [Manifest Python](https://github.co
 В Phase 19 оба hosted job закреплены на ubuntu-24.04; версия Python,
 зависимости и экспериментальные ответы сохранены. Исторический FAIL
 не переименован в PASS. Новый CI оценивается отдельно по фактическому SHA.
+
+Исправление подтверждено: коммит кода Phase 19 `a465ebca`,
+[Actions 41535670652](https://github.com/dennrbone/mcp-compat/actions/runs/41535670652) — **PASS**.
+Tests и offline-e2e успешны, включая ruff/mypy/сборку. Provider job в GitHub
+пропущен; шесть действительных CodeAgent/MCP проверок прошли локально.
+Последующие изменения статусов не изменяют проверенный исходный код.

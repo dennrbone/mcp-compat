@@ -1,0 +1,34 @@
+{
+  "time_utc": "2026-11-02T20:41:44.164879+00:00",
+  "status": "PASS",
+  "diagnostics": {
+    "returncode": 0,
+    "status_codes": [],
+    "markers": {
+      "rate_limit": false,
+      "too_many_requests": false,
+      "quota": false,
+      "unauthorized": false,
+      "authentication": false,
+      "forbidden": false,
+      "proxy": false,
+      "unavailable": false,
+      "certificate": false,
+      "timed_out": false,
+      "context_length": false
+    }
+  },
+  "response": {
+    "text": "\n\n{\"action\":\"ABSTAIN\"}",
+    "model": "gigacode/GigaCode",
+    "input_tokens": 6290,
+    "output_tokens": 91,
+    "cost": 0.0,
+    "details": {
+      "transport": "gigacode-cli-json-2",
+      "cli_steps": 1
+    }
+  },
+  "scope": "separate_connectivity_probe_not_benchmark",
+  "timeout_seconds": 45
+}

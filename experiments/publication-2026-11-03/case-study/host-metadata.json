@@ -1,0 +1,13 @@
+{
+  "observed_at_utc": "2026-11-02T21:13:01.835228+00:00",
+  "python": "3.11.4",
+  "system": "Darwin",
+  "macos": "27.0",
+  "architecture": "arm64",
+  "server_hardware": "unknown",
+  "backend_revision": "not exposed by provider",
+  "hw.model": "Mac16,13",
+  "hw.ncpu": "10",
+  "hw.memsize": "17179869184",
+  "machdep.cpu.brand_string": "Apple M4"
+}

@@ -9,3 +9,6 @@ coverage.xml
 .ruff_cache/
 build/
 dist/
+
+# Локальное задание с промптами не публикуется.
+CODEX_MASTER_TASKS_03_10.md

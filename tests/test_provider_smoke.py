@@ -104,3 +104,45 @@ def test_real_mapping_protocol(purpose):
     call.validate_against(new)
     assert call.arguments=={'count':7}
     assert result.trace['responses'][-1]['details']['transport']=='gigacode-cli-json-2'
+
+
+@pytest.mark.real_provider
+def test_real_codeagent_mapping_through_business_mcp_proxy():
+    if os.environ.get('MCP_COMPAT_RUN_PROVIDER_SMOKE') != '1':
+        pytest.skip('real CodeAgent inference not explicitly enabled')
+    from datetime import timedelta
+    import json
+    from pathlib import Path
+    import anyio
+    from mcp.shared.memory import create_connected_server_and_client_session as connected
+    from mcp_compat.case_study import generate
+    from mcp_compat.case_study_runtime import execute, registry
+    from mcp_compat.hybrid import Hybrid
+    from mcp_compat.llm import Mapper
+    from mcp_compat.mcp_integration import make_proxy, make_server
+
+    scenario = next(s for s in generate(with_rules=False) if s.scenario_id == 'documents_words-0-rename')
+    decisions = []
+    class ObservedHybrid(Hybrid):
+        def recover(self,request):
+            decision = super().recover(request)
+            decisions.append(decision)
+            return decision
+    engine = ObservedHybrid(Mapper(AgentProvider(from_env()),attempts=2,timeout=120),registry())
+    async def check():
+        async def new(a,s):
+            return execute('documents_words','rename',a,s)
+        async with connected(make_server(scenario.new_contract,new)) as upstream:
+            async with connected(make_proxy(scenario.old_contract,scenario.new_contract,upstream,engine,
+                                            timeout=125),read_timeout_seconds=timedelta(seconds=130)) as proxy:
+                result = await proxy.call_tool(scenario.old_contract.name,scenario.old_call.arguments)
+                evidence_path = os.environ.get('MCP_COMPAT_BUSINESS_SMOKE_EVIDENCE')
+                if evidence_path:
+                    with Path(evidence_path).open('x') as stream:
+                        json.dump(dict(decisions=[d.model_dump(mode='json') for d in decisions],
+                                       mcp_result=result.model_dump(mode='json')),stream,ensure_ascii=False,indent=2)
+                assert not result.isError
+                assert result.structuredContent == dict(minimum_length=2,count=3,style='all')
+                assert len(decisions) == 1 and decisions[0].evidence['semantic_verified']
+                assert decisions[0].evidence['llm']['calls'] >= 1
+    anyio.run(check)

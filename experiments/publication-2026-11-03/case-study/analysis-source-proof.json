@@ -1,0 +1,11 @@
+{
+  "source_core_digest": "ccd2591e512801b45a81d0a1c426c802a5b380ec680ae03c13c2fd31efd24397",
+  "files": {
+    "src/mcp_compat/analysis.py": "0ec2c62c59f29b2cc21e71d2aac95b40bd9bc239f24e951237506b86fa397085",
+    "src/mcp_compat/experiments.py": "ff3080525f27ef8406cf3aec9befc12f784a9716aed6a06c3ce8943b19f41a4b",
+    "examples/publication_results.py": "d7d3971fda1f6d3b1c77f8018e31983913f1a774419fc45271ebbfb07946b6a9",
+    "examples/replay_candidate_verification.py": "0adc4b9124b9785e754aac4f8e971e01390d9452e1a1873232df71c14e9f5503",
+    "examples/validate_publication_run.py": "1f2998224f3c852258ac6299d58a7cb17f7a1244a992ac6b093244fad930e1a1"
+  },
+  "metadata_note": "Latency scope label added after numerical computation; quality scores unchanged."
+}

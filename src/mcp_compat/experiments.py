@@ -14,12 +14,13 @@ from typing import Any, Literal
 
 from pydantic import Field, model_validator
 
-from mcp_compat import MigrationDecision, ToolCall, ToolContract, canonical_bytes
+from mcp_compat import MigrationDecision, ToolCall, canonical_bytes
 from mcp_compat.benchmark import VERSION, equivalent, load, recovery_input
 from mcp_compat.domain.scenarios import GroundTruth, MutationFamily
-from mcp_compat.hybrid import Hybrid, SandboxVerifier
+from mcp_compat.hybrid import Hybrid, RuntimeVerifier
 from mcp_compat.llm import LLMRequest, LLMResponse, Mapper, PROMPT_VERSION, StrictModel
 from mcp_compat.recovery import LLMBaseline, NoRecovery, RuleBased, Strategy, abstain
+from mcp_compat.runtime_fixtures import fixture_verifier
 
 
 class RunConfig(StrictModel):
@@ -217,20 +218,9 @@ class OfflineClient:
                            input_tokens=0,output_tokens=0,cost=0.)
 
 
-def recovery_methods(mapper: Mapper) -> list[Strategy]:
-    # Independently authored fixture implementation, bound only to this quote/unit pair.
-    old = ToolContract(name="commerce_quote",description="Synthetic commerce quote; isolated state only.",
-        input_schema=dict(type="object",properties=dict(value={"type":["integer","number","null"],"semantic_unit":"RUB"},target={"type":"string"},
-            mode={"type":"string","enum":["standard","express"]},note={"type":"string"},notify={"type":"boolean"},
-            legacy={"type":"boolean"},date={"type":"string","format":"date"},duration={"type":"integer","semantic_unit":"seconds"}),
-            required=["value","target","mode","notify","legacy"]))
-    new = old.model_copy(deep=True)
-    new.input_schema['properties']['value']['semantic_unit'] = 'kopecks'
-    def old_impl(a,s):
-        return dict(value=a["value"],target=a["target"],mode=a["mode"],notify=a["notify"],note=a.get("note",""),date=a.get("date",""),duration=a['duration'])
-    def new_impl(a,s):
-        return dict(value=a["value"]/100,target=a["target"],mode=a["mode"],notify=a["notify"],note=a.get("note",""),date=a.get("date",""),duration=a['duration'])
-    verifier = SandboxVerifier(old,new,old_impl,new_impl)
+def recovery_methods(mapper: Mapper, verifier: RuntimeVerifier | None = None) -> list[Strategy]:
+    if verifier is None:
+        verifier = fixture_verifier()
     ablations: list[Literal["A1","A2","A3","A4"]] = ["A1","A2","A3","A4"]
     return [NoRecovery(),LLMBaseline("B1",mapper),LLMBaseline("B2",mapper),RuleBased(),Hybrid(mapper,verifier),
             *[Hybrid(mapper,verifier,ablation=a) for a in ablations]]

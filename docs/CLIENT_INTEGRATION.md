@@ -39,9 +39,11 @@ This is a protocol process: stdout is reserved for MCP messages. An MCP client
 starts it, initializes a session, lists tools and sends a `RecoveryInput` JSON
 object to `check_migration`. Tool descriptions expose the complete input/output
 schemas. The example computes a migration decision and never invokes a business
-tool. Its verifier is deliberately unbound: it returns ABSTAIN rather than
-claiming verified execution. Bind trusted runtimes and your mapper when embedding
-the engine in an application.
+tool. It supplies a registry of trusted synthetic fixture implementations. Known
+structural migrations can return verified EXECUTE; unknown contract digests return
+ABSTAIN. It does not automatically trust arbitrary production contracts. Register
+your own SandboxVerifier implementations in RuntimeRegistry when embedding the
+engine, then pass that registry and your mapper to Hybrid.
 
 In installed GigaCode use `gigacode mcp add`, select a local stdio server and set
 the executable/arguments above. Other MCP clients use their own server settings;

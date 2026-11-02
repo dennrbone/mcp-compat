@@ -1,4 +1,4 @@
-# Experiment protocol — Research Spec 1.1
+# Experiment protocol — Research Spec 1.3
 
 Status: engineering implementation and offline demo only. H1–H4 are **NOT
 TESTED**. Nothing in this document establishes a benefit of the selected real models or M1.
@@ -20,7 +20,10 @@ context. Ground truth, recoverability, ids and oracle programs are evaluator-onl
 Public rules are explicit synthetic environment knowledge, not inferred truth.
 Runtime verification binds independently authored implementations to contract
 digests. An unavailable runtime always causes M1 abstention; the benchmark oracle
-is never supplied in its place. The shipped demo binds one quote/unit pair.
+is never supplied in its place. The current synthetic fixture registry binds 1536 known contract pairs across
+48 tools. Ambiguous encoding signatures remain unbound. The date/date-time
+assertion correction changes evaluation code; historical scores stay attached to
+their original source fingerprint and must not be silently recomputed.
 
 ## Planned main study — NOT RUN
 

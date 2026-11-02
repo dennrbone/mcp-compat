@@ -19,7 +19,8 @@ def test_real_provider_smoke():
 
 
 @pytest.mark.real_provider
-def test_codeagent_calls_project_mcp(tmp_path):
+@pytest.mark.parametrize('binding',['unknown','known'])
+def test_codeagent_calls_project_mcp(tmp_path,binding):
     if os.environ.get('MCP_COMPAT_RUN_PROVIDER_SMOKE') != '1':
         pytest.skip('real CodeAgent inference not explicitly enabled')
     import json
@@ -31,6 +32,15 @@ def test_codeagent_calls_project_mcp(tmp_path):
 
     c=ToolContract(name='echo',input_schema={'type':'object','properties':{'x':{'type':'integer'}},'required':['x']})
     expected=RecoveryInput(old_contract=c,new_contract=c,old_call=ToolCall(tool_name='echo',arguments={'x':3}))
+    expected_action='ABSTAIN'
+    if binding=='known':
+        from mcp_compat.runtime_fixtures import base_contract
+        c=base_contract('commerce','quote')
+        new=c.model_copy(deep=True)
+        new.name+='_v2'
+        expected=RecoveryInput(old_contract=c,new_contract=new,old_call=ToolCall(tool_name=c.name,
+            arguments=dict(value=2,target='development',mode='express',notify=True,legacy=True,duration=60)))
+        expected_action='EXECUTE'
     config=from_env()
     (tmp_path/'config').mkdir()
     (tmp_path/'extra').mkdir()
@@ -54,7 +64,9 @@ def test_codeagent_calls_project_mcp(tmp_path):
     evidence=dict(scope='codeagent_to_project_mcp',model=config.model,returncode=result.returncode,events=events)
     evidence_path=os.environ.get('MCP_COMPAT_MCP_SMOKE_EVIDENCE')
     if evidence_path:
-        with Path(evidence_path).open('x') as handle:
+        evidence_file=Path(evidence_path)
+        evidence_file=evidence_file.with_name(evidence_file.stem+'-'+binding+evidence_file.suffix)
+        with evidence_file.open('x') as handle:
             json.dump(evidence,handle,ensure_ascii=False,indent=2)
     assert result.returncode == 0
     assert not any(e['type']=='error' for e in events)
@@ -63,7 +75,11 @@ def test_codeagent_calls_project_mcp(tmp_path):
     state=calls[0]['state']
     assert state['status'] == 'completed'
     assert RecoveryInput.model_validate(state['input']) == expected
-    assert 'ABSTAIN' in state['output']
+    from mcp_compat import MigrationDecision
+    decision=MigrationDecision.model_validate_json(state['output'])
+    assert decision.action==expected_action
+    if expected_action=='EXECUTE':
+        assert decision.evidence['semantic_verified']
     finishes=[e['part'] for e in events if e['type']=='step_finish']
     assert finishes and all(p.get('cost')==0 for p in finishes)
 

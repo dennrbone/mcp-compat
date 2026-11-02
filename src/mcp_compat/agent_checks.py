@@ -15,6 +15,7 @@ from mcp_compat.domain.scenarios import EvolutionScenario
 from mcp_compat.experiments import RunConfig, recovery_methods, run
 from mcp_compat.llm import LLMRequest, Mapper, parse_proposal, response_schema, SYSTEM_PROMPT
 from mcp_compat.providers import AgentProvider, MODEL_ID, ProviderConfig, ProviderError, from_env
+from mcp_compat.runtime_fixtures import fixture_verifier
 
 
 PROBE_PROMPT = SYSTEM_PROMPT + ' This is a connectivity probe: return only {"action":"ABSTAIN"}, without Markdown.'
@@ -70,5 +71,6 @@ def agent_cli(argv: list[str] | None = None) -> None:
         run_config = RunConfig(kind="pilot", benchmark_digest=index["digest"], scenario_ids=pilot_ids(scenarios),
             model_versions={"gigacode":config.model, "cli":str(report["cli_version"])}, interval_seconds=1)
         mapper = Mapper(client, attempts=1, timeout=120)
-        records = run(run_config, recovery_methods(mapper), benchmark, args.output / "pilot")
-        print(f"REAL PILOT ONLY: {len(records)} decisions; one repeat; runtime binding limited to one contract pair")
+        verifier = fixture_verifier()
+        records = run(run_config, recovery_methods(mapper,verifier), benchmark, args.output / "pilot")
+        print(f"REAL PILOT ONLY: {len(records)} decisions; one repeat; {len(verifier.bindings)} trusted synthetic runtime bindings")

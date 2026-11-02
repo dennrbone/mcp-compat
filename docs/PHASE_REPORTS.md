@@ -184,3 +184,19 @@ and validation/ci.json. Final installed-wheel gate also passed **233 + 2 skips,
   transformations, strict smoke and actual MCP delivery. This is protocol
   evidence, not a whole-benchmark effectiveness claim. See IMPROVEMENTS.md.
 - Main unchanged; no feature publication or scientific conclusion claimed.
+
+## Phase 13 — runtime registry and evaluation validation
+
+- Branch `phase/13-runtime-registry`; 1536 digest-bound synthetic runtime pairs,
+  48 tools, separate implementations and isolated state. Evaluator functions
+  are forbidden during verifier execution; unknown/colliding implementations
+  remain unbound. Application-supplied registries are supported.
+- Full 2160-case audit with a declared-rule fake client: 1056 correct recoveries,
+  0 unsafe executions; 192 recoverable ambiguous encodings remain unsupported,
+  912 MUST_ABSTAIN cases blocked. This is not a model experiment.
+- Corrected missing date-time validation after a failing regression. Spec 1.3
+  records the validation profile; frozen benchmark data/labels unchanged.
+- **285 passed, 5 opt-in skips; 100% statements/branches** (1730/636). Ruff PASS;
+  mypy PASS (21 modules). **2 actual CodeAgent→MCP tests PASS**, including positive
+  verified recovery and unknown-binding abstention.
+- See IMPROVEMENTS.md and validation/phase13.json. Main unchanged; no push.

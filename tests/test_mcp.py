@@ -151,7 +151,32 @@ def test_model_independent_stdio_example():
                     result=await client.call_tool('check_migration',request.model_dump(mode='json'))
                     assert not result.isError
                     assert result.structuredContent['action'] == 'ABSTAIN'
-                    assert 'verifier_unavailable' in result.structuredContent['reasons']
+                    assert 'unbound_runtime' in result.structuredContent['reasons']
                     invalid=await client.call_tool('check_migration',{})
                     assert invalid.isError
+    anyio.run(run)
+
+
+def test_stdio_example_recovers_a_bound_synthetic_contract():
+    from pathlib import Path
+    import sys
+    from mcp import ClientSession,StdioServerParameters
+    from mcp.client.stdio import stdio_client
+    from mcp_compat.benchmark import RecoveryInput
+    from mcp_compat import ToolCall
+    from mcp_compat.runtime_fixtures import base_contract
+    async def run():
+        entry=Path(__file__).resolve().parents[1]/'examples/mcp_server.py'
+        old=base_contract('commerce','quote')
+        new=old.model_copy(deep=True)
+        new.name+='_v2'
+        request=RecoveryInput(old_contract=old,new_contract=new,old_call=ToolCall(tool_name=old.name,
+            arguments=dict(value=2,target='test',mode='express',notify=True,legacy=True,duration=60)))
+        with anyio.fail_after(10):
+            async with stdio_client(StdioServerParameters(command=sys.executable,args=[str(entry)])) as streams:
+                async with ClientSession(*streams) as client:
+                    await client.initialize()
+                    result=await client.call_tool('check_migration',request.model_dump(mode='json'))
+                    assert not result.isError and result.structuredContent['action']=='EXECUTE'
+                    assert result.structuredContent['evidence']['semantic_verified']
     anyio.run(run)

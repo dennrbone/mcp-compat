@@ -57,6 +57,8 @@ class SandboxVerifier:
             return Verification(passed=False, reason="unbound_runtime")
         started = self.clock()
         try:
+            request.old_call.validate_against(request.old_contract)
+            call.validate_against(request.new_contract)
             left, right = deepcopy(self.initial), deepcopy(self.initial)
             old_result = self.old_impl(deepcopy(request.old_call.arguments), left)
             new_result = self.new_impl(deepcopy(call.arguments), right)
@@ -71,6 +73,23 @@ class SandboxVerifier:
                               new_outcome=sha256(canonical_bytes(after)).hexdigest()))
         except Exception:
             return Verification(passed=False, reason="verification_error")
+
+
+class RuntimeRegistry:
+    """Only application-registered, digest-bound implementations may execute."""
+
+    def __init__(self, verifiers: list[SandboxVerifier]):
+        self.bindings: dict[tuple[str,str], SandboxVerifier] = {}
+        for verifier in verifiers:
+            if verifier.bindings in self.bindings:
+                raise ValueError("duplicate runtime binding")
+            self.bindings[verifier.bindings] = verifier
+
+    def verify(self, request: RecoveryInput, call: ToolCall) -> Verification:
+        verifier = self.bindings.get((digest(request.old_contract),digest(request.new_contract)))
+        if verifier is None:
+            return Verification(passed=False,reason="unbound_runtime")
+        return verifier.verify(request,call)
 
 
 def _read(arguments: dict, path: list[str]) -> Any:

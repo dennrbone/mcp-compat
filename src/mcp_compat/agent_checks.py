@@ -45,6 +45,9 @@ def agent_cli(argv: list[str] | None = None) -> None:
     parser.add_argument("--pilot", action="store_true")
     parser.add_argument("--index", type=Path, default=Path("benchmark/manifest.json"))
     args = parser.parse_args(argv)
+    args.output.mkdir(parents=True, exist_ok=True)
+    if (args.output / "smoke.json").exists():
+        raise FileExistsError("smoke evidence already exists; use the runner API to resume its pilot")
     report: dict[str, Any] = dict(scope="strict_json_smoke", provider="gigacode", model=MODEL_ID, status="FAIL")
     try:
         config = from_env()
@@ -58,7 +61,6 @@ def agent_cli(argv: list[str] | None = None) -> None:
     except Exception as exc:
         report["error_type"] = type(exc).__name__
         report["reason"] = str(exc) if isinstance(exc, ProviderError) else "configuration_or_response_invalid"
-    args.output.mkdir(parents=True, exist_ok=True)
     with (args.output / "smoke.json").open("xb") as handle:
         handle.write(canonical_bytes(report))
     print(json.dumps(report))
@@ -70,7 +72,7 @@ def agent_cli(argv: list[str] | None = None) -> None:
         scenarios = load(benchmark, index["digest"])
         run_config = RunConfig(kind="pilot", benchmark_digest=index["digest"], scenario_ids=pilot_ids(scenarios),
             model_versions={"gigacode":config.model, "cli":str(report["cli_version"])}, interval_seconds=1)
-        mapper = Mapper(client, attempts=1, timeout=120)
+        mapper = Mapper(client, attempts=2, timeout=120)
         verifier = fixture_verifier()
         records = run(run_config, recovery_methods(mapper,verifier), benchmark, args.output / "pilot")
         print(f"REAL PILOT ONLY: {len(records)} decisions; one repeat; {len(verifier.bindings)} trusted synthetic runtime bindings")

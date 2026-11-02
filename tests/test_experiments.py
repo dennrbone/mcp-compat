@@ -197,3 +197,18 @@ def test_main_refuses_retired_benchmark(tmp_path,frozen):
     cfg = RunConfig(kind='main',benchmark_digest=digest,model_versions={'test':'offline-unit-test-only'})
     with pytest.raises(ValueError,match='retired benchmark'):
         run(cfg,[NoRecovery()],directory,tmp_path/'out')
+
+
+def test_resume_rejects_changed_mapper_limits_before_inference(tmp_path,frozen):
+    directory,digest,cases=frozen
+    cfg=RunConfig(kind='offline_demo',benchmark_digest=digest,scenario_ids=[cases[0].scenario_id])
+    first=Mapper(FakeClient('{"action":"ABSTAIN"}'),attempts=1)
+    output=tmp_path/'run'
+    run(cfg,[LLMBaseline('B2',first)],directory,output)
+    manifest=json.loads((output/'manifest.json').read_bytes())
+    assert manifest['mapper_limits']['B2']['attempts']==1
+    client=FakeClient('{"action":"ABSTAIN"}')
+    changed=Mapper(client,attempts=2)
+    with pytest.raises(ValueError,match='resume configuration mismatch'):
+        run(cfg,[LLMBaseline('B2',changed)],directory,output)
+    assert not client.requests

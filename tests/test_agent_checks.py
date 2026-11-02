@@ -43,7 +43,7 @@ def test_real_cli_smoke_and_pilot_wiring(tmp_path,monkeypatch,capsys,pilot):
         assert config.scenario_ids == pilot_ids(generate(42))
         assert [s.name for s in strategies] == ['B0','B1','B2','B3','M1','A1','A2','A3','A4']
         assert strategies[2].mapper.client.config.model == 'gigacode/GigaCode'
-        assert strategies[2].mapper.attempts == 1
+        assert strategies[2].mapper.attempts == 2
         called.append(out)
         return []
     monkeypatch.setattr('mcp_compat.agent_checks.run',run)

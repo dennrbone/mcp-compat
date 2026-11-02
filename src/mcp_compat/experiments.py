@@ -127,7 +127,9 @@ def run(config: RunConfig, strategies: list[Strategy], benchmark: Path, output: 
             dependencies[package] = None
     source = sha256(b"".join(p.read_bytes() for p in sorted(Path(__file__).parent.rglob("*.py")))).hexdigest()
     identity = dict(config=config.model_dump(),methods=names,prompt_version=PROMPT_VERSION,benchmark_version=benchmark_manifest["version"],
-                    source_digest=source,python=platform.python_version(),dependencies=dependencies)
+                    source_digest=source,python=platform.python_version(),dependencies=dependencies,
+                    mapper_limits={s.name:dict(attempts=m.attempts,timeout=m.timeout,backoff=m.backoff)
+                        for s in strategies if isinstance(m:=getattr(s,"mapper",None),Mapper)})
     fingerprint = sha256(canonical_bytes(identity)).hexdigest()
     output.mkdir(parents=True,exist_ok=True)
     manifest_path = output/"manifest.json"

@@ -66,6 +66,14 @@
       "status": "completed",
       "conclusion": "success",
       "url": "https://github.com/dennrbone/mcp-compat/actions/runs/41511930652"
+    },
+    {
+      "branch": "phase/18-independent-case-study",
+      "sha": "517aeb64e6e7653542da0e17c001b2b1648ff8c1",
+      "run_id": 41516023390,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/dennrbone/mcp-compat/actions/runs/41516023390"
     }
   ],
   "publication": "Author explicitly authorized pushing current work on 2026-11-03; prompt/task Markdown excluded."

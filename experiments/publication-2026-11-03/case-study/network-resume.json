@@ -1,0 +1,9 @@
+{
+  "time_utc": "2026-11-02T20:07:09.198785+00:00",
+  "github_http": 200,
+  "codeagent_probe": "PASS",
+  "source_digest": "ccd2591e512801b45a81d0a1c426c802a5b380ec680ae03c13c2fd31efd24397",
+  "preserved_record_hashes": 1118,
+  "existing_errors_preserved": true,
+  "probe_usage_separate": "resume-connectivity/smoke.json"
+}

@@ -1,0 +1,16 @@
+{
+  "status": "PASS",
+  "records": 441,
+  "source_tool_invocations": 1158,
+  "failed_source_invocations": 0,
+  "full_matrix": true,
+  "all_artifact_hashes": true,
+  "independent_replay_of_evaluator_traces": true,
+  "source_commit": "e53a729b",
+  "gold_and_inputs_unchanged": true,
+  "caveats": [
+    "M1_new admitted two TOCTOU controls; only Calculator shows semantic mismatch because marker is not in filesystem/SQLite snapshots.",
+    "No automatic current-state admission gate in full Hybrid yet.",
+    "D versus B includes current-state gate as well as completeness."
+  ]
+}

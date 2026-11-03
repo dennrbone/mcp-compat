@@ -1,0 +1,47 @@
+{
+  "with-rules": {
+    "M1": {
+      "false_abstentions": 0,
+      "reasons": {},
+      "variants": {},
+      "pipeline_error_types": {}
+    },
+    "B2": {
+      "false_abstentions": 0,
+      "reasons": {},
+      "variants": {},
+      "pipeline_error_types": {}
+    }
+  },
+  "without-rules": {
+    "M1": {
+      "false_abstentions": 113,
+      "reasons": {
+        "literal_value_unproven": 2,
+        "mapping_abstain": 47,
+        "pipeline_error": 64
+      },
+      "variants": {
+        "enum": 30,
+        "encoding": 13,
+        "nested": 64,
+        "rename": 6
+      },
+      "pipeline_error_types": {
+        "ValueError": 64
+      }
+    },
+    "B2": {
+      "false_abstentions": 106,
+      "reasons": {
+        "llm_abstain": 106
+      },
+      "variants": {
+        "enum": 36,
+        "encoding": 64,
+        "rename": 6
+      },
+      "pipeline_error_types": {}
+    }
+  }
+}

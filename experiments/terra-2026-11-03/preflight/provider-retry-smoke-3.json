@@ -1,0 +1,23 @@
+{
+  "status": "PASS",
+  "response": {
+    "text": "{\"ok\":true}",
+    "model": "gpt-6.1-terra",
+    "input_tokens": 4698,
+    "output_tokens": 9,
+    "cost": null,
+    "details": {
+      "transport": "codex-cli-json-1",
+      "parameters": {
+        "reasoning_effort": "low",
+        "temperature": "provider_default",
+        "max_tokens": "provider_default",
+        "request_max_tokens_hint": 2048
+      },
+      "cached_input_tokens": 0,
+      "reasoning_output_tokens": 0,
+      "output_token_limit_enforced": false,
+      "backend_revision": "unknown"
+    }
+  }
+}

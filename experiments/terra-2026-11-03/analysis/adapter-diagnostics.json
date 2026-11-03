@@ -1,0 +1,393 @@
+{
+  "scope": "replay saved operations, no new model requests",
+  "cases": 64,
+  "reasons": {
+    "overlapping adapter targets": 64
+  },
+  "details": [
+    {
+      "scenario_id": "booking_quote-0-nested",
+      "repeat": 2,
+      "error_type": "ValueError",
+      "reason": "overlapping adapter targets"
+    },
+    {
+      "scenario_id": "inventory_restock-0-nested",
+      "repeat": 0,
+      "error_type": "ValueError",
+      "reason": "overlapping adapter targets"
+    },
+    {
+      "scenario_id": "documents_words-0-nested",
+      "repeat": 2,
+      "error_type": "ValueError",
+      "reason": "overlapping adapter targets"
+    },
+    {
+      "scenario_id": "inventory_reserve-1-nested",
+      "repeat": 1,
+      "error_type": "ValueError",
+      "reason": "overlapping adapter targets"
+    },
+    {
+      "scenario_id": "analytics_score-0-nested",
+      "repeat": 1,
+      "error_type": "ValueError",
+      "reason": "overlapping adapter targets"
+    },
+    {
+      "scenario_id": "calendar_room-0-nested",
+      "repeat": 1,
+      "error_type": "ValueError",
+      "reason": "overlapping adapter targets"
+    },
+    {
+      "scenario_id": "messaging_revoke-1-nested",
+      "repeat": 0,
+      "error_type": "ValueError",
+      "reason": "overlapping adapter targets"
+    },
+    {
+      "scenario_id": "analytics_score-1-nested",
+      "repeat": 0,
+      "error_type": "ValueError",
+      "reason": "overlapping adapter targets"
+    },
+    {
+      "scenario_id": "analytics_buckets-0-nested",
+      "repeat": 1,
+      "error_type": "ValueError",
+      "reason": "overlapping adapter targets"
+    },
+    {
+      "scenario_id": "calendar_duration-1-nested",
+      "repeat": 1,
+      "error_type": "ValueError",
+      "reason": "overlapping adapter targets"
+    },
+    {
+      "scenario_id": "documents_find-0-nested",
+      "repeat": 1,
+      "error_type": "ValueError",
+      "reason": "overlapping adapter targets"
+    },
+    {
+      "scenario_id": "messaging_revoke-1-nested",
+      "repeat": 2,
+      "error_type": "ValueError",
+      "reason": "overlapping adapter targets"
+    },
+    {
+      "scenario_id": "booking_quote-1-nested",
+      "repeat": 0,
+      "error_type": "ValueError",
+      "reason": "overlapping adapter targets"
+    },
+    {
+      "scenario_id": "inventory_restock-1-nested",
+      "repeat": 2,
+      "error_type": "ValueError",
+      "reason": "overlapping adapter targets"
+    },
+    {
+      "scenario_id": "booking_cancel-1-nested",
+      "repeat": 0,
+      "error_type": "ValueError",
+      "reason": "overlapping adapter targets"
+    },
+    {
+      "scenario_id": "booking_cancel-0-nested",
+      "repeat": 2,
+      "error_type": "ValueError",
+      "reason": "overlapping adapter targets"
+    },
+    {
+      "scenario_id": "documents_find-1-nested",
+      "repeat": 0,
+      "error_type": "ValueError",
+      "reason": "overlapping adapter targets"
+    },
+    {
+      "scenario_id": "documents_find-0-nested",
+      "repeat": 2,
+      "error_type": "ValueError",
+      "reason": "overlapping adapter targets"
+    },
+    {
+      "scenario_id": "inventory_restock-0-nested",
+      "repeat": 1,
+      "error_type": "ValueError",
+      "reason": "overlapping adapter targets"
+    },
+    {
+      "scenario_id": "messaging_enqueue-1-nested",
+      "repeat": 0,
+      "error_type": "ValueError",
+      "reason": "overlapping adapter targets"
+    },
+    {
+      "scenario_id": "inventory_reserve-1-nested",
+      "repeat": 0,
+      "error_type": "ValueError",
+      "reason": "overlapping adapter targets"
+    },
+    {
+      "scenario_id": "messaging_revoke-1-nested",
+      "repeat": 1,
+      "error_type": "ValueError",
+      "reason": "overlapping adapter targets"
+    },
+    {
+      "scenario_id": "calendar_room-0-nested",
+      "repeat": 0,
+      "error_type": "ValueError",
+      "reason": "overlapping adapter targets"
+    },
+    {
+      "scenario_id": "calendar_duration-0-nested",
+      "repeat": 2,
+      "error_type": "ValueError",
+      "reason": "overlapping adapter targets"
+    },
+    {
+      "scenario_id": "analytics_buckets-0-nested",
+      "repeat": 0,
+      "error_type": "ValueError",
+      "reason": "overlapping adapter targets"
+    },
+    {
+      "scenario_id": "booking_cancel-0-nested",
+      "repeat": 1,
+      "error_type": "ValueError",
+      "reason": "overlapping adapter targets"
+    },
+    {
+      "scenario_id": "booking_quote-1-nested",
+      "repeat": 1,
+      "error_type": "ValueError",
+      "reason": "overlapping adapter targets"
+    },
+    {
+      "scenario_id": "analytics_buckets-1-nested",
+      "repeat": 2,
+      "error_type": "ValueError",
+      "reason": "overlapping adapter targets"
+    },
+    {
+      "scenario_id": "calendar_duration-1-nested",
+      "repeat": 0,
+      "error_type": "ValueError",
+      "reason": "overlapping adapter targets"
+    },
+    {
+      "scenario_id": "documents_words-1-nested",
+      "repeat": 0,
+      "error_type": "ValueError",
+      "reason": "overlapping adapter targets"
+    },
+    {
+      "scenario_id": "documents_words-0-nested",
+      "repeat": 1,
+      "error_type": "ValueError",
+      "reason": "overlapping adapter targets"
+    },
+    {
+      "scenario_id": "messaging_enqueue-0-nested",
+      "repeat": 2,
+      "error_type": "ValueError",
+      "reason": "overlapping adapter targets"
+    },
+    {
+      "scenario_id": "inventory_reserve-0-nested",
+      "repeat": 2,
+      "error_type": "ValueError",
+      "reason": "overlapping adapter targets"
+    },
+    {
+      "scenario_id": "calendar_room-1-nested",
+      "repeat": 2,
+      "error_type": "ValueError",
+      "reason": "overlapping adapter targets"
+    },
+    {
+      "scenario_id": "analytics_score-0-nested",
+      "repeat": 2,
+      "error_type": "ValueError",
+      "reason": "overlapping adapter targets"
+    },
+    {
+      "scenario_id": "booking_cancel-0-nested",
+      "repeat": 0,
+      "error_type": "ValueError",
+      "reason": "overlapping adapter targets"
+    },
+    {
+      "scenario_id": "inventory_restock-0-nested",
+      "repeat": 2,
+      "error_type": "ValueError",
+      "reason": "overlapping adapter targets"
+    },
+    {
+      "scenario_id": "booking_quote-0-nested",
+      "repeat": 0,
+      "error_type": "ValueError",
+      "reason": "overlapping adapter targets"
+    },
+    {
+      "scenario_id": "messaging_revoke-0-nested",
+      "repeat": 2,
+      "error_type": "ValueError",
+      "reason": "overlapping adapter targets"
+    },
+    {
+      "scenario_id": "calendar_duration-0-nested",
+      "repeat": 1,
+      "error_type": "ValueError",
+      "reason": "overlapping adapter targets"
+    },
+    {
+      "scenario_id": "documents_find-1-nested",
+      "repeat": 1,
+      "error_type": "ValueError",
+      "reason": "overlapping adapter targets"
+    },
+    {
+      "scenario_id": "analytics_score-0-nested",
+      "repeat": 0,
+      "error_type": "ValueError",
+      "reason": "overlapping adapter targets"
+    },
+    {
+      "scenario_id": "analytics_buckets-1-nested",
+      "repeat": 1,
+      "error_type": "ValueError",
+      "reason": "overlapping adapter targets"
+    },
+    {
+      "scenario_id": "calendar_room-1-nested",
+      "repeat": 1,
+      "error_type": "ValueError",
+      "reason": "overlapping adapter targets"
+    },
+    {
+      "scenario_id": "analytics_score-1-nested",
+      "repeat": 1,
+      "error_type": "ValueError",
+      "reason": "overlapping adapter targets"
+    },
+    {
+      "scenario_id": "inventory_reserve-0-nested",
+      "repeat": 1,
+      "error_type": "ValueError",
+      "reason": "overlapping adapter targets"
+    },
+    {
+      "scenario_id": "inventory_restock-1-nested",
+      "repeat": 0,
+      "error_type": "ValueError",
+      "reason": "overlapping adapter targets"
+    },
+    {
+      "scenario_id": "documents_words-1-nested",
+      "repeat": 2,
+      "error_type": "ValueError",
+      "reason": "overlapping adapter targets"
+    },
+    {
+      "scenario_id": "booking_quote-1-nested",
+      "repeat": 2,
+      "error_type": "ValueError",
+      "reason": "overlapping adapter targets"
+    },
+    {
+      "scenario_id": "analytics_score-1-nested",
+      "repeat": 2,
+      "error_type": "ValueError",
+      "reason": "overlapping adapter targets"
+    },
+    {
+      "scenario_id": "calendar_room-0-nested",
+      "repeat": 2,
+      "error_type": "ValueError",
+      "reason": "overlapping adapter targets"
+    },
+    {
+      "scenario_id": "documents_words-1-nested",
+      "repeat": 1,
+      "error_type": "ValueError",
+      "reason": "overlapping adapter targets"
+    },
+    {
+      "scenario_id": "messaging_enqueue-1-nested",
+      "repeat": 2,
+      "error_type": "ValueError",
+      "reason": "overlapping adapter targets"
+    },
+    {
+      "scenario_id": "documents_words-0-nested",
+      "repeat": 0,
+      "error_type": "ValueError",
+      "reason": "overlapping adapter targets"
+    },
+    {
+      "scenario_id": "calendar_duration-0-nested",
+      "repeat": 0,
+      "error_type": "ValueError",
+      "reason": "overlapping adapter targets"
+    },
+    {
+      "scenario_id": "calendar_room-1-nested",
+      "repeat": 0,
+      "error_type": "ValueError",
+      "reason": "overlapping adapter targets"
+    },
+    {
+      "scenario_id": "booking_cancel-1-nested",
+      "repeat": 1,
+      "error_type": "ValueError",
+      "reason": "overlapping adapter targets"
+    },
+    {
+      "scenario_id": "calendar_duration-1-nested",
+      "repeat": 2,
+      "error_type": "ValueError",
+      "reason": "overlapping adapter targets"
+    },
+    {
+      "scenario_id": "messaging_revoke-0-nested",
+      "repeat": 1,
+      "error_type": "ValueError",
+      "reason": "overlapping adapter targets"
+    },
+    {
+      "scenario_id": "messaging_enqueue-0-nested",
+      "repeat": 0,
+      "error_type": "ValueError",
+      "reason": "overlapping adapter targets"
+    },
+    {
+      "scenario_id": "inventory_reserve-0-nested",
+      "repeat": 0,
+      "error_type": "ValueError",
+      "reason": "overlapping adapter targets"
+    },
+    {
+      "scenario_id": "inventory_restock-1-nested",
+      "repeat": 1,
+      "error_type": "ValueError",
+      "reason": "overlapping adapter targets"
+    },
+    {
+      "scenario_id": "documents_find-0-nested",
+      "repeat": 0,
+      "error_type": "ValueError",
+      "reason": "overlapping adapter targets"
+    },
+    {
+      "scenario_id": "documents_find-1-nested",
+      "repeat": 2,
+      "error_type": "ValueError",
+      "reason": "overlapping adapter targets"
+    }
+  ]
+}

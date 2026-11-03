@@ -1,0 +1,34 @@
+{
+  "status": "PASS",
+  "response": {
+    "text": "{\"ok\":true}",
+    "model": "gpt-6.1-terra",
+    "input_tokens": 4695,
+    "output_tokens": 9,
+    "cost": null,
+    "details": {
+      "transport": "codex-cli-json-1",
+      "parameters": {
+        "reasoning_effort": "low",
+        "temperature": "provider_default",
+        "max_tokens": "provider_default",
+        "request_max_tokens_hint": 2048
+      },
+      "cached_input_tokens": 3200,
+      "reasoning_output_tokens": 0,
+      "output_token_limit_enforced": false,
+      "backend_revision": "unknown"
+    }
+  },
+  "latency": 13.756498874980025,
+  "diagnostic": {
+    "returncode": 0,
+    "event_types": [
+      "thread.started",
+      "turn.started",
+      "item.completed",
+      "turn.completed"
+    ],
+    "category": "response_received"
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "status": "MAIN_COMPLETED_VALIDATED_REPLACEMENT_NOT_STARTED",
+  "decisions": 5760,
+  "terminal_provider_failures": 788,
+  "provider_error_attempts": 1581,
+  "conditions": {
+    "with-rules": {
+      "benchmark_digest": "fd3d0345c20bad89d0064a58e0c71064c52ca0894ea249a268ef948af7e2cbe6",
+      "checks": [
+        "hashes",
+        "matrix",
+        "labels",
+        "recovery_input",
+        "semantic_evaluation",
+        "summary"
+      ],
+      "methods": [
+        "B3",
+        "D0",
+        "D1",
+        "B2",
+        "M1"
+      ],
+      "records": 2880,
+      "repeats": 3,
+      "scenarios": 192,
+      "source_digest": "ccd2591e512801b45a81d0a1c426c802a5b380ec680ae03c13c2fd31efd24397",
+      "status": "PASS",
+      "terminal_provider_failures": 476
+    },
+    "without-rules": {
+      "benchmark_digest": "8c25d957612790b719ddf5925dcca602f911f998d2a0c13647f345167a5fe190",
+      "checks": [
+        "hashes",
+        "matrix",
+        "labels",
+        "recovery_input",
+        "semantic_evaluation",
+        "summary"
+      ],
+      "methods": [
+        "B3",
+        "D0",
+        "D1",
+        "B2",
+        "M1"
+      ],
+      "records": 2880,
+      "repeats": 3,
+      "scenarios": 192,
+      "source_digest": "ccd2591e512801b45a81d0a1c426c802a5b380ec680ae03c13c2fd31efd24397",
+      "status": "PASS",
+      "terminal_provider_failures": 312
+    }
+  },
+  "author_instruction": "overwrite only terminal provider failures in main matrix; preserve audit and attempt accounting"
+}

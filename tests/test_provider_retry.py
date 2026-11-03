@@ -87,7 +87,8 @@ def test_retry_rejects_identity_and_eligibility_changes(retry):
     assert retry.combine(old,fresh,'s','h').calls is None
 
 
-def test_retry_atomically_overwrites_only_targeted_rows_and_resumes_without_queries(retry, tmp_path, monkeypatch):
+@pytest.fixture
+def prepared_runs(retry, tmp_path, monkeypatch):
     monkeypatch.setattr(retry, 'ROOT', tmp_path)
     monkeypatch.setattr(retry, 'EXPECTED_RECORDS', 2)
     originals = {}
@@ -111,12 +112,17 @@ def test_retry_atomically_overwrites_only_targeted_rows_and_resumes_without_quer
         calls.append((scenario.scenario_id, method.name, repeat))
         return row(parsed=True,execute=True)
     monkeypatch.setattr(retry, '_evaluate', evaluate)
+    return retry, tmp_path, originals, calls
+
+
+def test_retry_atomically_overwrites_only_targeted_rows_and_resumes_without_queries(prepared_runs):
+    retry, tmp_path, originals, calls = prepared_runs
     plan = retry.execute(sys.executable)
     assert plan['status'] == 'complete' and len(plan['completed']) == len(calls) == 2
     for regime in originals:
         directory = tmp_path/'runs'/regime
         manifest, rows = read_results(directory)
-        assert manifest['provider_retry_policy']['extra_passes'] == 1
+        assert manifest['provider_retry_policy']['resolved_passes_per_target'] == 1
         assert all(r.decision.action=='EXECUTE' for r in rows)
         assert (directory/'2-M1-untargeted.json').read_bytes() == originals[regime]['2-M1-untargeted.json']
         assert (tmp_path/'before-provider-retry'/regime/'2-M1-s.json').read_bytes() == originals[regime]['2-M1-s.json']
@@ -134,3 +140,26 @@ def test_retry_atomically_overwrites_only_targeted_rows_and_resumes_without_quer
     _atomic(path, payload)
     with pytest.raises(ValueError,match='hash mismatch'):
         retry.execute(sys.executable)
+
+
+def test_retry_stops_on_unavailable_provider_and_keeps_cumulative_attempts(prepared_runs, monkeypatch):
+    retry, tmp_path, _, calls = prepared_runs
+    def evaluate(scenario, method, repeat, interval):
+        calls.append(scenario.scenario_id)
+        return row()
+    monkeypatch.setattr(retry, '_evaluate', evaluate)
+    from mcp_compat.providers import ProviderError
+    with pytest.raises(ProviderError,match='stopped'):
+        retry.execute(sys.executable)
+    plan = json.loads((tmp_path/'provider-retry-plan.json').read_bytes())
+    assert plan['status'] == 'in_progress' and not plan['completed']
+    assert len(plan['unavailable']) == len(calls) == 2
+    assert len(plan['transport_stops']) == 1
+    monkeypatch.setattr(retry, '_evaluate', lambda *args:row(parsed=True,execute=True))
+    result = retry.execute(sys.executable)
+    assert result['status'] == 'complete' and not result['unavailable']
+    _, rows = read_results(tmp_path/'runs/with-rules')
+    replaced = next(r for r in rows if r.scenario_id == 's')
+    assert replaced.calls == 3 and replaced.decision.evidence['llm']['calls'] == 3
+    assert replaced.decision.evidence['provider_retry']['retry_evaluations'] == 2
+    assert len(replaced.decision.evidence['llm']['parse_errors']) == 2

@@ -1,6 +1,8 @@
 from importlib.util import module_from_spec, spec_from_file_location
 import json
+import os
 from pathlib import Path
+import shutil
 import subprocess
 import sys
 from types import SimpleNamespace
@@ -107,3 +109,14 @@ def test_codex_configuration_bounds_and_honest_parameters(transport):
     assert good.generation_parameters['temperature'] == 'provider_default'
     with pytest.raises(ValidationError, match='Terra generation'):
         runner.TerraRunConfig(kind='pilot',benchmark_digest='x')
+
+
+@pytest.mark.real_provider
+def test_real_terra_mapping_through_business_mcp_proxy(transport):
+    if os.environ.get('MCP_COMPAT_RUN_TERRA_SMOKE') != '1':
+        pytest.skip('real Terra inference not explicitly enabled')
+    from test_provider_smoke import _business_proxy_check
+    executable = os.environ.get('MCP_COMPAT_CODEX_BIN') or shutil.which('codex')
+    assert executable is not None
+    _business_proxy_check(transport.CodexClient(executable),
+                          os.environ.get('MCP_COMPAT_TERRA_BUSINESS_SMOKE_EVIDENCE'))

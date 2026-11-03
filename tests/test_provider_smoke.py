@@ -110,6 +110,10 @@ def test_real_mapping_protocol(purpose):
 def test_real_codeagent_mapping_through_business_mcp_proxy():
     if os.environ.get('MCP_COMPAT_RUN_PROVIDER_SMOKE') != '1':
         pytest.skip('real CodeAgent inference not explicitly enabled')
+    _business_proxy_check(AgentProvider(from_env()), os.environ.get('MCP_COMPAT_BUSINESS_SMOKE_EVIDENCE'))
+
+
+def _business_proxy_check(client, evidence_path):
     from datetime import timedelta
     import json
     from pathlib import Path
@@ -128,7 +132,7 @@ def test_real_codeagent_mapping_through_business_mcp_proxy():
             decision = super().recover(request)
             decisions.append(decision)
             return decision
-    engine = ObservedHybrid(Mapper(AgentProvider(from_env()),attempts=2,timeout=120),registry())
+    engine = ObservedHybrid(Mapper(client,attempts=2,timeout=120),registry())
     async def check():
         async def new(a,s):
             return execute('documents_words','rename',a,s)
@@ -136,7 +140,6 @@ def test_real_codeagent_mapping_through_business_mcp_proxy():
             async with connected(make_proxy(scenario.old_contract,scenario.new_contract,upstream,engine,
                                             timeout=125),read_timeout_seconds=timedelta(seconds=130)) as proxy:
                 result = await proxy.call_tool(scenario.old_contract.name,scenario.old_call.arguments)
-                evidence_path = os.environ.get('MCP_COMPAT_BUSINESS_SMOKE_EVIDENCE')
                 if evidence_path:
                     with Path(evidence_path).open('x') as stream:
                         json.dump(dict(decisions=[d.model_dump(mode='json') for d in decisions],

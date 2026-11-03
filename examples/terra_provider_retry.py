@@ -17,6 +17,7 @@ from mcp_compat.case_study_runtime import registry
 from mcp_compat.experiments import Record, _atomic, _evaluate, summaries
 from mcp_compat.hybrid import Hybrid
 from mcp_compat.llm import Mapper
+from mcp_compat.providers import ProviderError
 from mcp_compat.recovery import LLMBaseline
 
 ROOT = Path('experiments/terra-2026-11-03')
@@ -44,6 +45,7 @@ def combine(previous, fresh, selection_digest, previous_hash):
     new_trace['calls'] = old_trace.get('calls', 0)+new_trace.get('calls', 0)
     result.decision.evidence['provider_retry'] = dict(
         selection_digest=selection_digest, previous_byte_hash=previous_hash,
+        retry_evaluations=previous.decision.evidence.get('provider_retry', {}).get('retry_evaluations', 0)+1,
         applied_at_utc=datetime.now(timezone.utc).isoformat(),
         original_reasons=previous.decision.reasons, prior_calls=previous.calls,
         extra_calls=fresh.calls, fresh_usage={k:getattr(fresh, k) for k in ('input_tokens', 'output_tokens', 'cost')},
@@ -85,7 +87,8 @@ def execute(executable):
                     selection[regime+'/'+name] = sha256(data).hexdigest()
         digest = sha256(canonical_bytes(selection)).hexdigest()
         plan = dict(selection=selection, selection_digest=digest, original_manifests=manifests,
-                    extra_passes=1, attempts_per_pass=2, timeout=120, workers=4,
+                    resolved_passes_per_target=1, attempts_per_pass=2, timeout=120, workers=4,
+                    stop_on_terminal_provider_failure=True,
                     script_sha256=sha256(Path(__file__).read_bytes()).hexdigest(), completed={}, status='in_progress')
         _atomic(plan_path, plan)
     plan = json.loads(plan_path.read_bytes())
@@ -110,16 +113,23 @@ def execute(executable):
         previous = Record.model_validate_json(original_bytes)
         current = Record.model_validate_json(path.read_bytes())
         marker = current.decision.evidence.get('provider_retry', {})
+        known = plan['completed'].get(key) or plan.get('unavailable', {}).get(key)
+        if known and sha256(path.read_bytes()).hexdigest() != known:
+            raise ValueError('record changed after saved retry')
         if sha256(path.read_bytes()).hexdigest() == expected:
             jobs.append((key, previous))
         elif marker.get('selection_digest') == plan['selection_digest'] and marker.get('previous_byte_hash') == expected:
-            plan['completed'][key] = sha256(path.read_bytes()).hexdigest()
+            if provider_failure(current):
+                jobs.append((key, current))
+            else:
+                plan['completed'][key] = sha256(path.read_bytes()).hexdigest()
+                plan.get('unavailable', {}).pop(key, None)
         else:
             raise ValueError('record changed outside the registered replacement')
     _atomic(plan_path, plan)
     with ThreadPoolExecutor(max_workers=4) as executor:
         pending, running = iter(jobs), {}
-        exhausted = False
+        exhausted, halted = False, False
         while running or not exhausted:
             while len(running) < 4 and not exhausted:
                 job = next(pending, None)
@@ -138,8 +148,18 @@ def execute(executable):
                 result = combine(previous, future.result(), plan['selection_digest'], plan['selection'][key])
                 path = ROOT/'runs'/key
                 _atomic(path, result.model_dump(mode='json'))
-                plan['completed'][key] = sha256(path.read_bytes()).hexdigest()
+                if provider_failure(result):
+                    plan.setdefault('unavailable', {})[key] = sha256(path.read_bytes()).hexdigest()
+                    exhausted, halted = True, True
+                else:
+                    plan['completed'][key] = sha256(path.read_bytes()).hexdigest()
+                    plan.get('unavailable', {}).pop(key, None)
                 _atomic(plan_path, plan)
+    if halted:
+        plan.setdefault('transport_stops', []).append(dict(at_utc=datetime.now(timezone.utc).isoformat(),
+                                                         unresolved=list(plan.get('unavailable', {}))))
+        _atomic(plan_path, plan)
+        raise ProviderError('provider retry stopped after unavailable response; restore access before resuming')
     for regime, original in plan['original_manifests'].items():
         directory = ROOT/'runs'/regime
         digests = json.loads((backup/regime/'result-digests.json').read_bytes())
@@ -153,7 +173,8 @@ def execute(executable):
         manifest.pop('fingerprint')
         manifest['provider_retry_policy'] = dict(original_fingerprint=original['fingerprint'],
             selection_digest=plan['selection_digest'], script_sha256=plan['script_sha256'],
-            extra_passes=1, attempts_per_pass=2, source_backup=str(backup/regime),
+            resolved_passes_per_target=1, attempts_per_pass=2, source_backup=str(backup/regime),
+            stop_on_terminal_provider_failure=True, transport_stops=len(plan.get('transport_stops', [])),
             calls_scope='all original and retry CLI invocations; unknown usage remains unknown',
             latency_scope='mixed original measurements and summed retry components; no causal latency comparison')
         identity = {k:v for k,v in manifest.items() if k != 'created_at'}

@@ -62,7 +62,7 @@
     "Cost/billing unknown; ChatGPT quota used",
     "Main results not yet complete"
   ],
-  "updated_utc": "2026-11-03T07:10:58.945890+00:00",
+  "updated_utc": "2026-11-03T07:39:35.061129+00:00",
   "interruption": {
     "preserved_records": 1911,
     "provider_error_attempts": 954,
@@ -76,5 +76,25 @@
     "sha": "23a89b5dc79aebceb52f70ed3d456c2c2507de0b",
     "run_id": 41543210412,
     "conclusion": "success"
+  },
+  "latest_source_gate": {
+    "passed": 340,
+    "skipped": 6,
+    "failed": 0,
+    "package_coverage": "100% statements and branches; 2064/784",
+    "targeted_transport_and_retry_tests": 21,
+    "ruff": "PASS",
+    "mypy": "PASS24"
+  },
+  "provider_retry_instruction": {
+    "main_matrix_overwrite": true,
+    "backup_required": true,
+    "eligibility": "ABSTAIN, unparsed, last attempt error ProviderError",
+    "completed_with_rules_records": 2880,
+    "with_rules_selected_failures": 476,
+    "extra_passes": 1,
+    "attempts_per_pass": 2,
+    "implemented": true,
+    "executed": false
   }
 }

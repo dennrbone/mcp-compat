@@ -111,6 +111,14 @@
       "conclusion": "success",
       "url": "https://github.com/dennrbone/mcp-compat/actions/runs/41543210412",
       "scope": "transport and pilot code; main experiment still incomplete"
+    },
+    {
+      "branch": "phase/20-terra-comparison",
+      "sha": "d55f406f8f130eec93168ad82c1903716ff0759a",
+      "run_id": 41594649139,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/dennrbone/mcp-compat/actions/runs/41594649139"
     }
   ],
   "publication": "Author explicitly authorized pushing current work on 2026-11-03; prompt/task Markdown excluded."

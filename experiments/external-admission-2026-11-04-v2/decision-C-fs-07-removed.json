@@ -1,0 +1,1 @@
+{"case_id":"fs-07-removed","decision":{"action":"EXECUTE","adapted_call":{"arguments":{},"tool_name":"read_text_file"},"evidence":{"candidate":{"arguments":{},"tool_name":"read_text_file"},"method":"C","schema_valid":true,"semantic_verified":false},"metadata":{},"reasons":["schema_valid"]},"latency":0.00015350000467151403,"method":"C","source_calls":0}

@@ -1,0 +1,1 @@
+{"model_calls":0,"notes":"attempted source tool invocations include previews and evaluator probes; each worker also initializes and lists tools, these setup RPCs are not counted; failed invocations may have unknown delivery","source_calls":1453}

@@ -1,0 +1,1 @@
+{"case_id":"calculator-07-removed","decision":{"action":"EXECUTE","adapted_call":{"arguments":{},"tool_name":"calculate"},"evidence":{"candidate":{"arguments":{},"tool_name":"calculate"},"method":"C","schema_valid":true,"semantic_verified":false},"metadata":{},"reasons":["schema_valid"]},"latency":5.2459072321653366e-05,"method":"C","source_calls":0}

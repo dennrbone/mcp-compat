@@ -1,0 +1,1 @@
+{"case_id":"sqlite-07-removed","decision":{"action":"EXECUTE","adapted_call":{"arguments":{},"tool_name":"read_query"},"evidence":{"candidate":{"arguments":{},"tool_name":"read_query"},"method":"C","schema_valid":true,"semantic_verified":false},"metadata":{},"reasons":["schema_valid"]},"latency":0.00014591601211577654,"method":"C","source_calls":0}

@@ -1,0 +1,52 @@
+{
+  "fs": {
+    "repository": "https://github.com/modelcontextprotocol/servers",
+    "license": "MIT",
+    "old_commit": "5a48c0bf06a40b0d4c2ea612b72bc0956e0d1cf8",
+    "new_commit": "11a064c359d44e4197694ba4dde72f6fe79ad101",
+    "change": "Rename read_file to read_text_file and add read_media_file",
+    "commit_url": "https://github.com/modelcontextprotocol/servers/commit/11a064c359d44e4197694ba4dde72f6fe79ad101",
+    "files": {
+      "vendor/fs/old/index.ts": "d538539d961addcb74719bc84c8c22ae4942d08c6147e6c63cc03f78cd87fc81",
+      "vendor/fs/old/LICENSE": "5e13dbbc1d120fc2a03cecde7c91424ae2d7de11b63d58ded2f4431e261ee50d",
+      "vendor/fs/old/path-validation.ts": "90e62491f1e9c3fca09d16647eb98b950eac67b061ed8dbcc9102c7dc9573898",
+      "vendor/fs/old/roots-utils.ts": "85e7add1e37a2c2e9817e7e5439c1b69c186079a7ff76c5b5cef343b2eaf704d",
+      "vendor/fs/old/package.json": "e1e0daec169e497ddc883040d9808d068b9e339c1d6ce2773bade826f60c2cc7",
+      "vendor/fs/new/index.ts": "d52086cf56f63132f745e973315429dbcac793aeeab700c13ea4f607735dac59",
+      "vendor/fs/new/LICENSE": "5e13dbbc1d120fc2a03cecde7c91424ae2d7de11b63d58ded2f4431e261ee50d",
+      "vendor/fs/new/path-validation.ts": "90e62491f1e9c3fca09d16647eb98b950eac67b061ed8dbcc9102c7dc9573898",
+      "vendor/fs/new/roots-utils.ts": "85e7add1e37a2c2e9817e7e5439c1b69c186079a7ff76c5b5cef343b2eaf704d",
+      "vendor/fs/new/package.json": "e1e0daec169e497ddc883040d9808d068b9e339c1d6ce2773bade826f60c2cc7",
+      "vendor/fs/old/path-utils.ts": "d85dc91c5652fceda0eef94c7551faa46730144e02d55f9db003e3970ba5077a",
+      "vendor/fs/new/path-utils.ts": "d85dc91c5652fceda0eef94c7551faa46730144e02d55f9db003e3970ba5077a"
+    }
+  },
+  "sqlite": {
+    "repository": "https://github.com/modelcontextprotocol/servers-archived",
+    "license": "MIT",
+    "old_commit": "25d1a1c23ead41425e93a35e81ec46f4c028cbf9",
+    "new_commit": "acc3ba2740416339ef753b4e46f87d677a1c633b",
+    "change": "Replaced hyphen with underscore in the tool names",
+    "commit_url": "https://github.com/modelcontextprotocol/servers-archived/commit/acc3ba2740416339ef753b4e46f87d677a1c633b",
+    "files": {
+      "vendor/sqlite/old/server.py": "d3d58a605315e6bf360b43178d8a0a54a9098931bbc00974221ccf3d8e9ba863",
+      "vendor/sqlite/old/LICENSE": "5e13dbbc1d120fc2a03cecde7c91424ae2d7de11b63d58ded2f4431e261ee50d",
+      "vendor/sqlite/new/server.py": "490affc4170885bf5803d78f09a998768fcb0186c99e25d22c215bb0822ed2e5",
+      "vendor/sqlite/new/LICENSE": "5e13dbbc1d120fc2a03cecde7c91424ae2d7de11b63d58ded2f4431e261ee50d"
+    }
+  },
+  "calculator": {
+    "repository": "https://github.com/githejie/mcp-server-calculator",
+    "license": "MIT",
+    "old_commit": "5b828b921e5f187c2de0a8d6c597885fce3b3b86",
+    "new_commit": "a07908b443aa8494aaa08eb6f4cb6f3033532817",
+    "change": "Support the python math library",
+    "commit_url": "https://github.com/githejie/mcp-server-calculator/commit/a07908b443aa8494aaa08eb6f4cb6f3033532817",
+    "files": {
+      "vendor/calculator/old/server.py": "321ed3f5f99dfa19301e3e3db2b798f9e3aa117598351bec934605adba711d49",
+      "vendor/calculator/old/LICENSE": "b7d87aaa4af2c421f0cac2befc5da98cb48becf662f6b4329eebb3ef6179a0aa",
+      "vendor/calculator/new/server.py": "f2a38c5a8ce167fee72626cfe93ab31d43f012b000a3a6a1e3f7178e1a34b103",
+      "vendor/calculator/new/LICENSE": "b7d87aaa4af2c421f0cac2befc5da98cb48becf662f6b4329eebb3ef6179a0aa"
+    }
+  }
+}

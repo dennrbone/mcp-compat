@@ -1,0 +1,17 @@
+{
+  "read_denied": {
+    "denied": true,
+    "exception": "PermissionError",
+    "errno": 1
+  },
+  "write_denied": {
+    "denied": true,
+    "exception": "PermissionError",
+    "errno": 1
+  },
+  "network_denied": {
+    "denied": true,
+    "exception": "PermissionError",
+    "errno": 1
+  }
+}

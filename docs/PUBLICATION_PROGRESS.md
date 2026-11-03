@@ -68,3 +68,25 @@ EXTERNAL_DATASET_PROVENANCE.md. Исполнение изолируется macO
 Полный gate: **362 passed, 7 skipped, 0 failed**, 150,63 с; **100% строк и
 ветвей** пакета. Ruff PASS, mypy PASS (26 модулей). Новое массовое оценивание
 ещё не запускалось; качество модели/production-серверов этим не подтверждено.
+
+## Этап 6 — актуальная редакция MCP
+
+Коммит этапа 5: `756f00a4`. Добавлен отдельный профиль SDK 2.3.0 в
+examples/mcp2026_server.py, десять тестов tests/mcp2026, официальный TS/JSON
+source с точным commit/MIT, hash-pinned requirements-mcp2026.lock, extra
+mcp2026 и отдельный CI job (research/**). Старый SDK/lock/слой сохранены.
+Документ MCP_2026_COMPATIBILITY.md ограничивает профиль; HTTP/MRTR/auth NOT RUN.
+Настоящие SDK 1.30.0 и 2.3.0 проверены в обе стороны через stdio.
+Добавлены Node runtime lock-файлы для воспроизведения внешнего Filesystem.
+Первый npm показал унаследованный NODE_TLS_REJECT_UNAUTHORIZED=0; повторный
+npm ci с TLS=1 и integrity lock прошёл, глобальные настройки не менялись.
+
+Начальные новые SDK-тесты: 6 FAIL / 1 PASS (тестовый stream/context wrapper и
+неверное ожидание формы ошибок), затем 1 FAIL / 8 PASS (UnionType в сыром
+тесте). Исправлены тестовый transport/TypeAdapter и protocol error для неизвестного
+tool. Финально **10 PASS / 0 SKIP** в отдельном SDK 2.3.0; raw-запросы без
+meta/capabilities, неизвестные версия/метод отклонены. Полный старый gate:
+**362 PASS / 8 SKIP**, 148,97 с; **100% пакета**, Ruff/mypy PASS. Восемь
+пропусков — семь модельных и отдельный SDK 2.x каталог в окружении SDK 1.x.
+Зависимости нового профиля повторно проверены установкой с --require-hashes.
+Удалённый CI до разрешённого push не запущен.

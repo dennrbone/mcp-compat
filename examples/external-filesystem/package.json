@@ -1,0 +1,12 @@
+{
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.12.3",
+    "diff": "5.2.0",
+    "minimatch": "10.0.1",
+    "zod": "3.25.76",
+    "zod-to-json-schema": "3.24.6",
+    "typescript": "5.8.3"
+  }
+}

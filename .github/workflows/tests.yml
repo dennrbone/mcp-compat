@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - "phase/**"
+      - "research/**"
   pull_request:
     branches:
       - main
@@ -56,6 +57,23 @@ jobs:
       - run: python -m pip install --no-deps -e .
       - run: mcp-compat-demo --output /tmp/mcp-compat-offline-demo
       - run: mcp-compat-analyze --run /tmp/mcp-compat-offline-demo --output /tmp/mcp-compat-offline-analysis
+
+  mcp2026-profile:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5.0.0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v6.0.0
+        with:
+          python-version: "3.11.4"
+      - run: python -m pip install --require-hashes -r requirements-mcp2026.lock
+      - run: python -m pip install --no-deps -e .
+      - run: python -m venv /tmp/mcp-legacy
+      - run: /tmp/mcp-legacy/bin/python -m pip install --require-hashes -r requirements.lock
+      - run: python -m pytest -q tests/mcp2026
+        env:
+          MCP_COMPAT_LEGACY_PYTHON: /tmp/mcp-legacy/bin/python
 
   provider-smoke:
     if: github.event_name == 'workflow_dispatch' && inputs.real_provider_smoke

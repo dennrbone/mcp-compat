@@ -141,7 +141,7 @@ def test_verified_proxy_and_abstention():
             handler_ids=("echo-1","echo-1"))
         async with Client(InMemoryTransport(make_server_2026(c,echo)),mode="2026-07-28") as upstream:
             for strategy, expected_error in [(Hybrid(verifier=verifier),False),(Hybrid(),True)]:
-                server = make_proxy_2026(c,c,upstream,strategy)
+                server = make_proxy_2026(c,c,upstream,strategy,admission=verifier,current_state=lambda:{})
                 async with Client(InMemoryTransport(server),mode="2026-07-28") as proxy:
                     result = await proxy.call_tool("echo",dict(x=4))
                     assert result.is_error == expected_error
@@ -152,6 +152,13 @@ def test_verified_proxy_and_abstention():
             changed.name = "missing"
             async with Client(InMemoryTransport(make_proxy_2026(c,changed,upstream,NoRecovery())),mode="2026-07-28") as proxy:
                 assert (await proxy.call_tool("echo",dict(x=4))).is_error
+            stale = make_proxy_2026(c,c,upstream,Hybrid(verifier=verifier),
+                admission=verifier,current_state=lambda:{"revision":2})
+            async with Client(InMemoryTransport(stale),mode="2026-07-28") as proxy:
+                assert (await proxy.call_tool("echo",dict(x=4))).is_error
+            for options in ({"admission":verifier},{"current_state":lambda:{}}):
+                with pytest.raises(ValueError,match="required together"):
+                    make_proxy_2026(c,c,upstream,Hybrid(verifier=verifier),**options)
     anyio.run(run)
 
 

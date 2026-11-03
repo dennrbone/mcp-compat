@@ -22,6 +22,19 @@ from mcp_compat.verification import EvidenceVerifier, fingerprint
 DATA = ROOT/"benchmark/external-mcp"
 DIGEST = "6ab2bfb7da1687012c70a8acac5254f571381af8cd03d0911d393ba41e010b8f"
 METHODS = ("A", "B", "C", "D", "E", "M1_old", "M1_new")
+STUDY_VERSION = "external-admission-2"
+
+
+def current_state(case):
+    state = deepcopy(case.initial)
+    if case.alteration == "toctou":
+        if case.project == "fs":
+            state["files"]["data.txt"] += "changed after preview\n"
+        elif case.project == "sqlite":
+            state["rows"][0]["qty"] += 1
+        else:
+            state["changed_after_check"] = True
+    return state
 
 
 def native_arguments(case, arguments):
@@ -129,9 +142,11 @@ def verifier(case, runtime, *, legacy=False, profile=None):
 
 def decide(case, method, runtime):
     if method.startswith("M1_"):
-        strategy = Hybrid(verifier=verifier(case, runtime, legacy=method == "M1_old"))
+        checker = verifier(case, runtime, legacy=method == "M1_old")
+        strategy = Hybrid(verifier=checker)
         strategy.name = method
-        return strategy.recover(case.request.model_copy(deep=True))
+        decision = strategy.recover(case.request.model_copy(deep=True))
+        return checker.admit(case.request,decision,current_state=current_state(case)) if method == "M1_new" else decision
     decision = validate_candidate(case.request, case.candidate, method)
     if decision.action != "EXECUTE" or method == "C":
         return decision
@@ -143,16 +158,11 @@ def decide(case, method, runtime):
         profile = profile.model_copy(update=dict(complete=False))
     checker = verifier(case, runtime, legacy=method == "A", profile=profile)
     checked = checker.verify(case.request, case.candidate)
-    if method == "B" and checked.passed and case.alteration == "toctou":
-        changed = deepcopy(case.initial)
-        changed["changed_after_check"] = True
-        decision.evidence.update(preview_verification=checked.model_dump(), current_state_hash=fingerprint(changed))
-        checked = checker.replay(checked.evidence["witness"],case.request,case.candidate,current_state=changed)
     decision.evidence.update(verification=checked.model_dump(), semantic_verified=checked.passed)
     if not checked.passed:
         return abstain(checked.reason, **decision.evidence)
     decision.reasons = ["verified"]
-    return decision
+    return checker.admit(case.request,decision,current_state=current_state(case)) if method in ("B","D") else decision
 
 
 def evaluate(case, decision, expected, runtime):
@@ -160,9 +170,7 @@ def evaluate(case, decision, expected, runtime):
         return None
     implementation = runtime.implementation(case,"new",visible=False)
     for _ in range(2):
-        state = deepcopy(case.initial)
-        if case.alteration == "toctou":
-            state["changed_after_check"] = True
+        state = current_state(case)
         try:
             result = implementation(decision.adapted_call.arguments,state)
             if canonical_bytes(dict(result=result,state=state)) != canonical_bytes(expected):
@@ -176,7 +184,7 @@ def study(output):
     cases = load_inputs(DATA,DIGEST)
     output.mkdir(parents=True,exist_ok=True)
     files = list((ROOT/"src/mcp_compat").rglob("*.py")) + [Path(__file__), ROOT/"examples/external_runtime.py",ROOT/"examples/external_worker.py"]
-    identity = dict(config=dict(kind="deterministic",benchmark_digest=DIGEST,seed=42,repeats=1,
+    identity = dict(study_version=STUDY_VERSION,config=dict(kind="deterministic",benchmark_digest=DIGEST,seed=42,repeats=1,
                                scenario_ids=[c.case_id for c in cases]), methods=list(METHODS),
         benchmark_version="external-mcp-1.0", prompt_version="NO_MODEL",
         source_digest=fingerprint({str(p.relative_to(ROOT)):sha256(p.read_bytes()).hexdigest() for p in files}),
@@ -244,7 +252,7 @@ def study(output):
                 ground_truth=label["ground_truth"],recoverable=label["recoverable"],base_tool=case.project,
                 composed=False,decision=decision,schema_valid=valid,semantic_equivalent=equivalent,
                 latency=data["latency"],calls=0,input_tokens=0,output_tokens=0,cost=0,
-                validation_stages=int(valid is not None)+decision.evidence.get("verification_attempts",int("verification" in decision.evidence)),
+                validation_stages=int(valid is not None)+decision.evidence.get("verification_attempts",int("verification" in decision.evidence))+int("admission" in decision.evidence),
                 recovery=case.request.model_dump())
             _atomic(path,record.model_dump())
             records.append(record)
@@ -284,6 +292,6 @@ def read_completed(output):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--output",type=Path,default=ROOT/"experiments/external-admission-2026-11-04")
+    parser.add_argument("--output",type=Path,default=ROOT/"experiments/external-admission-2026-11-04-v2")
     args = parser.parse_args()
     print("records",len(study(args.output)))

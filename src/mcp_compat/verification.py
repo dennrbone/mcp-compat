@@ -8,12 +8,12 @@ from typing import Any, Callable
 
 from pydantic import BaseModel, ConfigDict
 
-from mcp_compat import ToolCall, ToolContract, canonical_bytes
+from mcp_compat import MigrationDecision, ToolCall, ToolContract, canonical_bytes
 from mcp_compat.benchmark import RecoveryInput
 from mcp_compat.hybrid import Verification, digest, normalize
 from mcp_compat.schema import validate_instance
 
-EVIDENCE_VERSION = "admission-evidence-1"
+EVIDENCE_VERSION = "admission-evidence-2"
 NORMALIZATION_VERSION = "json-numeric-int-1"
 
 
@@ -51,7 +51,7 @@ class EvidenceVerifier:
 
     def verify(self, request: RecoveryInput, call: ToolCall) -> Verification:
         witness: dict[str, Any] = dict(
-            version=EVIDENCE_VERSION, normalization=NORMALIZATION_VERSION,
+            version=EVIDENCE_VERSION, scope="preview", normalization=NORMALIZATION_VERSION,
             validator="jsonschema-" + version("jsonschema"),
             handlers=list(self.handler_ids), profile=self.profile.model_dump(mode="json"),
             checks={}, observations=[],
@@ -118,3 +118,24 @@ class EvidenceVerifier:
             return verified
         except (TypeError, ValueError):
             return Verification(passed=False, reason="verification_error")
+
+    def admit(self, request: RecoveryInput, decision: MigrationDecision,
+              *, current_state: dict) -> MigrationDecision:
+        """Применяет replay к решению caller; внешний commit всё ещё должен быть атомарным."""
+        if decision.action == "ABSTAIN":
+            return decision
+        call = decision.adapted_call
+        assert call is not None
+        try:
+            preview = Verification.model_validate(decision.evidence["verification"])
+            witness = preview.evidence["witness"]
+        except (KeyError, ValueError):
+            witness = None
+        checked = (self.replay(witness, request, call, current_state=current_state)
+                   if isinstance(witness, dict) else Verification(passed=False, reason="witness_missing"))
+        evidence = deepcopy(decision.evidence)
+        evidence.update(admission=checked.model_dump(), semantic_verified=checked.passed,
+                        candidate=call.model_dump())
+        return MigrationDecision(action="EXECUTE" if checked.passed else "ABSTAIN",
+            adapted_call=call.model_copy(deep=True) if checked.passed else None,
+            reasons=["verified_admission" if checked.passed else checked.reason], evidence=evidence)

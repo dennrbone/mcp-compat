@@ -2,7 +2,7 @@ from copy import deepcopy
 
 import pytest
 
-from mcp_compat import ToolCall, ToolContract
+from mcp_compat import MigrationDecision, ToolCall, ToolContract
 from mcp_compat.benchmark import RecoveryInput
 from mcp_compat.hybrid import Hybrid, SandboxVerifier, digest
 from mcp_compat.verification import EvidenceVerifier, ObservationProfile, fingerprint
@@ -121,3 +121,24 @@ def test_replay_rejects_non_json_and_timeout_must_be_finite():
     for timeout in (float("nan"), float("inf")):
         with pytest.raises(ValueError):
             setup_verifier(timeout=timeout)
+
+
+def test_admission_requires_replayable_witness_and_current_state():
+    r, c, v = setup_verifier(initial={"audit":[]})
+    preview = Hybrid(verifier=v).recover(r)
+    original = deepcopy(preview)
+    admitted = v.admit(r,preview,current_state={"audit":[]})
+    assert admitted.action == "EXECUTE" and admitted.reasons == ["verified_admission"]
+    assert admitted.evidence["verification"]["evidence"]["witness"]["scope"] == "preview"
+    assert preview == original
+    assert v.admit(r,preview,current_state={"audit":[1]}).reasons == ["state_changed"]
+    assert v.admit(r,preview,current_state={"audit":float("nan")}).reasons == ["verification_error"]
+    missing = MigrationDecision(action="EXECUTE",adapted_call=c)
+    for evidence in ({}, {"verification":None}, {"verification":{"passed":True,"reason":"claimed","evidence":{}}},
+                     {"verification":{"passed":True,"reason":"claimed","evidence":{"witness":[]}}}):
+        missing.evidence = evidence
+        assert v.admit(r,missing,current_state={"audit":[]}).reasons == ["witness_missing"]
+    preview.adapted_call.arguments["x"] = 3
+    assert v.admit(r,preview,current_state={"audit":[]}).reasons == ["witness_mismatch"]
+    refused = MigrationDecision(action="ABSTAIN",reasons=["original"])
+    assert v.admit(r,refused,current_state={}) == refused

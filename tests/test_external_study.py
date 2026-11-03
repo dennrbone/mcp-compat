@@ -101,6 +101,13 @@ def test_constructed_unit_output_is_finite_and_not_a_wrapper_exception():
     assert study.change_result([{"qty":5}],"unit") == [{"qty":5000}]
 
 
+def test_full_hybrid_must_check_current_state_before_admission(tmp_path):
+    runtime = study.Runtime(tmp_path,call=fake_source)
+    c = case("toctou")
+    decision = study.decide(c,"M1_new",runtime)
+    assert decision.action == "ABSTAIN" and decision.reasons == ["state_changed"]
+
+
 def test_all_valid_pinned_candidates_have_executable_fixture_wrappers(tmp_path):
     from mcp_compat import ToolCallValidationError
     runtime = study.Runtime(tmp_path,call=fake_source)

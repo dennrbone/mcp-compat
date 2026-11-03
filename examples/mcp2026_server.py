@@ -39,15 +39,21 @@ def make_server_2026(contract, implementation):
         get_tool_input_schema=lambda name: contract.input_schema if name == contract.name else None)
 
 
-def make_proxy_2026(old, new, upstream, strategy, *, context=None, timeout=1):
+def make_proxy_2026(old, new, upstream, strategy, *, context=None, timeout=1,
+                    admission=None, current_state=None):
     if not 0 < timeout < float("inf"):
         raise ValueError("finite positive timeout required")
+    if (admission is None) != (current_state is None):
+        raise ValueError("admission verifier and current-state provider are required together")
 
     async def compatible(arguments):
         request = RecoveryInput(old_contract=old, new_contract=new,
             old_call=ToolCall(tool_name=old.name, arguments=arguments), context=deepcopy(context or {}))
         with anyio.fail_after(timeout):
             decision = await anyio.to_thread.run_sync(strategy.recover, request, abandon_on_cancel=True)
+            if admission is not None:
+                decision = await anyio.to_thread.run_sync(
+                    lambda: admission.admit(request,decision,current_state=current_state()),abandon_on_cancel=True)
             if decision.action != "EXECUTE":
                 raise ValueError("migration_abstain")
             call = decision.adapted_call

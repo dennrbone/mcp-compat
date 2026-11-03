@@ -1,0 +1,39 @@
+{
+  "full_pytest": {
+    "passed": 369,
+    "skipped": 8,
+    "failed": 0,
+    "seconds": 152.71
+  },
+  "coverage": {
+    "covered_lines": 2214,
+    "num_statements": 2214,
+    "percent_covered": 100.0,
+    "percent_covered_display": "100",
+    "missing_lines": 0,
+    "excluded_lines": 13,
+    "percent_statements_covered": 100.0,
+    "percent_statements_covered_display": "100",
+    "num_branches": 828,
+    "num_partial_branches": 0,
+    "covered_branches": 828,
+    "missing_branches": 0,
+    "percent_branches_covered": 100.0,
+    "percent_branches_covered_display": "100"
+  },
+  "sdk2026": {
+    "passed": 10,
+    "skipped": 0,
+    "failed": 0,
+    "seconds": 1.3
+  },
+  "targeted_verification_runner": {
+    "passed": 17,
+    "package_module_coverage": 100
+  },
+  "regression": "full Hybrid current-state test FAIL before / PASS after",
+  "ruff": "PASS",
+  "mypy": "PASS: 26 modules",
+  "real_v2_experiment": "NOT RUN YET",
+  "preserved_v1": "eb113fde, 441 decisions, 1158 source tool invocations"
+}

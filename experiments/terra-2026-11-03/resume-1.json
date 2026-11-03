@@ -1,0 +1,10 @@
+{
+  "resumed_at_utc": "2026-11-03T07:07:25.456341+00:00",
+  "preserved_records": 1911,
+  "preserved_failed_attempts": 954,
+  "preflight": "resume-smoke-1.json PASS",
+  "generation_parameters_changed": false,
+  "source_changed": false,
+  "operational_change": "macOS caffeinate -i while command is running",
+  "limits": "Prior error causes not recoverable from generic ProviderError traces; no failed answer replaced; unfinished request usage unknown"
+}

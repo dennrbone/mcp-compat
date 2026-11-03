@@ -61,5 +61,20 @@
     "Historical comparison; clients/generation settings and network conditions differ",
     "Cost/billing unknown; ChatGPT quota used",
     "Main results not yet complete"
-  ]
+  ],
+  "updated_utc": "2026-11-03T07:10:58.945890+00:00",
+  "interruption": {
+    "preserved_records": 1911,
+    "provider_error_attempts": 954,
+    "main_complete": false,
+    "partial_integrity": "PASS",
+    "resume_probe": "PASS",
+    "failed_answers_replaced": false,
+    "cause": "not recoverable from generic ProviderError traces"
+  },
+  "remote_ci": {
+    "sha": "23a89b5dc79aebceb52f70ed3d456c2c2507de0b",
+    "run_id": 41543210412,
+    "conclusion": "success"
+  }
 }

@@ -1,0 +1,28 @@
+{
+  "base_commit": "9709670a709f69e140097406650052423a24c8ce",
+  "pytest": {
+    "passed": 341,
+    "skipped": 7,
+    "failed": 0,
+    "seconds": 153.7
+  },
+  "package_coverage": {
+    "covered_lines": 2064,
+    "num_statements": 2064,
+    "percent_covered": 100.0,
+    "percent_covered_display": "100",
+    "missing_lines": 0,
+    "excluded_lines": 13,
+    "percent_statements_covered": 100.0,
+    "percent_statements_covered_display": "100",
+    "num_branches": 784,
+    "num_partial_branches": 0,
+    "covered_branches": 784,
+    "missing_branches": 0,
+    "percent_branches_covered": 100.0,
+    "percent_branches_covered_display": "100"
+  },
+  "historical_files": 71874,
+  "historical_index_sha256": "44afd3c71eb163df648d6608f26f577b9a4ab996d30da3dc64f8aec1ab19b840",
+  "provider_tests": "NOT RUN: opt-in, no new paid calls authorized"
+}

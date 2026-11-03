@@ -30,6 +30,8 @@ def execute(project: str, era: str, *, tool: str | None = None,
             arguments: dict | None = None, state: dict | None = None) -> dict:
     if project not in ("fs", "sqlite", "calculator") or era not in ("old", "new"):
         raise ValueError("unknown pinned runtime")
+    if project == "fs" and (NODE_RUNTIME/"package-lock.json").read_bytes() != (ROOT/"examples/external-filesystem/package-lock.json").read_bytes():
+        raise ValueError("external Node dependency lock mismatch")
     with tempfile.TemporaryDirectory(prefix="mcp-external-", dir="/private/tmp") as temporary:
         work = Path(temporary).resolve()
         payload = dict(project=project, era=era, source=str(VENDOR/project/era),

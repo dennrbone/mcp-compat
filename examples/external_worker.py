@@ -49,7 +49,8 @@ async def run(payload):
             if result.isError:
                 raise ValueError("external tool returned an execution error")
             content = [c.model_dump(mode="json", exclude_none=True) for c in result.content]
-    observed = dict(result=result.structuredContent if result.structuredContent is not None else content, state={})
+    observed = dict(result=result.structuredContent if result.structuredContent is not None else content, state={},
+                    mcp_result=result.model_dump(mode="json",exclude_none=True))
     if project == "fs":
         observed["state"] = dict(files={p.name:p.read_text() for p in sorted(work.iterdir()) if p.is_file()})
     elif project == "sqlite":

@@ -164,8 +164,9 @@ MPLCONFIGDIR=/private/tmp/mcp-compat-matplotlib .venv/bin/python examples/public
 
 ## Снимки исходников и локальный пакет
 
-Архив `dist/mcp-compat-publication-2026-11-03.zip` содержит текущие код,
-данные и материалы. В `experimental-source/` отдельно помещаются точные
+Архив `dist/mcp-compat-publication-2026-11-03.zip` сохраняет состояние Phase 19.
+Обновлённый комплект Phase 20 — `dist/mcp-compat-publication-phase20-2026-11-03.zip`;
+он содержит текущие код, данные и материалы, включая исходные версии заменённых записей Terra. В `experimental-source/` отдельно помещаются точные
 снимки Phase 16 (`7fc2627e`), Phase 17 (`65d8c760`) и Phase 18 (`fda30006`).
 Их суммарные хеши Python-модулей проверены на совпадение с manifest запусков.
 Сопроводительный `PACKAGE_INFO.json` фиксирует Git-коммит пакета; рядом с ZIP

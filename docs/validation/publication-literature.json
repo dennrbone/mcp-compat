@@ -1,0 +1,66 @@
+{
+  "date": "2026-11-04",
+  "scope": "Targeted mechanism comparison, not systematic priority search",
+  "primary_full_texts": [
+    {
+      "id": "2402.14158v2",
+      "url": "https://arxiv.org/html/2402.14158v2",
+      "sha256": "4fe194a3144f2c03e518a31e91823d1a72afc29ef86aa0c2a358e36cc6d9abb5",
+      "read_scope": "method sections and limitations"
+    },
+    {
+      "id": "2406.12045v1",
+      "url": "https://arxiv.org/html/2406.12045v1",
+      "sha256": "7ca7c78f3b2694d05170c6ef02a3b2fb4cffc0f3094b72376ea55557b7a0bca8",
+      "read_scope": "method sections and limitations"
+    },
+    {
+      "id": "2408.04682v2",
+      "url": "https://arxiv.org/html/2408.04682v2",
+      "sha256": "e21a68b56c3833e7c5f21ba3fc85f3583c03079562a8f750faaf4a42d67d7968",
+      "read_scope": "method sections and limitations"
+    },
+    {
+      "id": "2501.10868v3",
+      "url": "https://arxiv.org/html/2501.10868v3",
+      "sha256": "7f5773cfa66c31923895658f64953cd0afdf80d1a93fbffb62f1cf30807c991f",
+      "read_scope": "method sections and limitations"
+    },
+    {
+      "id": "2602.00933v3",
+      "url": "https://arxiv.org/html/2602.00933v3",
+      "sha256": "89e1d2c8c99ba25f853d19fcb018a88052d14ccf468b1ec409d4c6d31b3b6227",
+      "read_scope": "method sections and limitations"
+    },
+    {
+      "id": "2602.19218v2",
+      "url": "https://arxiv.org/html/2602.19218v2",
+      "sha256": "5f02ca86c5dc4e338582f5940f52b72d620869640f82c3e8ead22ebad86424f6",
+      "read_scope": "method sections and limitations"
+    },
+    {
+      "id": "2607.14642v1",
+      "url": "https://arxiv.org/html/2607.14642v1",
+      "sha256": "26e56ebd80f33dc876c79f0c725654b4e0bb3fecae4667ee80b622098c1b4a5b",
+      "read_scope": "method sections and limitations"
+    },
+    {
+      "id": "2610.28679v1",
+      "url": "https://arxiv.org/html/2610.28679v1",
+      "sha256": "09079386539be1424b064f95d0e02cb99ea8f2f7174effd353ee015f64b4f08c",
+      "read_scope": "method sections and limitations"
+    }
+  ],
+  "catalog_limitations": {
+    "IEEE": "abstract available, full text anti-bot",
+    "ACM": "403",
+    "GoogleScholar": "direct query unavailable",
+    "SemanticScholar": "direct API unavailable",
+    "OpenAlex": "direct API unavailable"
+  },
+  "unsupported_claims": [
+    "world priority",
+    "universal model superiority",
+    "arbitrary-code safety"
+  ]
+}

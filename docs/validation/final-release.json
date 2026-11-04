@@ -141,13 +141,43 @@
     "pdf_png_deliverables": false
   },
   "tree_scan": {
-    "files_scanned": 77353,
+    "files_scanned": 77354,
     "credential_and_marker_findings": [],
     "large_files_over_5mb": [],
     "work_document_names": [],
-    "missing_relative_links": []
+    "missing_relative_links": [],
+    "tracked_private_config_files": 0,
+    "tracked_temporary_logs_or_archives": 0,
+    "all_historical_hashes_rechecked_on_main": true
   },
   "main_gate": {
-    "status": "NOT_RUN"
+    "status": "PASS",
+    "tested_commit": "34024a1b41a67d0688ef0fe5171e7a768dff9249",
+    "tests": {
+      "tests": 387,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 8,
+      "passed": 379
+    },
+    "sdk2_installed_wheel_and_cross_sdk": {
+      "tests": 10,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "passed": 10
+    },
+    "statements": {
+      "covered": 2216,
+      "total": 2216
+    },
+    "branches": {
+      "covered": 828,
+      "total": 828
+    },
+    "ruff": "PASS",
+    "mypy": "PASS",
+    "git_object_integrity": "PASS",
+    "later_changes": "validation metadata only"
   }
 }

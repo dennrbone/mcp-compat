@@ -62,5 +62,189 @@
     "world priority",
     "universal model superiority",
     "arbitrary-code safety"
+  ],
+  "verified_doi_metadata": [
+    {
+      "doi": "10.1109/smartiot70864.2026.00056",
+      "title": [
+        "ToolDriftBench: Detecting and Recovering from MCP Tool Index Staleness in Agentic Systems"
+      ],
+      "authors": [
+        {
+          "given": "Sunil Kumar",
+          "family": "Paidi",
+          "sequence": "first",
+          "affiliation": [
+            {
+              "name": "Distributed Systems & AI",
+              "place": [
+                "Atlanta, GA, USA"
+              ]
+            }
+          ],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        },
+        {
+          "given": "Venkata Ratna Kumar",
+          "family": "Bonagiri",
+          "sequence": "additional",
+          "affiliation": [
+            {
+              "name": "Independent Researcher",
+              "place": [
+                "Atlanta, GA, USA"
+              ]
+            }
+          ],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        }
+      ],
+      "published": {
+        "date-parts": [
+          [
+            2026,
+            8
+          ]
+        ]
+      },
+      "primary_url": "https://api.crossref.org/works/10.1109/smartiot70864.2026.00056",
+      "response_sha256": "9024bb547a20649830601a9d9f73d05ba480e20650e55ce4ec9753da2930ff41",
+      "scope": "bibliographic metadata; not substitute for full text"
+    },
+    {
+      "doi": "10.1145/1629911.1630034",
+      "title": [
+        "Regression verification"
+      ],
+      "authors": [
+        {
+          "given": "Benny",
+          "family": "Godlin",
+          "sequence": "first",
+          "affiliation": [
+            {
+              "name": "CS, Technion, Haifa, Israel"
+            }
+          ],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        },
+        {
+          "given": "Ofer",
+          "family": "Strichman",
+          "sequence": "additional",
+          "affiliation": [
+            {
+              "name": "IE, Technion, Haifa, Israel"
+            }
+          ],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        }
+      ],
+      "published": {
+        "date-parts": [
+          [
+            2009,
+            7,
+            26
+          ]
+        ]
+      },
+      "primary_url": "https://api.crossref.org/works/10.1145/1629911.1630034",
+      "response_sha256": "37c99cf26d94573aec2a8af64613f2682765c49f4c89d45c2a4c66ad7a3a5dbd",
+      "scope": "bibliographic metadata; not substitute for full text"
+    },
+    {
+      "doi": "10.1145/263699.263712",
+      "title": [
+        "Proof-carrying code"
+      ],
+      "authors": [
+        {
+          "given": "George C.",
+          "family": "Necula",
+          "sequence": "first",
+          "affiliation": [],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        }
+      ],
+      "published": {
+        "date-parts": [
+          [
+            1997
+          ]
+        ]
+      },
+      "primary_url": "https://api.crossref.org/works/10.1145/263699.263712",
+      "response_sha256": "fd223050a858ee2ab4bb9ddf9a3bc3197005b9d3be7310bfa53329a3d5c9e9c6",
+      "scope": "bibliographic metadata; not substitute for full text"
+    },
+    {
+      "doi": "10.1002/smr.328",
+      "title": [
+        "How do APIs evolve? A story of refactoring"
+      ],
+      "authors": [
+        {
+          "given": "Danny",
+          "family": "Dig",
+          "sequence": "first",
+          "affiliation": [],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        },
+        {
+          "given": "Ralph",
+          "family": "Johnson",
+          "sequence": "additional",
+          "affiliation": [],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        }
+      ],
+      "published": {
+        "date-parts": [
+          [
+            2006,
+            3
+          ]
+        ]
+      },
+      "primary_url": "https://api.crossref.org/works/10.1002/smr.328",
+      "response_sha256": "2ba2f904fe0ccaa98161896e57e499294e416bbb13a7af2c63d3f4ac68099e39",
+      "scope": "bibliographic metadata; not substitute for full text"
+    }
   ]
 }

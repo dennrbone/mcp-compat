@@ -135,3 +135,19 @@ B2 (359/432). Нулевой наблюдаемый UHR не доказывае�
 не означает проверки всех возможностей новой спецификации или HTTP-развёртывания.
 [Текущая спецификация MCP](https://modelcontextprotocol.io/specification/2026-07-28),
 [официальное объявление изменений](https://blog.modelcontextprotocol.io/posts/2026-07-28/).
+
+## Дополнение от 04.11.2026: проверка механизма, а не приоритета
+
+Полные методические сопоставления теперь в SCIENTIFIC_NOVELTY.md; восемь
+arXiv HTML, версии и SHA-256 отражены в validation/publication-literature.json.
+Добавлены regression verification (Godlin, Strichman, DAC 2009, DOI
+10.1145/1629911.1630034), PCC (Necula, POPL 1997, DOI
+10.1145/263699.263712) и JevNexus (arXiv:2610.09487v1). Метаданные первых
+двух, Dig/Johnson и ToolDriftBench сверены по Crossref. Авторы ToolDriftBench:
+Sunil Kumar Paidi, Venkata Ratna Kumar Bonagiri; DOI
+10.1109/SmartIoT70864.2026.00056. Доступная аннотация не позволяет отрицать
+наличие функций полного ToolDriftGuard; IEEE полный текст не получен.
+Обновлённая библиография — раздел 14 ARTICLE_DRAFT.md. Общий принцип
+свидетельства и differential execution известен; вклад ограничен проверяемой
+специализацией индивидуального MCP-допуска и его протоколом. Поиск
+не устанавливает мировое первенство и не является исчерпывающим систематическим.

@@ -463,3 +463,12 @@ and validation/ci.json. Final installed-wheel gate also passed **233 + 2 skips,
 - Push последних коммитов получил proxy503. По новому указанию автора
   дальнейшие коммиты остаются **локально**; удалённый CI для этих SHA не
   запускался. Main не объединялась с веткой, Markdown-промпты не публикуются.
+
+## Исследовательское дополнение 04.11.2026
+
+Подробные десять этапов и локальные commits — PUBLICATION_PROGRESS.md.
+375 PASS/8 SKIP, 100% пакета 2214 statements/828 branches; SDK2 10 PASS.
+Два завершённых внешних опыта: V1 441 решений/1158 tool-вызовов, V2 441/1453.
+V1 сохранил найденный unsafe и исправлен новым final admission в V2;
+CRR не вырос. Кластерная значимость не установлена. Итоговые проверки
+установленного wheel и комплекта — validation/publication-final.json.

@@ -2,6 +2,77 @@
 
 Автор: Россинский Андрей Евгеньевич, Франкфурт, dennrbone@gmail.com.
 
+## Новое исследование от 04.11.2026
+
+Исходные данные Phase 16–20 ниже сохранены. Дополнительные исследования:
+
+| Опыт | Матрица | Решения | Source tool-вызовы | Назначение |
+|---|---|---:|---:|---|
+| Внешний V1 | 63 × 7 × 1 | 441 | 1158 | Первый опыт с обнаруженной ошибкой final admission |
+| Внешний V2 | Те же 63 × 7 × 1 | 441 | 1453 | Дополнительная проверка исправленного допуска и TOCTOU fixture |
+
+Опыты и их метрики не объединяются. Нулевые source errors не означают
+отсутствия семантических ошибок: V1 M1_new имел UHR 1/16, V2 — 0/14;
+рост CRR не установлен. Основной new same-candidate B: CRR 27/30, UHR 0/27,
+но p B−A = 0,25, только три источника. 51 constructed случай отделён от
+8 historical rename и 4 benign. Полные ограничения: EXTERNAL_EXPERIMENT_RESULTS.md.
+
+Новый комплект: `dist/mcp-compat-publication-research-2026-11-04.zip`,
+сопутствующие `.zip.sha256` и `.verification.json`. Старые ZIP не заменяются.
+В нём исходники, locks, лицензии внешних MIT-источников, официальный TS/JSON,
+первичные данные V1/V2, таблицы и графики, 14-раздельная русская рукопись,
+формализация, новые проверки и **пять** снимков экспериментальных исходников:
+Phase 16/17/18 и external V1 (`e53a729b`)/V2 (`1dcaffe3`). Точный состав и
+исходный commit — PACKAGE_INFO.json; SHA256SUMS.json покрывает каждый файл
+комплекта кроме самого индекса. Целостность не равна подлинности без доверенного
+внешнего хеша. Пакет локальный, лицензия нашего проекта и видимость не менялись.
+
+### Чтение результатов без исполнения чужого кода
+
+Из корня распакованного комплекта, Python 3.11.4:
+
+```sh
+python3.11 -m venv .venv
+.venv/bin/python -m pip install --require-hashes -r requirements.lock
+.venv/bin/python -m pip install --no-deps -e .
+PYTHONPATH=examples .venv/bin/python -c 'from pathlib import Path; from external_results import audit; print([len(x) for x in audit(Path("experiments/external-admission-2026-11-04-v2"))])'
+MPLCONFIGDIR=/tmp/mcp-plots .venv/bin/python examples/external_results.py --output /tmp/mcp-external-analysis-replica
+```
+
+Ожидаются `[63, 441, 1453]`, новые JSON/CSV/PNG/SVG. Аудит только читает
+сохранённые трассы; серверы и модели не вызываются. Скрипт анализа намеренно
+отказывает, если выходной каталог уже существует. Для offline установки нужны
+локально доступные wheels или кеш зависимостей; hash-pinned lock сам по себе
+не обеспечивает доступность пакетов. В чистом окружении SDK2 используется
+отдельный requirements-mcp2026.lock, а не замена старого SDK в этом окружении.
+
+### Повтор реального внешнего V2
+
+Нужен macOS с sandbox-exec и проверкой запрета чтения приватных данных,
+записи вне fixture и сети. На другой OS воспроизведение исполнения **NOT RUN**,
+пока не реализована и не проверена эквивалентная изоляция. Node 26.9.0 и точный
+lock находятся в examples/external-filesystem/. Установка зависимостей требует
+сети либо подготовленного npm-кеша. Из корня проекта:
+
+```sh
+mkdir -p /private/tmp/mcp-external-filesystem
+cp examples/external-filesystem/package*.json /private/tmp/mcp-external-filesystem/
+(cd /private/tmp/mcp-external-filesystem && NODE_TLS_REJECT_UNAUTHORIZED=1 npm ci --ignore-scripts --no-audit --no-fund)
+node examples/prepare_external_filesystem.mjs benchmark/external-mcp/vendor/fs /private/tmp/mcp-external-filesystem
+PYTHONPATH=src .venv/bin/python examples/external_runtime.py
+# При успешном isolation preflight — новый каталог, не замена frozen данных:
+PYTHONPATH=src .venv/bin/python examples/external_study.py --output /private/tmp/mcp-external-v2-replica
+```
+
+Это повтор протокола на текущем research core, который совпадает с core V2;
+для побайтового воспроизведения исходников используйте полный снимок
+`experimental-source/external-v2-1dcaffe3/` внутри ZIP и включённые в него
+данные. V1 надо исполнять его сохранённым кодом: новый final admit намеренно
+меняет поведение. Файлы источников, worker, runtime и lock сверяются с
+`source-fingerprints.json`; каталоги old результатов нельзя продолжать кодом
+с несовпадающими fingerprint. Получение каталогов исторического кода на pinned
+SDK не является реконструкцией всего исторического окружения сервера.
+
 ## Что решает работа
 
 Обновление API может нарушить уже работающий вызов агента. Прототип пытается

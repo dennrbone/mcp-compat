@@ -264,3 +264,17 @@ D0 не включал этот тип в обработчик. Узкий па�
 прикладного опыта совпали; измерения оставлены на исходнике fda30006, а не
 переписаны под исправленную версию. Снимки трёх экспериментальных исходников
 сверены с записанными fingerprint и приложены к локальному пакету.
+
+## Исследовательское дополнение 04.11.2026
+
+Старый Hybrid/SandboxVerifier не переписан. verification.py расширяет
+Verification.evidence: profile, привязки, result+state, preview witness, replay
+и общий admit. Caller обязан вызвать admit; обычное verify не даёт финального
+разрешения. Для реального commit нужна транзакционность приложения.
+external.py загружает frozen public/provenance без gold, проверяет хеши
+источников и пустой context. Примеры external_runtime/worker изолируют
+проверенные внешние источники; external_study сохраняет V1/V2 отдельно,
+external_results переиспользует metrics/bootstrap и аудирует evaluator traces.
+Отдельный mcp2026_server.py на SDK2 не подменяет исторический SDK1.
+Границы, результаты и команды — METHOD_FORMALIZATION.md,
+EXTERNAL_EXPERIMENT_RESULTS.md, MCP_2026_COMPATIBILITY.md.

@@ -68,8 +68,7 @@ MCP_COMPAT_LEGACY_PYTHON="$PWD/.venv/bin/python" /tmp/mcp2026/bin/python -m pyte
 Указанный legacy interpreter должен иметь SDK 1.30.0 из requirements.lock.
 Без него двусторонний cross-SDK тест отмечается NOT RUN, а не PASS. В основном
 окружении 1.30.0 весь каталог tests/mcp2026 явно пропускается с этой причиной.
-В CI добавлен отдельный job и ветки research/**; удалённый запуск до push
-не считается состоявшимся.
+Отдельная задача CI проверяет SDK2 и два направления взаимодействия SDK.
 
 Новый stdio endpoint для стандартного клиента:
 `/tmp/mcp2026/bin/python examples/mcp2026_server.py`.

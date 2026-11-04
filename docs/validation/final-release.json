@@ -178,6 +178,6 @@
     "ruff": "PASS",
     "mypy": "PASS",
     "git_object_integrity": "PASS",
-    "later_changes": "validation metadata only"
+    "later_changes": "validation metadata and public documentation wording only; package, tests, DOCX and experimental data unchanged"
   }
 }

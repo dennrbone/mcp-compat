@@ -1,0 +1,64 @@
+{
+  "status": "PASS",
+  "source_commit": "42f8e8faf178b65e4ee51abc46a54211e7541310",
+  "archive": "/Users/dennrbone/mcp-compat/dist/mcp-compat-publication-research-2026-11-04.zip",
+  "entries": 83639,
+  "files": 76685,
+  "compressed_bytes": 84512227,
+  "uncompressed_bytes": 308557667,
+  "sha256": "024f3f3bcdf1d35bb589138a5f08c465a8412143398c1cb75f8b661f7e356e73",
+  "records_verified": {
+    "experiments/full-codeagent-2026-11-02/main": 19440,
+    "experiments/publication-2026-11-03/declared-controls": 4320,
+    "experiments/publication-2026-11-03/case-study/runs/with-rules": 2880,
+    "experiments/publication-2026-11-03/case-study/runs/without-rules": 2880,
+    "experiments/terra-2026-11-03/runs/with-rules": 2880,
+    "experiments/terra-2026-11-03/runs/without-rules": 2880,
+    "experiments/external-admission-2026-11-04": 441,
+    "experiments/external-admission-2026-11-04-v2": 441
+  },
+  "experimental_source_snapshots": "5/5 MATCH",
+  "release_source_digest": "3fe90a97482fd6b3cbec8ccb789ea93a607d48af738a74946644327dd4530c9b",
+  "reconstructed_original_terra_records": 5760,
+  "replacement_and_backup_hashes": 788,
+  "primary_matrix_slots": 36162,
+  "checks": [
+    "CRC",
+    "no duplicate/unsafe paths",
+    "private/prompt exclusions",
+    "complete per-file SHA256 index",
+    "manifest and primary record hashes",
+    "external raw artifact hashes",
+    "5 exact source snapshots",
+    "installed-wheel test evidence"
+  ],
+  "unpacked_check": {
+    "status": "PASS",
+    "clean_installed_wheel_tests": {
+      "passed": 34,
+      "skipped": 0,
+      "seconds": 3.44
+    },
+    "completed_resume_V1_V2": "441 records each, no writes or source/model calls",
+    "reproduced_analysis": {
+      "analysis.json": {
+        "equal_bytes": true,
+        "sha256": "618baeda8bd31b93b036b4f7fb384eea7e8d302b19026e6d714d75e2dd030318"
+      },
+      "metrics.csv": {
+        "equal_bytes": true,
+        "sha256": "e50f3ff4e36ea4779ca2cd23b7c82d4659b0268cfa13a1318dc4eb95c06d5536"
+      },
+      "external-rates.png": {
+        "equal_bytes": true,
+        "sha256": "13cd9798670f6727ca4775c89150d4fe24422218f4ee951461b9798d7ccd69fc"
+      },
+      "external-rates.svg": {
+        "equal_bytes": true,
+        "sha256": "ead9cd997cf8fda1e8b40af68506273c6ac56a4ec46f3456d04735bcb75acf5e"
+      }
+    },
+    "run_artifacts_unchanged": true,
+    "scope": "Full integrity and raw results audit, targeted external boundary tests; no second full MCP-server study or model generation"
+  }
+}

@@ -13,7 +13,7 @@ from mcp_compat.benchmark import RecoveryInput
 from mcp_compat.hybrid import Verification, digest, normalize
 from mcp_compat.schema import validate_instance
 
-EVIDENCE_VERSION = "admission-evidence-2"
+EVIDENCE_VERSION = "admission-evidence-3"
 NORMALIZATION_VERSION = "json-numeric-int-1"
 
 
@@ -79,6 +79,7 @@ class EvidenceVerifier:
                 for c in (request.old_contract, request.new_contract)
             ]
             started = self.clock()
+            trials = []
             for _ in range(2):
                 observations = []
                 for contract, implementation, arguments in (
@@ -92,11 +93,12 @@ class EvidenceVerifier:
                         return finish("unobserved_state")
                     if contract.output_schema is not None:
                         validate_instance(result, contract.output_schema)
-                    observations.append(fingerprint(normalize(dict(result=result, state=state))))
-                witness["observations"].append(observations)
+                    observations.append(canonical_bytes(normalize(dict(result=result, state=state))))
+                trials.append(observations)
+                witness["observations"].append([sha256(value).hexdigest() for value in observations])
             if self.clock() - started > self.timeout:
                 return finish("verification_timeout")
-            first, second = witness["observations"]
+            first, second = trials
             if first != second:
                 return finish("nondeterministic_observation")
             if first[0] != first[1]:

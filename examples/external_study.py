@@ -180,10 +180,10 @@ def evaluate(case, decision, expected, runtime):
     return True
 
 
-def study(output):
+def study(output, *, extra_sources=()):
     cases = load_inputs(DATA,DIGEST)
     output.mkdir(parents=True,exist_ok=True)
-    files = list((ROOT/"src/mcp_compat").rglob("*.py")) + [Path(__file__), ROOT/"examples/external_runtime.py",ROOT/"examples/external_worker.py"]
+    files = list((ROOT/"src/mcp_compat").rglob("*.py")) + [Path(__file__), ROOT/"examples/external_runtime.py",ROOT/"examples/external_worker.py", *extra_sources]
     identity = dict(study_version=STUDY_VERSION,config=dict(kind="deterministic",benchmark_digest=DIGEST,seed=42,repeats=1,
                                scenario_ids=[c.case_id for c in cases]), methods=list(METHODS),
         benchmark_version="external-mcp-1.0", prompt_version="NO_MODEL",

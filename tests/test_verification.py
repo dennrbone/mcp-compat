@@ -142,3 +142,15 @@ def test_admission_requires_replayable_witness_and_current_state():
     assert v.admit(r,preview,current_state={"audit":[]}).reasons == ["witness_mismatch"]
     refused = MigrationDecision(action="ABSTAIN",reasons=["original"])
     assert v.admit(r,refused,current_state={}) == refused
+
+
+def test_hash_collision_cannot_hide_different_behavior(monkeypatch):
+    class CollidingDigest:
+        def hexdigest(self):
+            return "0" * 64
+    monkeypatch.setattr("mcp_compat.verification.sha256", lambda data: CollidingDigest())
+    r, c, v = setup_verifier(new_impl=lambda a, s: {"wrong": 1})
+    assert v.verify(r, c).reason == "semantic_mismatch"
+    counter = iter([1, 2])
+    r, c, v = setup_verifier(new_impl=lambda a, s: {"x": next(counter)})
+    assert v.verify(r, c).reason == "nondeterministic_observation"

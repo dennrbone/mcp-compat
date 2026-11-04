@@ -24,6 +24,7 @@ def require(condition, message):
 
 def audit(directory):
     records = read_completed(directory)
+    methods = json.loads((directory/"manifest.json").read_bytes())["methods"]
     require(summaries(records)==json.loads((directory/"summary.json").read_bytes()),"saved summary mismatch")
     cases = load_inputs(DATA,DIGEST)
     gold = load_gold(DATA,DIGEST)
@@ -36,7 +37,7 @@ def audit(directory):
         require(old["case_id"] == case.case_id and old["era"] == "old","old trace identity")
         observed = {k:old["full_observation"][k] for k in ("result","state")}
         require(canonical_bytes(observed)==canonical_bytes(label["expected"]),"independent old gold mismatch")
-        for method in METHODS:
+        for method in methods:
             r = indexed[case.case_id,method]
             saved=json.loads((directory/f"decision-{method}-{case.case_id}.json").read_bytes())
             require(r.decision.model_dump()==saved["decision"],"decision mismatch")

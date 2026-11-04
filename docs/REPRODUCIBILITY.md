@@ -1,117 +1,102 @@
-# Reproducibility
+# Воспроизводимость
 
-Run commands from the repository root. Python **3.11.4**, Draft **2020-12**.
-The library wheel contains Python modules; frozen datasets and research artifacts
-are supplied by the repository, not bundled into the wheel.
+Ядро и научные опыты используют Python **3.11.4** и зависимости из
+requirements.lock. Наборы данных и исследовательские артефакты поставляются
+репозиторием; библиотечный wheel содержит Python-модули.
 
-## Clean installation and checks
+## Установка и инженерные проверки
 
-```bash
-python3.11 -m venv .venv
-.venv/bin/python -m pip install --require-hashes -r requirements.lock
-.venv/bin/python -m pip install --no-deps -e .
-.venv/bin/python -m pytest -q -rs --cov=mcp_compat --cov-branch --cov-report=term-missing --cov-report=xml --cov-fail-under=100
+Из корня полного clone с историей Git:
+
+```sh
+uv venv --python 3.11.4 .venv
+uv pip sync --python .venv/bin/python --require-hashes requirements.lock
+uv pip install --python .venv/bin/python --no-deps -e .
+.venv/bin/python -m pytest -q --cov=mcp_compat --cov-branch --cov-report=term-missing --cov-fail-under=100
 .venv/bin/ruff check src tests examples
 .venv/bin/mypy src
 .venv/bin/python -m build
 ```
 
-Check the interpreter's full version before running: `python3.11` may select a
-different patch release. The lock pins exact dependency versions and distribution
-hashes. Phase 1–2 and all added modules retain the same 100% statement/branch
-gate; no project-specific coverage exclusions or pragmas are added. The current
-coverage tool reports 13 default-excluded typing/protocol lines; these are
-listed in its JSON, not counted as executed statements. Third-party SciPy/Matplotlib
-imports lack complete stubs; mypy checks our source and ignores missing stubs
-only for those third-party namespaces.
+Для pip используйте `pip install --require-hashes -r requirements.lock` и
+затем `pip install --no-deps -e .`. Offline установка требует доступных wheels
+или подготовленного кеша; lock сам по себе их не поставляет. В build isolation
+backend setuptools может потребовать отдельной загрузки.
 
-## Dataset replay and integrity
+Политика покрытия относится к исходному пакету mcp_compat, statements и
+branches. Примеры/документные сборщики не включаются в этот процент. Coverage
+содержит стандартные исключения объявлений Protocol; новых исключений ради
+прохождения gate не добавлялось.
 
-```bash
-.venv/bin/python -c 'import json; from pathlib import Path; from mcp_compat.benchmark import generate, freeze, load; m=json.loads(Path("benchmark/manifest.json").read_bytes()); data=load(Path(m["path"]),m["digest"]); digest=freeze(generate(m["seed"]),Path("/tmp/mcp-evobench-replay"),m["seed"]); assert digest==m["digest"]; print(len(data),digest)'
+## Анализ внешних результатов без новых вызовов
+
+```sh
+PYTHONPATH=examples .venv/bin/python -c 'from pathlib import Path; from external_results import audit; print([len(x) for x in audit(Path("experiments/external-admission-2026-11-04-v2"))])'
+.venv/bin/python examples/admission_comparison.py --output /tmp/mcp-final-comparison-replica
+MPLCONFIGDIR=/tmp/mcp-plots .venv/bin/python examples/final_publication_figures.py --output /tmp/mcp-final-figures-replica
 ```
 
-Choose a new replay directory if it already exists: freeze is exclusive and
-never overwrites. Active digest is recorded in benchmark/manifest.json; 1.2 has
-48 unique old contracts and 2160 scenarios. Old freezes are retained for audit,
-not main experiments. SHA-256 detects corruption with a trusted pinned digest;
-it is not a digital signature.
+Первая команда ожидает `[63, 441, 1453]`. Анализ сравнения читает V2 и отдельную
+абляцию, проверяет первичные трассы и создаёт новые JSON/CSV. Каталог вывода
+анализа должен отсутствовать. Серверы и модели не вызываются. Исходные оценки
+не переписываются. Определения FAR и исторических метрик разделены в RESULTS.md.
 
-## Offline end-to-end run
+## Точные экспериментальные исходники
 
-```bash
-MPLCONFIGDIR=/tmp/mcp-matplotlib .venv/bin/mcp-compat-demo --output /tmp/mcp-offline-demo
-MPLCONFIGDIR=/tmp/mcp-matplotlib .venv/bin/mcp-compat-analyze --run /tmp/mcp-offline-demo --output /tmp/mcp-offline-analysis --seed 42 --draws 2000
+`docs/validation/source-snapshots.json` содержит шесть полных commits и
+контрольные хеши ядра/манифестов. Экспорт проверяет каждый выбранный снимок:
+
+```sh
+.venv/bin/python examples/export_research_sources.py external-v2 /tmp/mcp-source-v2
+.venv/bin/python examples/export_research_sources.py final-admission /tmp/mcp-source-final
 ```
 
-The demo has 45 identical frozen scenarios for nine methods, yielding 405 records.
-It uses `offline-demo-no-inference`; no inference API, GPU or user data is used.
-It now uses the 1536-binding trusted synthetic registry; unbound M1 cases abstain.
-Generated CI/p-values are diagnostic, with explicit assumptions/statuses. The
-single base-tool cluster does not support a bootstrap CI. Actual tracked run:
-`experiments/offline-demo-final/`; tables/PNG/SVG/LaTeX:
-`experiments/analysis-offline-demo/`. Those Phase 10 artifacts used one runtime
-pair; a current rerun has a different source fingerprint and runtime coverage.
-The older offline-demo directory is historical 1.1 evidence; never mix versions
-or source fingerprints or present these demos as the main study.
+Доступны phase16/phase17/phase18/external-v1/external-v2/final-admission.
+Экспортируются код, examples, зависимости и benchmark; текущие результаты
+остаются в исходном clone. Нужна полная история Git, без переписывания старых
+коммитов. Экспортированный код не выполняется автоматически.
 
-Resume uses the same command/config directory and preserves completed records.
-Changing source/config/dependencies rejects resume; use a new directory. Duration
-and UTC timestamps are measurements, so re-running does not promise identical
-latency bytes. Dataset regeneration does promise identical bytes.
+Завершённый внешний V2 можно прочитать его собственным runner:
 
-## Real providers — explicitly enabled
-
-See [PROVIDERS.md](PROVIDERS.md) and [AGENT_TESTS.md](AGENT_TESTS.md) for the
-current CodeAgent selection, installed versions and actual results.
-Default CI/offline tests skip five real-model cases. A skip is NOT RUN.
-An explicitly selected case fails on missing installation, credentials, quota,
-timeout or invalid JSON; configuration failures are never converted into a pass.
-
-Use the installed CLI credential store. Do not put tokens in repository files.
-The real pilot uses the active frozen benchmark and its integrity checks, one
-preselected case per available family/category stratum, plus the independently
-bound quote/unit fixture, and B0–B3/M1/A1–A4. It has one repeat and incomplete
-runtime coverage. Its descriptive results do not replace the full study. Current
-revalidation and source-specific results are in [IMPROVEMENTS.md](IMPROVEMENTS.md).
-
-Manual provider smoke in GitHub Actions requires a configured self-hosted runner
-with the selected official CLI and its local authentication. Default checks run
-on GitHub-hosted runners and make no model calls.
-
-## Full CodeAgent benchmark
-
-```bash
-GIGACODE_BIN=/absolute/path/to/gigacode mcp-compat-agents --full --workers 8 --output experiments/codeagent-full
-# Resume without rerunning or replacing completed decisions:
-GIGACODE_BIN=/absolute/path/to/gigacode mcp-compat-agents --full --workers 8 --resume --output experiments/codeagent-full
-mcp-compat-analyze --run experiments/codeagent-full/main --output experiments/codeagent-full/analysis --seed 42 --draws 2000
+```sh
+PYTHONPATH=/tmp/mcp-source-v2/src .venv/bin/python /tmp/mcp-source-v2/examples/external_study.py --output "$PWD/experiments/external-admission-2026-11-04-v2"
+PYTHONPATH=/tmp/mcp-source-final/src .venv/bin/python /tmp/mcp-source-final/examples/admission_ablation.py --output "$PWD/experiments/final-admission-ablation-2026-11-05"
 ```
 
-The run contains 2160 cases × nine methods, one repeat. Every required mapping
-uses the real installed client; no fake response or response cache is substituted.
-Deterministic methods and verified identity candidates may use no model call.
-Full input-call recovery and outcome equivalence are tested; output-schema
-adaptation is not a separate benchmark in this dataset. Generation is unchanged.
-Run source, dependencies, worker count and model/CLI aliases are fingerprinted;
-an immutable backend model revision is not available. Do not mix these loaded
-latencies with serial pilot latency or label an incomplete run as completed.
+Ожидаются 441 и 126 записей. Совпадающие source/config fingerprints приводят
+только к проверке хешей завершённого опыта, без новых вызовов. Исторические
+модельные результаты пересчитываются отдельно:
 
-## Материалы статьи на русском
+```sh
+PYTHONPATH=examples .venv/bin/python -c 'from pathlib import Path; from mcp_compat.analysis import read_results; from mcp_compat.experiments import summaries; print({regime:summaries(read_results(Path("experiments/terra-2026-11-03/runs")/regime)[1]) for regime in ("with-rules","without-rules")})'
+```
 
-Полные команды, словарь данных и сведения о доступе:
-[PUBLICATION_SUPPLEMENT.md](PUBLICATION_SUPPLEMENT.md). Исходники прикладного
-эксперимента закреплены на `fda30006`; поздний патч D0 меняет fingerprint,
-поэтому для точного продолжения нужен экспериментальный снимок. Репозиторий
-приватный; локальный пакет для рецензента содержит материалы и этот снимок
-без секретов и Markdown с мастер-промптом. Видимость репозитория не изменялась.
+Этот анализ не означает повторную генерацию ответов непрозрачных моделей.
+Точные данные можно пересчитать; новые ответы сервиса не обязаны совпасть.
 
-## Внешнее исследование и новый комплект, 04.11.2026
+## Новое исполнение внешнего стенда
 
-См. PUBLICATION_SUPPLEMENT.md (пять снимков кода),
-EXTERNAL_DATASET_PROVENANCE.md (MIT sources/commits/разделение gold),
-EXTERNAL_EXPERIMENT_RESULTS.md (V1/V2, аудит без запуска серверов) и
-MCP_2026_COMPATIBILITY.md (отдельный SDK2). Новый установленный wheel прошёл
-375 tests/8 skips при 100% statements/branches; новый SDK2 — 10 tests без
-пропусков. Итоговый инженерный отчёт: validation/publication-final.json.
-Архив и companion SHA/verification сохраняются отдельно от старых комплектов.
+Нужны macOS с sandbox-exec, Node 26.9.0, SDK1 из lock и Node dependencies
+из examples/external-filesystem/package-lock.json. На другой OS нужна отдельно
+проверенная эквивалентная изоляция; иначе исполнение NOT RUN.
+
+```sh
+mkdir -p /private/tmp/mcp-external-filesystem
+cp examples/external-filesystem/package*.json /private/tmp/mcp-external-filesystem/
+(cd /private/tmp/mcp-external-filesystem && NODE_TLS_REJECT_UNAUTHORIZED=1 npm ci --ignore-scripts --no-audit --no-fund)
+node examples/prepare_external_filesystem.mjs benchmark/external-mcp/vendor/fs /private/tmp/mcp-external-filesystem
+PYTHONPATH=src .venv/bin/python examples/external_runtime.py
+PYTHONPATH=src .venv/bin/python examples/admission_ablation.py --output /private/tmp/mcp-new-admission-run
+```
+
+Три isolation preflight должны явно сообщить `denied: true` и PermissionError.
+Серверы запускаются с вымышленными файлами/строками базы и запрещённой сетью;
+это не гарантия для произвольного враждебного кода. Новый выходной каталог
+сохраняет отдельный manifest. Старые V1/V2 не продолжаются новой версией.
+
+## SDK2 и документы
+
+[Отдельное окружение MCP 2026-07-28](MCP_2026_COMPATIBILITY.md) сохраняет SDK1.
+[Сборка и визуальная проверка DOCX](publication/README.md) используют отдельные
+зависимости. Официальный schema source и внешние источники имеют сохранённые
+MIT notices и pinned commits.

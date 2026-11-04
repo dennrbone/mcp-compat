@@ -1,0 +1,54 @@
+{
+  "phase16": {
+    "commit": "7fc2627e0b99a95474337fef8204fbac29433f80",
+    "modules": 21,
+    "core_digest": "5fe53754734795ebe92a13553d810559320c58dc24a9fed8c2156e3406053405"
+  },
+  "phase17": {
+    "commit": "65d8c7609e81103d0e37c0564a1d65428f438a27",
+    "modules": 22,
+    "core_digest": "f7ffa91f3b2905affe13e0284d8d0001e85d629415a087b24d4d961ca86da72f"
+  },
+  "phase18": {
+    "commit": "fda300069fc264f7ef97b7e3b85c76b03353c27e",
+    "modules": 24,
+    "core_digest": "ccd2591e512801b45a81d0a1c426c802a5b380ec680ae03c13c2fd31efd24397"
+  },
+  "external-v1": {
+    "commit": "e53a729b5a81fc2d82c5e1e4f4c19f563cd40518",
+    "modules": 26,
+    "core_digest": "7c439b16f2e38edbb018e1c560caa6437c1a89fb18083511d15db0110b60e670",
+    "manifest_source_digest": "c503fcda465990d09ebd509a597e7f6a87891e2c4c70ff2610bf6f5022c0d500",
+    "extra_sources": [
+      "examples/external_study.py",
+      "examples/external_runtime.py",
+      "examples/external_worker.py"
+    ],
+    "run": "experiments/external-admission-2026-11-04"
+  },
+  "external-v2": {
+    "commit": "1dcaffe3adfc09bc64052cfa4e22e825fb05b361",
+    "modules": 26,
+    "core_digest": "3fe90a97482fd6b3cbec8ccb789ea93a607d48af738a74946644327dd4530c9b",
+    "manifest_source_digest": "ad22c6daff2effa2513a02f711624277c7916c9413403a988b7025eeeb6a7565",
+    "extra_sources": [
+      "examples/external_study.py",
+      "examples/external_runtime.py",
+      "examples/external_worker.py"
+    ],
+    "run": "experiments/external-admission-2026-11-04-v2"
+  },
+  "final-admission": {
+    "commit": "8f11d69bc90217fad05a7b22312a22932eb5abc0",
+    "modules": 26,
+    "core_digest": "3a0f53b649ab11f3f36c2917575aea5e9962b6ee2397500a72ba20730b7beeca",
+    "manifest_source_digest": "7c1a3e335b165306b3f8a69229cabb32c72245e938604ecfbf90084d208f6026",
+    "extra_sources": [
+      "examples/external_study.py",
+      "examples/external_runtime.py",
+      "examples/external_worker.py",
+      "examples/admission_ablation.py"
+    ],
+    "run": "experiments/final-admission-ablation-2026-11-05"
+  }
+}

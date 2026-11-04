@@ -1,0 +1,2828 @@
+{
+  "scope": "Historical quantitative checks, not the latest release gate; source experiment records remain unchanged",
+  "records": {
+    "publication-stage7-v2": {
+      "status": "PASS",
+      "records": 441,
+      "source_tool_invocations": 1453,
+      "failed_source_invocations": 0,
+      "full_matrix": true,
+      "all_artifact_hashes": true,
+      "independent_replay_of_evaluator_traces": true,
+      "source_commit": "1dcaffe3adfc09bc64052cfa4e22e825fb05b361",
+      "gold_and_inputs_unchanged": true,
+      "method_B": {
+        "CRR": [
+          27,
+          30
+        ],
+        "UHR": [
+          0,
+          27
+        ],
+        "FBR": [
+          3,
+          30
+        ]
+      },
+      "M1_new": {
+        "CRR": [
+          14,
+          30
+        ],
+        "UHR": [
+          0,
+          14
+        ],
+        "FBR": [
+          16,
+          30
+        ]
+      },
+      "caveats": [
+        "V1 is preserved; V2 changes admission and the TOCTOU environment and is a post-hoc follow-up.",
+        "A-E share fixed candidates; full M1 has no mapper.",
+        "Completeness is declared, not inferred; no atomic remote commit."
+      ]
+    },
+    "publication-admission-v2-preflight": {
+      "coverage": {
+        "covered_lines": 2214,
+        "num_statements": 2214,
+        "percent_covered": 100.0,
+        "percent_covered_display": "100",
+        "missing_lines": 0,
+        "excluded_lines": 13,
+        "percent_statements_covered": 100.0,
+        "percent_statements_covered_display": "100",
+        "num_branches": 828,
+        "num_partial_branches": 0,
+        "covered_branches": 828,
+        "missing_branches": 0,
+        "percent_branches_covered": 100.0,
+        "percent_branches_covered_display": "100"
+      }
+    },
+    "phase20": {
+      "status": "COMPLETED_REPLACED_VALIDATED",
+      "decisions": 5760,
+      "source_tests": {
+        "tests": 348,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 6,
+        "passed": 342
+      },
+      "clean_wheel_tests": {
+        "tests": 348,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 7,
+        "passed": 341
+      },
+      "coverage_scope": "mcp_compat package",
+      "coverage": {
+        "covered_lines": 2064,
+        "num_statements": 2064,
+        "percent_covered": 100.0,
+        "percent_covered_display": "100",
+        "missing_lines": 0,
+        "excluded_lines": 13,
+        "percent_statements_covered": 100.0,
+        "percent_statements_covered_display": "100",
+        "num_branches": 784,
+        "num_partial_branches": 0,
+        "covered_branches": 784,
+        "missing_branches": 0,
+        "percent_branches_covered": 100.0,
+        "percent_branches_covered_display": "100"
+      },
+      "release_source_digest": "1ed0c6b2cc243c6fb3e85aa1f593a1efcfb9cc97c55fffb6333cf7df04fc5f7d",
+      "experiment_source_digest": "ccd2591e512801b45a81d0a1c426c802a5b380ec680ae03c13c2fd31efd24397",
+      "experiment_source_commit": "fda300069fc264f7ef97b7e3b85c76b03353c27e",
+      "original_data_commit": "db161df11959222257ea4925120d424c55ed4f08",
+      "provider_replacement": {
+        "selected": 788,
+        "completed": 788,
+        "unresolved": 0,
+        "transport_stops": 2,
+        "all_prior_attempts_preserved": true,
+        "original_with_rules": 476,
+        "original_without_rules": 312,
+        "all_final_mapping_decisions_parsed": 1872
+      },
+      "regimes": {
+        "with-rules": {
+          "integrity": {
+            "CodeAgent": {
+              "benchmark_digest": "fd3d0345c20bad89d0064a58e0c71064c52ca0894ea249a268ef948af7e2cbe6",
+              "checks": [
+                "hashes",
+                "matrix",
+                "labels",
+                "recovery_input",
+                "semantic_evaluation",
+                "summary"
+              ],
+              "methods": [
+                "B3",
+                "D0",
+                "D1",
+                "B2",
+                "M1"
+              ],
+              "records": 2880,
+              "repeats": 3,
+              "scenarios": 192,
+              "source_digest": "ccd2591e512801b45a81d0a1c426c802a5b380ec680ae03c13c2fd31efd24397",
+              "status": "PASS"
+            },
+            "Terra": {
+              "benchmark_digest": "fd3d0345c20bad89d0064a58e0c71064c52ca0894ea249a268ef948af7e2cbe6",
+              "checks": [
+                "hashes",
+                "matrix",
+                "labels",
+                "recovery_input",
+                "semantic_evaluation",
+                "summary"
+              ],
+              "methods": [
+                "B3",
+                "D0",
+                "D1",
+                "B2",
+                "M1"
+              ],
+              "records": 2880,
+              "repeats": 3,
+              "scenarios": 192,
+              "source_digest": "ccd2591e512801b45a81d0a1c426c802a5b380ec680ae03c13c2fd31efd24397",
+              "status": "PASS"
+            }
+          },
+          "summary": {
+            "CodeAgent": {
+              "B2": {
+                "AbstentionAccuracy": {
+                  "denominator": 144,
+                  "numerator": 50,
+                  "value": 0.3472222222222222
+                },
+                "CRR": {
+                  "denominator": 432,
+                  "numerator": 330,
+                  "value": 0.7638888888888888
+                },
+                "FBR": {
+                  "denominator": 432,
+                  "numerator": 102,
+                  "value": 0.2361111111111111
+                },
+                "SchemaValidityRate": {
+                  "denominator": 424,
+                  "numerator": 424,
+                  "value": 1.0
+                },
+                "SemanticEquivalenceRate": {
+                  "denominator": 424,
+                  "numerator": 330,
+                  "value": 0.7783018867924528
+                },
+                "UHR": {
+                  "denominator": 424,
+                  "numerator": 94,
+                  "value": 0.22169811320754718
+                },
+                "calls": 711,
+                "cost": null,
+                "input_tokens": null,
+                "latency_mean": 12.61209766604265,
+                "output_tokens": null,
+                "samples": 576,
+                "validation_stages": 424
+              },
+              "B2V": {
+                "AbstentionAccuracy": {
+                  "denominator": 144,
+                  "numerator": 144,
+                  "value": 1.0
+                },
+                "CRR": {
+                  "denominator": 432,
+                  "numerator": 330,
+                  "value": 0.7638888888888888
+                },
+                "FBR": {
+                  "denominator": 432,
+                  "numerator": 102,
+                  "value": 0.2361111111111111
+                },
+                "SchemaValidityRate": {
+                  "denominator": 424,
+                  "numerator": 424,
+                  "value": 1.0
+                },
+                "SemanticEquivalenceRate": {
+                  "denominator": 330,
+                  "numerator": 330,
+                  "value": 1.0
+                },
+                "UHR": {
+                  "denominator": 330,
+                  "numerator": 0,
+                  "value": 0.0
+                },
+                "calls": 711,
+                "cost": null,
+                "input_tokens": null,
+                "latency_mean": 12.612843528092222,
+                "output_tokens": null,
+                "samples": 576,
+                "validation_stages": 848
+              },
+              "B3": {
+                "AbstentionAccuracy": {
+                  "denominator": 144,
+                  "numerator": 72,
+                  "value": 0.5
+                },
+                "CRR": {
+                  "denominator": 432,
+                  "numerator": 144,
+                  "value": 0.3333333333333333
+                },
+                "FBR": {
+                  "denominator": 432,
+                  "numerator": 288,
+                  "value": 0.6666666666666666
+                },
+                "SchemaValidityRate": {
+                  "denominator": 216,
+                  "numerator": 216,
+                  "value": 1.0
+                },
+                "SemanticEquivalenceRate": {
+                  "denominator": 216,
+                  "numerator": 144,
+                  "value": 0.6666666666666666
+                },
+                "UHR": {
+                  "denominator": 216,
+                  "numerator": 72,
+                  "value": 0.3333333333333333
+                },
+                "calls": 0,
+                "cost": 0.0,
+                "input_tokens": 0,
+                "latency_mean": 0.00037818545651033573,
+                "output_tokens": 0,
+                "samples": 576,
+                "validation_stages": 216
+              },
+              "D0": {
+                "AbstentionAccuracy": {
+                  "denominator": 144,
+                  "numerator": 0,
+                  "value": 0.0
+                },
+                "CRR": {
+                  "denominator": 432,
+                  "numerator": 432,
+                  "value": 1.0
+                },
+                "FBR": {
+                  "denominator": 432,
+                  "numerator": 0,
+                  "value": 0.0
+                },
+                "SchemaValidityRate": {
+                  "denominator": 576,
+                  "numerator": 576,
+                  "value": 1.0
+                },
+                "SemanticEquivalenceRate": {
+                  "denominator": 576,
+                  "numerator": 432,
+                  "value": 0.75
+                },
+                "UHR": {
+                  "denominator": 576,
+                  "numerator": 144,
+                  "value": 0.25
+                },
+                "calls": 0,
+                "cost": 0.0,
+                "input_tokens": 0,
+                "latency_mean": 0.0035282092857313626,
+                "output_tokens": 0,
+                "samples": 576,
+                "validation_stages": 576
+              },
+              "D1": {
+                "AbstentionAccuracy": {
+                  "denominator": 144,
+                  "numerator": 144,
+                  "value": 1.0
+                },
+                "CRR": {
+                  "denominator": 432,
+                  "numerator": 432,
+                  "value": 1.0
+                },
+                "FBR": {
+                  "denominator": 432,
+                  "numerator": 0,
+                  "value": 0.0
+                },
+                "SchemaValidityRate": {
+                  "denominator": 576,
+                  "numerator": 576,
+                  "value": 1.0
+                },
+                "SemanticEquivalenceRate": {
+                  "denominator": 432,
+                  "numerator": 432,
+                  "value": 1.0
+                },
+                "UHR": {
+                  "denominator": 432,
+                  "numerator": 0,
+                  "value": 0.0
+                },
+                "calls": 0,
+                "cost": 0.0,
+                "input_tokens": 0,
+                "latency_mean": 0.003048602058091395,
+                "output_tokens": 0,
+                "samples": 576,
+                "validation_stages": 1224
+              },
+              "M1": {
+                "AbstentionAccuracy": {
+                  "denominator": 144,
+                  "numerator": 144,
+                  "value": 1.0
+                },
+                "CRR": {
+                  "denominator": 432,
+                  "numerator": 365,
+                  "value": 0.8449074074074074
+                },
+                "FBR": {
+                  "denominator": 432,
+                  "numerator": 67,
+                  "value": 0.1550925925925926
+                },
+                "SchemaValidityRate": {
+                  "denominator": 443,
+                  "numerator": 443,
+                  "value": 1.0
+                },
+                "SemanticEquivalenceRate": {
+                  "denominator": 365,
+                  "numerator": 365,
+                  "value": 1.0
+                },
+                "UHR": {
+                  "denominator": 365,
+                  "numerator": 0,
+                  "value": 0.0
+                },
+                "calls": 446,
+                "cost": null,
+                "input_tokens": null,
+                "latency_mean": 8.985270919417315,
+                "output_tokens": null,
+                "samples": 576,
+                "validation_stages": 958
+              }
+            },
+            "Terra": {
+              "B2": {
+                "AbstentionAccuracy": {
+                  "denominator": 144,
+                  "numerator": 72,
+                  "value": 0.5
+                },
+                "CRR": {
+                  "denominator": 432,
+                  "numerator": 432,
+                  "value": 1.0
+                },
+                "FBR": {
+                  "denominator": 432,
+                  "numerator": 0,
+                  "value": 0.0
+                },
+                "SchemaValidityRate": {
+                  "denominator": 504,
+                  "numerator": 504,
+                  "value": 1.0
+                },
+                "SemanticEquivalenceRate": {
+                  "denominator": 504,
+                  "numerator": 432,
+                  "value": 0.8571428571428571
+                },
+                "UHR": {
+                  "denominator": 504,
+                  "numerator": 72,
+                  "value": 0.14285714285714285
+                },
+                "calls": 1168,
+                "cost": null,
+                "input_tokens": null,
+                "latency_mean": 14.856835149854305,
+                "output_tokens": null,
+                "samples": 576,
+                "validation_stages": 504
+              },
+              "B2V": {
+                "AbstentionAccuracy": {
+                  "denominator": 144,
+                  "numerator": 144,
+                  "value": 1.0
+                },
+                "CRR": {
+                  "denominator": 432,
+                  "numerator": 432,
+                  "value": 1.0
+                },
+                "FBR": {
+                  "denominator": 432,
+                  "numerator": 0,
+                  "value": 0.0
+                },
+                "SchemaValidityRate": {
+                  "denominator": 504,
+                  "numerator": 504,
+                  "value": 1.0
+                },
+                "SemanticEquivalenceRate": {
+                  "denominator": 432,
+                  "numerator": 432,
+                  "value": 1.0
+                },
+                "UHR": {
+                  "denominator": 432,
+                  "numerator": 0,
+                  "value": 0.0
+                },
+                "calls": 1168,
+                "cost": null,
+                "input_tokens": null,
+                "latency_mean": 14.8577390307162,
+                "output_tokens": null,
+                "samples": 576,
+                "validation_stages": 1008
+              },
+              "B3": {
+                "AbstentionAccuracy": {
+                  "denominator": 144,
+                  "numerator": 72,
+                  "value": 0.5
+                },
+                "CRR": {
+                  "denominator": 432,
+                  "numerator": 144,
+                  "value": 0.3333333333333333
+                },
+                "FBR": {
+                  "denominator": 432,
+                  "numerator": 288,
+                  "value": 0.6666666666666666
+                },
+                "SchemaValidityRate": {
+                  "denominator": 216,
+                  "numerator": 216,
+                  "value": 1.0
+                },
+                "SemanticEquivalenceRate": {
+                  "denominator": 216,
+                  "numerator": 144,
+                  "value": 0.6666666666666666
+                },
+                "UHR": {
+                  "denominator": 216,
+                  "numerator": 72,
+                  "value": 0.3333333333333333
+                },
+                "calls": 0,
+                "cost": 0.0,
+                "input_tokens": 0,
+                "latency_mean": 0.0004865521540422277,
+                "output_tokens": 0,
+                "samples": 576,
+                "validation_stages": 216
+              },
+              "D0": {
+                "AbstentionAccuracy": {
+                  "denominator": 144,
+                  "numerator": 0,
+                  "value": 0.0
+                },
+                "CRR": {
+                  "denominator": 432,
+                  "numerator": 432,
+                  "value": 1.0
+                },
+                "FBR": {
+                  "denominator": 432,
+                  "numerator": 0,
+                  "value": 0.0
+                },
+                "SchemaValidityRate": {
+                  "denominator": 576,
+                  "numerator": 576,
+                  "value": 1.0
+                },
+                "SemanticEquivalenceRate": {
+                  "denominator": 576,
+                  "numerator": 432,
+                  "value": 0.75
+                },
+                "UHR": {
+                  "denominator": 576,
+                  "numerator": 144,
+                  "value": 0.25
+                },
+                "calls": 0,
+                "cost": 0.0,
+                "input_tokens": 0,
+                "latency_mean": 0.00321778307564576,
+                "output_tokens": 0,
+                "samples": 576,
+                "validation_stages": 576
+              },
+              "D1": {
+                "AbstentionAccuracy": {
+                  "denominator": 144,
+                  "numerator": 144,
+                  "value": 1.0
+                },
+                "CRR": {
+                  "denominator": 432,
+                  "numerator": 432,
+                  "value": 1.0
+                },
+                "FBR": {
+                  "denominator": 432,
+                  "numerator": 0,
+                  "value": 0.0
+                },
+                "SchemaValidityRate": {
+                  "denominator": 576,
+                  "numerator": 576,
+                  "value": 1.0
+                },
+                "SemanticEquivalenceRate": {
+                  "denominator": 432,
+                  "numerator": 432,
+                  "value": 1.0
+                },
+                "UHR": {
+                  "denominator": 432,
+                  "numerator": 0,
+                  "value": 0.0
+                },
+                "calls": 0,
+                "cost": 0.0,
+                "input_tokens": 0,
+                "latency_mean": 0.0032408711605158816,
+                "output_tokens": 0,
+                "samples": 576,
+                "validation_stages": 1224
+              },
+              "M1": {
+                "AbstentionAccuracy": {
+                  "denominator": 144,
+                  "numerator": 144,
+                  "value": 1.0
+                },
+                "CRR": {
+                  "denominator": 432,
+                  "numerator": 432,
+                  "value": 1.0
+                },
+                "FBR": {
+                  "denominator": 432,
+                  "numerator": 0,
+                  "value": 0.0
+                },
+                "SchemaValidityRate": {
+                  "denominator": 506,
+                  "numerator": 506,
+                  "value": 1.0
+                },
+                "SemanticEquivalenceRate": {
+                  "denominator": 432,
+                  "numerator": 432,
+                  "value": 1.0
+                },
+                "UHR": {
+                  "denominator": 432,
+                  "numerator": 0,
+                  "value": 0.0
+                },
+                "calls": 732,
+                "cost": null,
+                "input_tokens": null,
+                "latency_mean": 9.347153096572178,
+                "output_tokens": null,
+                "samples": 576,
+                "validation_stages": 1120
+              }
+            }
+          },
+          "before_provider_retry": {
+            "B2": {
+              "AbstentionAccuracy": {
+                "denominator": 144,
+                "numerator": 109,
+                "value": 0.7569444444444444
+              },
+              "CRR": {
+                "denominator": 432,
+                "numerator": 211,
+                "value": 0.48842592592592593
+              },
+              "FBR": {
+                "denominator": 432,
+                "numerator": 221,
+                "value": 0.5115740740740741
+              },
+              "SchemaValidityRate": {
+                "denominator": 246,
+                "numerator": 246,
+                "value": 1.0
+              },
+              "SemanticEquivalenceRate": {
+                "denominator": 246,
+                "numerator": 211,
+                "value": 0.8577235772357723
+              },
+              "UHR": {
+                "denominator": 246,
+                "numerator": 35,
+                "value": 0.14227642276422764
+              },
+              "calls": 871,
+              "cost": null,
+              "input_tokens": null,
+              "latency_mean": 10.68916039991786,
+              "output_tokens": null,
+              "samples": 576,
+              "validation_stages": 246
+            },
+            "B2V": {
+              "AbstentionAccuracy": {
+                "denominator": 144,
+                "numerator": 144,
+                "value": 1.0
+              },
+              "CRR": {
+                "denominator": 432,
+                "numerator": 211,
+                "value": 0.48842592592592593
+              },
+              "FBR": {
+                "denominator": 432,
+                "numerator": 221,
+                "value": 0.5115740740740741
+              },
+              "SchemaValidityRate": {
+                "denominator": 246,
+                "numerator": 246,
+                "value": 1.0
+              },
+              "SemanticEquivalenceRate": {
+                "denominator": 211,
+                "numerator": 211,
+                "value": 1.0
+              },
+              "UHR": {
+                "denominator": 211,
+                "numerator": 0,
+                "value": 0.0
+              },
+              "calls": 871,
+              "cost": null,
+              "input_tokens": null,
+              "latency_mean": 10.689610926739382,
+              "output_tokens": null,
+              "samples": 576,
+              "validation_stages": 492
+            },
+            "B3": {
+              "AbstentionAccuracy": {
+                "denominator": 144,
+                "numerator": 72,
+                "value": 0.5
+              },
+              "CRR": {
+                "denominator": 432,
+                "numerator": 144,
+                "value": 0.3333333333333333
+              },
+              "FBR": {
+                "denominator": 432,
+                "numerator": 288,
+                "value": 0.6666666666666666
+              },
+              "SchemaValidityRate": {
+                "denominator": 216,
+                "numerator": 216,
+                "value": 1.0
+              },
+              "SemanticEquivalenceRate": {
+                "denominator": 216,
+                "numerator": 144,
+                "value": 0.6666666666666666
+              },
+              "UHR": {
+                "denominator": 216,
+                "numerator": 72,
+                "value": 0.3333333333333333
+              },
+              "calls": 0,
+              "cost": 0.0,
+              "input_tokens": 0,
+              "latency_mean": 0.0004865521540422277,
+              "output_tokens": 0,
+              "samples": 576,
+              "validation_stages": 216
+            },
+            "D0": {
+              "AbstentionAccuracy": {
+                "denominator": 144,
+                "numerator": 0,
+                "value": 0.0
+              },
+              "CRR": {
+                "denominator": 432,
+                "numerator": 432,
+                "value": 1.0
+              },
+              "FBR": {
+                "denominator": 432,
+                "numerator": 0,
+                "value": 0.0
+              },
+              "SchemaValidityRate": {
+                "denominator": 576,
+                "numerator": 576,
+                "value": 1.0
+              },
+              "SemanticEquivalenceRate": {
+                "denominator": 576,
+                "numerator": 432,
+                "value": 0.75
+              },
+              "UHR": {
+                "denominator": 576,
+                "numerator": 144,
+                "value": 0.25
+              },
+              "calls": 0,
+              "cost": 0.0,
+              "input_tokens": 0,
+              "latency_mean": 0.00321778307564576,
+              "output_tokens": 0,
+              "samples": 576,
+              "validation_stages": 576
+            },
+            "D1": {
+              "AbstentionAccuracy": {
+                "denominator": 144,
+                "numerator": 144,
+                "value": 1.0
+              },
+              "CRR": {
+                "denominator": 432,
+                "numerator": 432,
+                "value": 1.0
+              },
+              "FBR": {
+                "denominator": 432,
+                "numerator": 0,
+                "value": 0.0
+              },
+              "SchemaValidityRate": {
+                "denominator": 576,
+                "numerator": 576,
+                "value": 1.0
+              },
+              "SemanticEquivalenceRate": {
+                "denominator": 432,
+                "numerator": 432,
+                "value": 1.0
+              },
+              "UHR": {
+                "denominator": 432,
+                "numerator": 0,
+                "value": 0.0
+              },
+              "calls": 0,
+              "cost": 0.0,
+              "input_tokens": 0,
+              "latency_mean": 0.0032408711605158816,
+              "output_tokens": 0,
+              "samples": 576,
+              "validation_stages": 1224
+            },
+            "M1": {
+              "AbstentionAccuracy": {
+                "denominator": 144,
+                "numerator": 144,
+                "value": 1.0
+              },
+              "CRR": {
+                "denominator": 432,
+                "numerator": 286,
+                "value": 0.6620370370370371
+              },
+              "FBR": {
+                "denominator": 432,
+                "numerator": 146,
+                "value": 0.33796296296296297
+              },
+              "SchemaValidityRate": {
+                "denominator": 358,
+                "numerator": 358,
+                "value": 1.0
+              },
+              "SemanticEquivalenceRate": {
+                "denominator": 286,
+                "numerator": 286,
+                "value": 1.0
+              },
+              "UHR": {
+                "denominator": 286,
+                "numerator": 0,
+                "value": 0.0
+              },
+              "calls": 545,
+              "cost": null,
+              "input_tokens": null,
+              "latency_mean": 6.791575021915883,
+              "output_tokens": null,
+              "samples": 576,
+              "validation_stages": 788
+            }
+          },
+          "comparisons": {
+            "B2": {
+              "base_tool": {
+                "assumption": "method labels exchangeable within each cluster under the null",
+                "cluster_unit": "base_tool",
+                "clusters": 12,
+                "confidence": 0.95,
+                "difference": 0.2361111111111111,
+                "draws": 2000,
+                "high": 0.3264467592592589,
+                "low": 0.14809027777777778,
+                "permutations": 1024,
+                "pvalue": 0.001953125,
+                "recoverable": 432,
+                "seed": 42,
+                "status": "computed",
+                "test": "exact_cluster_sign_flip"
+              },
+              "domain": {
+                "assumption": "method labels exchangeable within each cluster under the null",
+                "cluster_unit": "domain",
+                "clusters": 6,
+                "confidence": 0.95,
+                "difference": 0.2361111111111111,
+                "draws": 2000,
+                "high": 0.3565393518518515,
+                "low": 0.11342592592592593,
+                "permutations": 64,
+                "pvalue": 0.03125,
+                "recoverable": 432,
+                "seed": 42,
+                "status": "computed",
+                "test": "exact_cluster_sign_flip"
+              }
+            },
+            "B2V": {
+              "base_tool": {
+                "assumption": "method labels exchangeable within each cluster under the null",
+                "cluster_unit": "base_tool",
+                "clusters": 12,
+                "confidence": 0.95,
+                "difference": 0.2361111111111111,
+                "draws": 2000,
+                "high": 0.3264467592592589,
+                "low": 0.14809027777777778,
+                "permutations": 1024,
+                "pvalue": 0.001953125,
+                "recoverable": 432,
+                "seed": 42,
+                "status": "computed",
+                "test": "exact_cluster_sign_flip"
+              },
+              "domain": {
+                "assumption": "method labels exchangeable within each cluster under the null",
+                "cluster_unit": "domain",
+                "clusters": 6,
+                "confidence": 0.95,
+                "difference": 0.2361111111111111,
+                "draws": 2000,
+                "high": 0.3565393518518515,
+                "low": 0.11342592592592593,
+                "permutations": 64,
+                "pvalue": 0.03125,
+                "recoverable": 432,
+                "seed": 42,
+                "status": "computed",
+                "test": "exact_cluster_sign_flip"
+              }
+            },
+            "M1": {
+              "base_tool": {
+                "assumption": "method labels exchangeable within each cluster under the null",
+                "cluster_unit": "base_tool",
+                "clusters": 12,
+                "confidence": 0.95,
+                "difference": 0.1550925925925926,
+                "draws": 2000,
+                "high": 0.21296296296296297,
+                "low": 0.09716435185185186,
+                "permutations": 512,
+                "pvalue": 0.00390625,
+                "recoverable": 432,
+                "seed": 42,
+                "status": "computed",
+                "test": "exact_cluster_sign_flip"
+              },
+              "domain": {
+                "assumption": "method labels exchangeable within each cluster under the null",
+                "cluster_unit": "domain",
+                "clusters": 6,
+                "confidence": 0.95,
+                "difference": 0.1550925925925926,
+                "draws": 2000,
+                "high": 0.22685185185185186,
+                "low": 0.08090277777777778,
+                "permutations": 32,
+                "pvalue": 0.0625,
+                "recoverable": 432,
+                "seed": 42,
+                "status": "computed",
+                "test": "exact_cluster_sign_flip"
+              }
+            }
+          }
+        },
+        "without-rules": {
+          "integrity": {
+            "CodeAgent": {
+              "benchmark_digest": "8c25d957612790b719ddf5925dcca602f911f998d2a0c13647f345167a5fe190",
+              "checks": [
+                "hashes",
+                "matrix",
+                "labels",
+                "recovery_input",
+                "semantic_evaluation",
+                "summary"
+              ],
+              "methods": [
+                "B3",
+                "D0",
+                "D1",
+                "B2",
+                "M1"
+              ],
+              "records": 2880,
+              "repeats": 3,
+              "scenarios": 192,
+              "source_digest": "ccd2591e512801b45a81d0a1c426c802a5b380ec680ae03c13c2fd31efd24397",
+              "status": "PASS"
+            },
+            "Terra": {
+              "benchmark_digest": "8c25d957612790b719ddf5925dcca602f911f998d2a0c13647f345167a5fe190",
+              "checks": [
+                "hashes",
+                "matrix",
+                "labels",
+                "recovery_input",
+                "semantic_evaluation",
+                "summary"
+              ],
+              "methods": [
+                "B3",
+                "D0",
+                "D1",
+                "B2",
+                "M1"
+              ],
+              "records": 2880,
+              "repeats": 3,
+              "scenarios": 192,
+              "source_digest": "ccd2591e512801b45a81d0a1c426c802a5b380ec680ae03c13c2fd31efd24397",
+              "status": "PASS"
+            }
+          },
+          "summary": {
+            "CodeAgent": {
+              "B2": {
+                "AbstentionAccuracy": {
+                  "denominator": 144,
+                  "numerator": 27,
+                  "value": 0.1875
+                },
+                "CRR": {
+                  "denominator": 432,
+                  "numerator": 359,
+                  "value": 0.8310185185185185
+                },
+                "FBR": {
+                  "denominator": 432,
+                  "numerator": 73,
+                  "value": 0.16898148148148148
+                },
+                "SchemaValidityRate": {
+                  "denominator": 491,
+                  "numerator": 476,
+                  "value": 0.9694501018329938
+                },
+                "SemanticEquivalenceRate": {
+                  "denominator": 476,
+                  "numerator": 359,
+                  "value": 0.7542016806722689
+                },
+                "UHR": {
+                  "denominator": 476,
+                  "numerator": 117,
+                  "value": 0.24579831932773108
+                },
+                "calls": 594,
+                "cost": null,
+                "input_tokens": null,
+                "latency_mean": 8.35224727124983,
+                "output_tokens": null,
+                "samples": 576,
+                "validation_stages": 491
+              },
+              "B2V": {
+                "AbstentionAccuracy": {
+                  "denominator": 144,
+                  "numerator": 144,
+                  "value": 1.0
+                },
+                "CRR": {
+                  "denominator": 432,
+                  "numerator": 359,
+                  "value": 0.8310185185185185
+                },
+                "FBR": {
+                  "denominator": 432,
+                  "numerator": 73,
+                  "value": 0.16898148148148148
+                },
+                "SchemaValidityRate": {
+                  "denominator": 491,
+                  "numerator": 476,
+                  "value": 0.9694501018329938
+                },
+                "SemanticEquivalenceRate": {
+                  "denominator": 359,
+                  "numerator": 359,
+                  "value": 1.0
+                },
+                "UHR": {
+                  "denominator": 359,
+                  "numerator": 0,
+                  "value": 0.0
+                },
+                "calls": 594,
+                "cost": null,
+                "input_tokens": null,
+                "latency_mean": 8.353144957442863,
+                "output_tokens": null,
+                "samples": 576,
+                "validation_stages": 967
+              },
+              "B3": {
+                "AbstentionAccuracy": {
+                  "denominator": 144,
+                  "numerator": 72,
+                  "value": 0.5
+                },
+                "CRR": {
+                  "denominator": 432,
+                  "numerator": 144,
+                  "value": 0.3333333333333333
+                },
+                "FBR": {
+                  "denominator": 432,
+                  "numerator": 288,
+                  "value": 0.6666666666666666
+                },
+                "SchemaValidityRate": {
+                  "denominator": 216,
+                  "numerator": 216,
+                  "value": 1.0
+                },
+                "SemanticEquivalenceRate": {
+                  "denominator": 216,
+                  "numerator": 144,
+                  "value": 0.6666666666666666
+                },
+                "UHR": {
+                  "denominator": 216,
+                  "numerator": 72,
+                  "value": 0.3333333333333333
+                },
+                "calls": 0,
+                "cost": 0.0,
+                "input_tokens": 0,
+                "latency_mean": 0.0003523007332357035,
+                "output_tokens": 0,
+                "samples": 576,
+                "validation_stages": 216
+              },
+              "D0": {
+                "AbstentionAccuracy": {
+                  "denominator": 144,
+                  "numerator": 0,
+                  "value": 0.0
+                },
+                "CRR": {
+                  "denominator": 432,
+                  "numerator": 144,
+                  "value": 0.3333333333333333
+                },
+                "FBR": {
+                  "denominator": 432,
+                  "numerator": 288,
+                  "value": 0.6666666666666666
+                },
+                "SchemaValidityRate": {
+                  "denominator": 576,
+                  "numerator": 288,
+                  "value": 0.5
+                },
+                "SemanticEquivalenceRate": {
+                  "denominator": 288,
+                  "numerator": 144,
+                  "value": 0.5
+                },
+                "UHR": {
+                  "denominator": 288,
+                  "numerator": 144,
+                  "value": 0.5
+                },
+                "calls": 0,
+                "cost": 0.0,
+                "input_tokens": 0,
+                "latency_mean": 0.0030299321578139723,
+                "output_tokens": 0,
+                "samples": 576,
+                "validation_stages": 576
+              },
+              "D1": {
+                "AbstentionAccuracy": {
+                  "denominator": 144,
+                  "numerator": 144,
+                  "value": 1.0
+                },
+                "CRR": {
+                  "denominator": 432,
+                  "numerator": 144,
+                  "value": 0.3333333333333333
+                },
+                "FBR": {
+                  "denominator": 432,
+                  "numerator": 288,
+                  "value": 0.6666666666666666
+                },
+                "SchemaValidityRate": {
+                  "denominator": 576,
+                  "numerator": 288,
+                  "value": 0.5
+                },
+                "SemanticEquivalenceRate": {
+                  "denominator": 144,
+                  "numerator": 144,
+                  "value": 1.0
+                },
+                "UHR": {
+                  "denominator": 144,
+                  "numerator": 0,
+                  "value": 0.0
+                },
+                "calls": 0,
+                "cost": 0.0,
+                "input_tokens": 0,
+                "latency_mean": 0.002435287458663677,
+                "output_tokens": 0,
+                "samples": 576,
+                "validation_stages": 936
+              },
+              "M1": {
+                "AbstentionAccuracy": {
+                  "denominator": 144,
+                  "numerator": 144,
+                  "value": 1.0
+                },
+                "CRR": {
+                  "denominator": 432,
+                  "numerator": 308,
+                  "value": 0.7129629629629629
+                },
+                "FBR": {
+                  "denominator": 432,
+                  "numerator": 124,
+                  "value": 0.28703703703703703
+                },
+                "SchemaValidityRate": {
+                  "denominator": 423,
+                  "numerator": 423,
+                  "value": 1.0
+                },
+                "SemanticEquivalenceRate": {
+                  "denominator": 308,
+                  "numerator": 308,
+                  "value": 1.0
+                },
+                "UHR": {
+                  "denominator": 308,
+                  "numerator": 0,
+                  "value": 0.0
+                },
+                "calls": 375,
+                "cost": null,
+                "input_tokens": null,
+                "latency_mean": 6.6387034442222,
+                "output_tokens": null,
+                "samples": 576,
+                "validation_stages": 918
+              }
+            },
+            "Terra": {
+              "B2": {
+                "AbstentionAccuracy": {
+                  "denominator": 144,
+                  "numerator": 72,
+                  "value": 0.5
+                },
+                "CRR": {
+                  "denominator": 432,
+                  "numerator": 326,
+                  "value": 0.7546296296296297
+                },
+                "FBR": {
+                  "denominator": 432,
+                  "numerator": 106,
+                  "value": 0.24537037037037038
+                },
+                "SchemaValidityRate": {
+                  "denominator": 398,
+                  "numerator": 398,
+                  "value": 1.0
+                },
+                "SemanticEquivalenceRate": {
+                  "denominator": 398,
+                  "numerator": 326,
+                  "value": 0.8190954773869347
+                },
+                "UHR": {
+                  "denominator": 398,
+                  "numerator": 72,
+                  "value": 0.18090452261306533
+                },
+                "calls": 961,
+                "cost": null,
+                "input_tokens": null,
+                "latency_mean": 12.337355374217926,
+                "output_tokens": null,
+                "samples": 576,
+                "validation_stages": 398
+              },
+              "B2V": {
+                "AbstentionAccuracy": {
+                  "denominator": 144,
+                  "numerator": 144,
+                  "value": 1.0
+                },
+                "CRR": {
+                  "denominator": 432,
+                  "numerator": 326,
+                  "value": 0.7546296296296297
+                },
+                "FBR": {
+                  "denominator": 432,
+                  "numerator": 106,
+                  "value": 0.24537037037037038
+                },
+                "SchemaValidityRate": {
+                  "denominator": 398,
+                  "numerator": 398,
+                  "value": 1.0
+                },
+                "SemanticEquivalenceRate": {
+                  "denominator": 326,
+                  "numerator": 326,
+                  "value": 1.0
+                },
+                "UHR": {
+                  "denominator": 326,
+                  "numerator": 0,
+                  "value": 0.0
+                },
+                "calls": 961,
+                "cost": null,
+                "input_tokens": null,
+                "latency_mean": 12.338092406309443,
+                "output_tokens": null,
+                "samples": 576,
+                "validation_stages": 796
+              },
+              "B3": {
+                "AbstentionAccuracy": {
+                  "denominator": 144,
+                  "numerator": 72,
+                  "value": 0.5
+                },
+                "CRR": {
+                  "denominator": 432,
+                  "numerator": 144,
+                  "value": 0.3333333333333333
+                },
+                "FBR": {
+                  "denominator": 432,
+                  "numerator": 288,
+                  "value": 0.6666666666666666
+                },
+                "SchemaValidityRate": {
+                  "denominator": 216,
+                  "numerator": 216,
+                  "value": 1.0
+                },
+                "SemanticEquivalenceRate": {
+                  "denominator": 216,
+                  "numerator": 144,
+                  "value": 0.6666666666666666
+                },
+                "UHR": {
+                  "denominator": 216,
+                  "numerator": 72,
+                  "value": 0.3333333333333333
+                },
+                "calls": 0,
+                "cost": 0.0,
+                "input_tokens": 0,
+                "latency_mean": 0.0004634516846838071,
+                "output_tokens": 0,
+                "samples": 576,
+                "validation_stages": 216
+              },
+              "D0": {
+                "AbstentionAccuracy": {
+                  "denominator": 144,
+                  "numerator": 0,
+                  "value": 0.0
+                },
+                "CRR": {
+                  "denominator": 432,
+                  "numerator": 144,
+                  "value": 0.3333333333333333
+                },
+                "FBR": {
+                  "denominator": 432,
+                  "numerator": 288,
+                  "value": 0.6666666666666666
+                },
+                "SchemaValidityRate": {
+                  "denominator": 576,
+                  "numerator": 288,
+                  "value": 0.5
+                },
+                "SemanticEquivalenceRate": {
+                  "denominator": 288,
+                  "numerator": 144,
+                  "value": 0.5
+                },
+                "UHR": {
+                  "denominator": 288,
+                  "numerator": 144,
+                  "value": 0.5
+                },
+                "calls": 0,
+                "cost": 0.0,
+                "input_tokens": 0,
+                "latency_mean": 0.0037097647711763987,
+                "output_tokens": 0,
+                "samples": 576,
+                "validation_stages": 576
+              },
+              "D1": {
+                "AbstentionAccuracy": {
+                  "denominator": 144,
+                  "numerator": 144,
+                  "value": 1.0
+                },
+                "CRR": {
+                  "denominator": 432,
+                  "numerator": 144,
+                  "value": 0.3333333333333333
+                },
+                "FBR": {
+                  "denominator": 432,
+                  "numerator": 288,
+                  "value": 0.6666666666666666
+                },
+                "SchemaValidityRate": {
+                  "denominator": 576,
+                  "numerator": 288,
+                  "value": 0.5
+                },
+                "SemanticEquivalenceRate": {
+                  "denominator": 144,
+                  "numerator": 144,
+                  "value": 1.0
+                },
+                "UHR": {
+                  "denominator": 144,
+                  "numerator": 0,
+                  "value": 0.0
+                },
+                "calls": 0,
+                "cost": 0.0,
+                "input_tokens": 0,
+                "latency_mean": 0.0024612737466264255,
+                "output_tokens": 0,
+                "samples": 576,
+                "validation_stages": 936
+              },
+              "M1": {
+                "AbstentionAccuracy": {
+                  "denominator": 144,
+                  "numerator": 144,
+                  "value": 1.0
+                },
+                "CRR": {
+                  "denominator": 432,
+                  "numerator": 319,
+                  "value": 0.7384259259259259
+                },
+                "FBR": {
+                  "denominator": 432,
+                  "numerator": 113,
+                  "value": 0.26157407407407407
+                },
+                "SchemaValidityRate": {
+                  "denominator": 394,
+                  "numerator": 394,
+                  "value": 1.0
+                },
+                "SemanticEquivalenceRate": {
+                  "denominator": 319,
+                  "numerator": 319,
+                  "value": 1.0
+                },
+                "UHR": {
+                  "denominator": 319,
+                  "numerator": 0,
+                  "value": 0.0
+                },
+                "calls": 607,
+                "cost": null,
+                "input_tokens": null,
+                "latency_mean": 7.843906277063272,
+                "output_tokens": null,
+                "samples": 576,
+                "validation_stages": 884
+              }
+            }
+          },
+          "before_provider_retry": {
+            "B2": {
+              "AbstentionAccuracy": {
+                "denominator": 144,
+                "numerator": 96,
+                "value": 0.6666666666666666
+              },
+              "CRR": {
+                "denominator": 432,
+                "numerator": 218,
+                "value": 0.5046296296296297
+              },
+              "FBR": {
+                "denominator": 432,
+                "numerator": 214,
+                "value": 0.49537037037037035
+              },
+              "SchemaValidityRate": {
+                "denominator": 266,
+                "numerator": 266,
+                "value": 1.0
+              },
+              "SemanticEquivalenceRate": {
+                "denominator": 266,
+                "numerator": 218,
+                "value": 0.8195488721804511
+              },
+              "UHR": {
+                "denominator": 266,
+                "numerator": 48,
+                "value": 0.18045112781954886
+              },
+              "calls": 768,
+              "cost": null,
+              "input_tokens": null,
+              "latency_mean": 9.636450823364713,
+              "output_tokens": null,
+              "samples": 576,
+              "validation_stages": 266
+            },
+            "B2V": {
+              "AbstentionAccuracy": {
+                "denominator": 144,
+                "numerator": 144,
+                "value": 1.0
+              },
+              "CRR": {
+                "denominator": 432,
+                "numerator": 218,
+                "value": 0.5046296296296297
+              },
+              "FBR": {
+                "denominator": 432,
+                "numerator": 214,
+                "value": 0.49537037037037035
+              },
+              "SchemaValidityRate": {
+                "denominator": 266,
+                "numerator": 266,
+                "value": 1.0
+              },
+              "SemanticEquivalenceRate": {
+                "denominator": 218,
+                "numerator": 218,
+                "value": 1.0
+              },
+              "UHR": {
+                "denominator": 218,
+                "numerator": 0,
+                "value": 0.0
+              },
+              "calls": 768,
+              "cost": null,
+              "input_tokens": null,
+              "latency_mean": 9.636944014268616,
+              "output_tokens": null,
+              "samples": 576,
+              "validation_stages": 532
+            },
+            "B3": {
+              "AbstentionAccuracy": {
+                "denominator": 144,
+                "numerator": 72,
+                "value": 0.5
+              },
+              "CRR": {
+                "denominator": 432,
+                "numerator": 144,
+                "value": 0.3333333333333333
+              },
+              "FBR": {
+                "denominator": 432,
+                "numerator": 288,
+                "value": 0.6666666666666666
+              },
+              "SchemaValidityRate": {
+                "denominator": 216,
+                "numerator": 216,
+                "value": 1.0
+              },
+              "SemanticEquivalenceRate": {
+                "denominator": 216,
+                "numerator": 144,
+                "value": 0.6666666666666666
+              },
+              "UHR": {
+                "denominator": 216,
+                "numerator": 72,
+                "value": 0.3333333333333333
+              },
+              "calls": 0,
+              "cost": 0.0,
+              "input_tokens": 0,
+              "latency_mean": 0.0004634516846838071,
+              "output_tokens": 0,
+              "samples": 576,
+              "validation_stages": 216
+            },
+            "D0": {
+              "AbstentionAccuracy": {
+                "denominator": 144,
+                "numerator": 0,
+                "value": 0.0
+              },
+              "CRR": {
+                "denominator": 432,
+                "numerator": 144,
+                "value": 0.3333333333333333
+              },
+              "FBR": {
+                "denominator": 432,
+                "numerator": 288,
+                "value": 0.6666666666666666
+              },
+              "SchemaValidityRate": {
+                "denominator": 576,
+                "numerator": 288,
+                "value": 0.5
+              },
+              "SemanticEquivalenceRate": {
+                "denominator": 288,
+                "numerator": 144,
+                "value": 0.5
+              },
+              "UHR": {
+                "denominator": 288,
+                "numerator": 144,
+                "value": 0.5
+              },
+              "calls": 0,
+              "cost": 0.0,
+              "input_tokens": 0,
+              "latency_mean": 0.0037097647711763987,
+              "output_tokens": 0,
+              "samples": 576,
+              "validation_stages": 576
+            },
+            "D1": {
+              "AbstentionAccuracy": {
+                "denominator": 144,
+                "numerator": 144,
+                "value": 1.0
+              },
+              "CRR": {
+                "denominator": 432,
+                "numerator": 144,
+                "value": 0.3333333333333333
+              },
+              "FBR": {
+                "denominator": 432,
+                "numerator": 288,
+                "value": 0.6666666666666666
+              },
+              "SchemaValidityRate": {
+                "denominator": 576,
+                "numerator": 288,
+                "value": 0.5
+              },
+              "SemanticEquivalenceRate": {
+                "denominator": 144,
+                "numerator": 144,
+                "value": 1.0
+              },
+              "UHR": {
+                "denominator": 144,
+                "numerator": 0,
+                "value": 0.0
+              },
+              "calls": 0,
+              "cost": 0.0,
+              "input_tokens": 0,
+              "latency_mean": 0.0024612737466264255,
+              "output_tokens": 0,
+              "samples": 576,
+              "validation_stages": 936
+            },
+            "M1": {
+              "AbstentionAccuracy": {
+                "denominator": 144,
+                "numerator": 144,
+                "value": 1.0
+              },
+              "CRR": {
+                "denominator": 432,
+                "numerator": 260,
+                "value": 0.6018518518518519
+              },
+              "FBR": {
+                "denominator": 432,
+                "numerator": 172,
+                "value": 0.39814814814814814
+              },
+              "SchemaValidityRate": {
+                "denominator": 332,
+                "numerator": 332,
+                "value": 1.0
+              },
+              "SemanticEquivalenceRate": {
+                "denominator": 260,
+                "numerator": 260,
+                "value": 1.0
+              },
+              "UHR": {
+                "denominator": 260,
+                "numerator": 0,
+                "value": 0.0
+              },
+              "calls": 481,
+              "cost": null,
+              "input_tokens": null,
+              "latency_mean": 6.099883528651642,
+              "output_tokens": null,
+              "samples": 576,
+              "validation_stages": 736
+            }
+          },
+          "comparisons": {
+            "B2": {
+              "base_tool": {
+                "assumption": "method labels exchangeable within each cluster under the null",
+                "cluster_unit": "base_tool",
+                "clusters": 12,
+                "confidence": 0.95,
+                "difference": -0.0763888888888889,
+                "draws": 2000,
+                "high": -0.018518518518518517,
+                "low": -0.125,
+                "permutations": 1024,
+                "pvalue": 0.037109375,
+                "recoverable": 432,
+                "seed": 42,
+                "status": "computed",
+                "test": "exact_cluster_sign_flip"
+              },
+              "domain": {
+                "assumption": "method labels exchangeable within each cluster under the null",
+                "cluster_unit": "domain",
+                "clusters": 6,
+                "confidence": 0.95,
+                "difference": -0.0763888888888889,
+                "draws": 2000,
+                "high": -0.009259259259259259,
+                "low": -0.12731481481481483,
+                "permutations": 64,
+                "pvalue": 0.125,
+                "recoverable": 432,
+                "seed": 42,
+                "status": "computed",
+                "test": "exact_cluster_sign_flip"
+              }
+            },
+            "B2V": {
+              "base_tool": {
+                "assumption": "method labels exchangeable within each cluster under the null",
+                "cluster_unit": "base_tool",
+                "clusters": 12,
+                "confidence": 0.95,
+                "difference": -0.0763888888888889,
+                "draws": 2000,
+                "high": -0.018518518518518517,
+                "low": -0.125,
+                "permutations": 1024,
+                "pvalue": 0.037109375,
+                "recoverable": 432,
+                "seed": 42,
+                "status": "computed",
+                "test": "exact_cluster_sign_flip"
+              },
+              "domain": {
+                "assumption": "method labels exchangeable within each cluster under the null",
+                "cluster_unit": "domain",
+                "clusters": 6,
+                "confidence": 0.95,
+                "difference": -0.0763888888888889,
+                "draws": 2000,
+                "high": -0.009259259259259259,
+                "low": -0.12731481481481483,
+                "permutations": 64,
+                "pvalue": 0.125,
+                "recoverable": 432,
+                "seed": 42,
+                "status": "computed",
+                "test": "exact_cluster_sign_flip"
+              }
+            },
+            "M1": {
+              "base_tool": {
+                "assumption": "method labels exchangeable within each cluster under the null",
+                "cluster_unit": "base_tool",
+                "clusters": 12,
+                "confidence": 0.95,
+                "difference": 0.02546296296296296,
+                "draws": 2000,
+                "high": 0.04635416666666635,
+                "low": 0.0023148148148148147,
+                "permutations": 2048,
+                "pvalue": 0.0859375,
+                "recoverable": 432,
+                "seed": 42,
+                "status": "computed",
+                "test": "exact_cluster_sign_flip"
+              },
+              "domain": {
+                "assumption": "method labels exchangeable within each cluster under the null",
+                "cluster_unit": "domain",
+                "clusters": 6,
+                "confidence": 0.95,
+                "difference": 0.02546296296296296,
+                "draws": 2000,
+                "high": 0.046296296296296294,
+                "low": 0.004629629629629629,
+                "permutations": 32,
+                "pvalue": 0.1875,
+                "recoverable": 432,
+                "seed": 42,
+                "status": "computed",
+                "test": "exact_cluster_sign_flip"
+              }
+            }
+          }
+        }
+      }
+    },
+    "phase18-preflight": {
+      "code_commit": "fda300069fc264f7ef97b7e3b85c76b03353c27e",
+      "source_digest": "ccd2591e512801b45a81d0a1c426c802a5b380ec680ae03c13c2fd31efd24397",
+      "source_tests": {
+        "passed": 315,
+        "skipped": 5
+      },
+      "clean_wheel_tests": {
+        "passed": 315,
+        "skipped": 5
+      },
+      "coverage": {
+        "covered_lines": 2064,
+        "num_statements": 2064,
+        "percent_covered": 100.0,
+        "percent_covered_display": "100",
+        "missing_lines": 0,
+        "excluded_lines": 13,
+        "percent_statements_covered": 100.0,
+        "percent_statements_covered_display": "100",
+        "num_branches": 784,
+        "num_partial_branches": 0,
+        "covered_branches": 784,
+        "missing_branches": 0,
+        "percent_branches_covered": 100.0,
+        "percent_branches_covered_display": "100"
+      }
+    },
+    "phase16": {
+      "date": "2026-11-02",
+      "code_commit": "7fc2627e",
+      "source_digest": "5fe53754734795ebe92a13553d810559320c58dc24a9fed8c2156e3406053405",
+      "pytest": {
+        "passed": 300,
+        "failed": 0,
+        "skipped": 5
+      },
+      "coverage": {
+        "covered_lines": 1787,
+        "num_statements": 1787,
+        "percent_covered": 100.0,
+        "percent_covered_display": "100",
+        "missing_lines": 0,
+        "excluded_lines": 13,
+        "percent_statements_covered": 100.0,
+        "percent_statements_covered_display": "100",
+        "num_branches": 662,
+        "num_partial_branches": 0,
+        "covered_branches": 662,
+        "missing_branches": 0,
+        "percent_branches_covered": 100.0,
+        "percent_branches_covered_display": "100"
+      },
+      "clean_wheel": {
+        "passed": 300,
+        "failed": 0,
+        "skipped": 5
+      },
+      "clean_coverage": {
+        "covered_lines": 1787,
+        "num_statements": 1787,
+        "percent_covered": 100.0,
+        "percent_covered_display": "100",
+        "missing_lines": 0,
+        "excluded_lines": 13,
+        "percent_statements_covered": 100.0,
+        "percent_statements_covered_display": "100",
+        "num_branches": 662,
+        "num_partial_branches": 0,
+        "covered_branches": 662,
+        "missing_branches": 0,
+        "percent_branches_covered": 100.0,
+        "percent_branches_covered_display": "100"
+      },
+      "packages": {
+        "mcp_compat-0.1.0-py3-none-any.whl": "9a02c674f019d11d30935fd83bf4b3821367120fd2f88a4b42d29be37410aba5",
+        "mcp_compat-0.1.0.tar.gz": "f8b7680f58b0efb792c360ef51684d8facb0b58c0f520a2fdbdb81d97188f3ac"
+      }
+    },
+    "publication-final": {
+      "status": "PASS",
+      "python": "3.11.4",
+      "source_tests": {
+        "passed": 375,
+        "skipped": 8,
+        "seconds": 153.47
+      },
+      "coverage": {
+        "covered_lines": 2214,
+        "num_statements": 2214,
+        "percent_covered": 100.0,
+        "percent_covered_display": "100",
+        "missing_lines": 0,
+        "excluded_lines": 13,
+        "percent_statements_covered": 100.0,
+        "percent_statements_covered_display": "100",
+        "num_branches": 828,
+        "num_partial_branches": 0,
+        "covered_branches": 828,
+        "missing_branches": 0,
+        "percent_branches_covered": 100.0,
+        "percent_branches_covered_display": "100"
+      }
+    },
+    "phase11": {
+      "date": "2026-11-01",
+      "python": "3.11.4",
+      "pytest": {
+        "passed": 254,
+        "skipped": 2,
+        "failed": 0
+      },
+      "coverage": {
+        "covered_lines": 1525,
+        "num_statements": 1525,
+        "percent_covered": 100.0,
+        "percent_covered_display": "100",
+        "missing_lines": 0,
+        "excluded_lines": 13,
+        "percent_statements_covered": 100.0,
+        "percent_statements_covered_display": "100",
+        "num_branches": 560,
+        "num_partial_branches": 0,
+        "covered_branches": 560,
+        "missing_branches": 0,
+        "percent_branches_covered": 100.0,
+        "percent_branches_covered_display": "100"
+      },
+      "clean_wheel": {
+        "passed": 254,
+        "skipped": 2,
+        "failed": 0,
+        "coverage": {
+          "covered_lines": 1525,
+          "num_statements": 1525,
+          "percent_covered": 100.0,
+          "percent_covered_display": "100",
+          "missing_lines": 0,
+          "excluded_lines": 13,
+          "percent_statements_covered": 100.0,
+          "percent_statements_covered_display": "100",
+          "num_branches": 560,
+          "num_partial_branches": 0,
+          "covered_branches": 560,
+          "missing_branches": 0,
+          "percent_branches_covered": 100.0,
+          "percent_branches_covered_display": "100"
+        }
+      },
+      "source_digest": "72399402e2d87de524974ea3122267d8a2e4188946e34690fdbfe79aa27b98b4",
+      "benchmark_digest": "ef002e38917804b246bdd0d9a5c104160f89b76a4f15de34499c5dcb2b2ce8de",
+      "packages": {
+        "mcp_compat-0.1.0-py3-none-any.whl": "3dd64b5ff5f0768bd73ea4de760e41181e232243490713c4ea9027b49590eaec",
+        "mcp_compat-0.1.0.tar.gz": "4c61e74da5a3e4cb94d2d27719163642acedb78a3e2ab77b2f5d01f3f06dcef3"
+      },
+      "code_commit": "6a60e0ee00276c9e6f1b2ff090ef8ecfc6889bc6"
+    },
+    "publication-stage6": {
+      "coverage": {
+        "covered_lines": 2200,
+        "num_statements": 2200,
+        "percent_covered": 100.0,
+        "percent_covered_display": "100",
+        "missing_lines": 0,
+        "excluded_lines": 13,
+        "percent_statements_covered": 100.0,
+        "percent_statements_covered_display": "100",
+        "num_branches": 826,
+        "num_partial_branches": 0,
+        "covered_branches": 826,
+        "missing_branches": 0,
+        "percent_branches_covered": 100.0,
+        "percent_branches_covered_display": "100"
+      }
+    },
+    "publication-package": {
+      "status": "PASS",
+      "release_source_digest": "3fe90a97482fd6b3cbec8ccb789ea93a607d48af738a74946644327dd4530c9b"
+    },
+    "phase20-preflight": {
+      "status": "PILOT_VALIDATED_MAIN_IN_PROGRESS",
+      "coverage_scope": "mcp_compat package and separate codex_transport example",
+      "coverage": {
+        "covered_lines": 2064,
+        "num_statements": 2064,
+        "percent_covered": 100.0,
+        "percent_covered_display": "100",
+        "missing_lines": 0,
+        "excluded_lines": 13,
+        "percent_statements_covered": 100.0,
+        "percent_statements_covered_display": "100",
+        "num_branches": 784,
+        "num_partial_branches": 0,
+        "covered_branches": 784,
+        "missing_branches": 0,
+        "percent_branches_covered": 100.0,
+        "percent_branches_covered_display": "100"
+      }
+    },
+    "phase13": {
+      "date": "2026-11-02",
+      "pytest": {
+        "passed": 285,
+        "failed": 0,
+        "skipped": 5
+      },
+      "coverage": {
+        "covered_lines": 1730,
+        "num_statements": 1730,
+        "percent_covered": 100.0,
+        "percent_covered_display": "100",
+        "missing_lines": 0,
+        "excluded_lines": 13,
+        "percent_statements_covered": 100.0,
+        "percent_statements_covered_display": "100",
+        "num_branches": 636,
+        "num_partial_branches": 0,
+        "covered_branches": 636,
+        "missing_branches": 0,
+        "percent_branches_covered": 100.0,
+        "percent_branches_covered_display": "100"
+      },
+      "source_digest": "32706cbd79a6c56bbeb031182065c9aa3a3780f0878ea397375a2c7c90600c04"
+    },
+    "publication-baseline": {
+      "pytest": {
+        "passed": 341,
+        "skipped": 7,
+        "failed": 0,
+        "seconds": 153.7
+      }
+    },
+    "publication-stage5": {
+      "pytest": {
+        "passed": 362,
+        "skipped": 7,
+        "failed": 0,
+        "seconds": 150.63
+      },
+      "coverage": {
+        "covered_lines": 2200,
+        "num_statements": 2200,
+        "percent_covered": 100.0,
+        "percent_covered_display": "100",
+        "missing_lines": 0,
+        "excluded_lines": 13,
+        "percent_statements_covered": 100.0,
+        "percent_statements_covered_display": "100",
+        "num_branches": 826,
+        "num_partial_branches": 0,
+        "covered_branches": 826,
+        "missing_branches": 0,
+        "percent_branches_covered": 100.0,
+        "percent_branches_covered_display": "100"
+      }
+    },
+    "publication-stage4": {
+      "pytest": {
+        "passed": 351,
+        "skipped": 7,
+        "failed": 0,
+        "seconds": 153.9
+      },
+      "coverage": {
+        "covered_lines": 2145,
+        "num_statements": 2145,
+        "percent_covered": 100.0,
+        "percent_covered_display": "100",
+        "missing_lines": 0,
+        "excluded_lines": 13,
+        "percent_statements_covered": 100.0,
+        "percent_statements_covered_display": "100",
+        "num_branches": 808,
+        "num_partial_branches": 0,
+        "covered_branches": 808,
+        "missing_branches": 0,
+        "percent_branches_covered": 100.0,
+        "percent_branches_covered_display": "100"
+      }
+    },
+    "phase12": {
+      "date": "2026-11-02",
+      "python": "3.11.4",
+      "pytest": {
+        "passed": 266,
+        "failed": 0,
+        "skipped": 4
+      },
+      "coverage": {
+        "covered_lines": 1572,
+        "num_statements": 1572,
+        "percent_covered": 100.0,
+        "percent_covered_display": "100",
+        "missing_lines": 0,
+        "excluded_lines": 13,
+        "percent_statements_covered": 100.0,
+        "percent_statements_covered_display": "100",
+        "num_branches": 574,
+        "num_partial_branches": 0,
+        "covered_branches": 574,
+        "missing_branches": 0,
+        "percent_branches_covered": 100.0,
+        "percent_branches_covered_display": "100"
+      },
+      "source_digest": "ffd1fb0caf211196d5d16e288ded1ebb3bc8b2becb098626a02723fa7d03114f"
+    },
+    "publication-stage8": {
+      "status": "PASS"
+    },
+    "phase15": {
+      "date": "2026-11-02",
+      "code_commit": "25040b53",
+      "source_digest": "d882ed36e9dba799b949d36f61ccd00c438afd8d8ec33c4edfee19a30dfcab10",
+      "pytest": {
+        "passed": 294,
+        "failed": 0,
+        "skipped": 5
+      },
+      "coverage": {
+        "covered_lines": 1749,
+        "num_statements": 1749,
+        "percent_covered": 100.0,
+        "percent_covered_display": "100",
+        "missing_lines": 0,
+        "excluded_lines": 13,
+        "percent_statements_covered": 100.0,
+        "percent_statements_covered_display": "100",
+        "num_branches": 648,
+        "num_partial_branches": 0,
+        "covered_branches": 648,
+        "missing_branches": 0,
+        "percent_branches_covered": 100.0,
+        "percent_branches_covered_display": "100"
+      },
+      "clean_wheel": {
+        "passed": 294,
+        "failed": 0,
+        "skipped": 5
+      },
+      "clean_coverage": {
+        "covered_lines": 1749,
+        "num_statements": 1749,
+        "percent_covered": 100.0,
+        "percent_covered_display": "100",
+        "missing_lines": 0,
+        "excluded_lines": 13,
+        "percent_statements_covered": 100.0,
+        "percent_statements_covered_display": "100",
+        "num_branches": 648,
+        "num_partial_branches": 0,
+        "covered_branches": 648,
+        "missing_branches": 0,
+        "percent_branches_covered": 100.0,
+        "percent_branches_covered_display": "100"
+      },
+      "packages": {
+        "mcp_compat-0.1.0-py3-none-any.whl": "c5f7b755f63274d639b1f7abc69ab1df28347ca02c8ce9db48ed25fdef46a687",
+        "mcp_compat-0.1.0.tar.gz": "18eaef9a251679bc05d0a313c2d1f8a30c19fcb6ade872be50362665946f4410"
+      }
+    },
+    "phase19": {
+      "release_source_digest": "1ed0c6b2cc243c6fb3e85aa1f593a1efcfb9cc97c55fffb6333cf7df04fc5f7d",
+      "clean_wheel": {
+        "tests": 325,
+        "passed": 319,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 6,
+        "skipped_opt_in_provider_tests": [
+          "test_real_provider_smoke",
+          "test_codeagent_calls_project_mcp[unknown]",
+          "test_codeagent_calls_project_mcp[known]",
+          "test_real_mapping_protocol[mapping]",
+          "test_real_mapping_protocol[B2]",
+          "test_real_codeagent_mapping_through_business_mcp_proxy"
+        ]
+      },
+      "coverage_scope": "mcp_compat package",
+      "coverage": {
+        "covered_lines": 2064,
+        "num_statements": 2064,
+        "percent_covered": 100.0,
+        "percent_covered_display": "100",
+        "missing_lines": 0,
+        "excluded_lines": 13,
+        "percent_statements_covered": 100.0,
+        "percent_statements_covered_display": "100",
+        "num_branches": 784,
+        "num_partial_branches": 0,
+        "covered_branches": 784,
+        "missing_branches": 0,
+        "percent_branches_covered": 100.0,
+        "percent_branches_covered_display": "100"
+      }
+    },
+    "publication-stage7-v1": {
+      "status": "PASS",
+      "records": 441,
+      "source_tool_invocations": 1158,
+      "failed_source_invocations": 0,
+      "full_matrix": true,
+      "all_artifact_hashes": true,
+      "independent_replay_of_evaluator_traces": true,
+      "source_commit": "e53a729b",
+      "gold_and_inputs_unchanged": true,
+      "caveats": [
+        "M1_new admitted two TOCTOU controls; only Calculator shows semantic mismatch because marker is not in filesystem/SQLite snapshots.",
+        "No automatic current-state admission gate in full Hybrid yet.",
+        "D versus B includes current-state gate as well as completeness."
+      ]
+    },
+    "phase18": {
+      "experiment_source_commit": "fda300069fc264f7ef97b7e3b85c76b03353c27e",
+      "source_digest": "ccd2591e512801b45a81d0a1c426c802a5b380ec680ae03c13c2fd31efd24397",
+      "status": "COMPLETED_DATA_VALIDATED",
+      "decisions": 5760,
+      "source_tests": {
+        "passed": 318,
+        "skipped": 6
+      },
+      "clean_wheel_tests": {
+        "passed": 318,
+        "skipped": 6
+      },
+      "coverage_scope": "mcp_compat package; examples/scripts checked separately",
+      "coverage": {
+        "covered_lines": 2064,
+        "num_statements": 2064,
+        "percent_covered": 100.0,
+        "percent_covered_display": "100",
+        "missing_lines": 0,
+        "excluded_lines": 13,
+        "percent_statements_covered": 100.0,
+        "percent_statements_covered_display": "100",
+        "num_branches": 784,
+        "num_partial_branches": 0,
+        "covered_branches": 784,
+        "missing_branches": 0,
+        "percent_branches_covered": 100.0,
+        "percent_branches_covered_display": "100"
+      },
+      "regimes": {
+        "with-rules": {
+          "integrity": {
+            "benchmark_digest": "fd3d0345c20bad89d0064a58e0c71064c52ca0894ea249a268ef948af7e2cbe6",
+            "checks": [
+              "hashes",
+              "matrix",
+              "labels",
+              "recovery_input",
+              "semantic_evaluation",
+              "summary"
+            ],
+            "methods": [
+              "B3",
+              "D0",
+              "D1",
+              "B2",
+              "M1"
+            ],
+            "records": 2880,
+            "repeats": 3,
+            "scenarios": 192,
+            "source_digest": "ccd2591e512801b45a81d0a1c426c802a5b380ec680ae03c13c2fd31efd24397",
+            "status": "PASS"
+          },
+          "metrics": {
+            "B2": {
+              "AbstentionAccuracy": {
+                "denominator": 144,
+                "numerator": 50,
+                "value": 0.3472222222222222
+              },
+              "CRR": {
+                "denominator": 432,
+                "numerator": 330,
+                "value": 0.7638888888888888
+              },
+              "FBR": {
+                "denominator": 432,
+                "numerator": 102,
+                "value": 0.2361111111111111
+              },
+              "SchemaValidityRate": {
+                "denominator": 424,
+                "numerator": 424,
+                "value": 1.0
+              },
+              "SemanticEquivalenceRate": {
+                "denominator": 424,
+                "numerator": 330,
+                "value": 0.7783018867924528
+              },
+              "UHR": {
+                "denominator": 424,
+                "numerator": 94,
+                "value": 0.22169811320754718
+              },
+              "calls": 711,
+              "cost": null,
+              "input_tokens": null,
+              "latency_mean": 12.61209766604265,
+              "output_tokens": null,
+              "samples": 576,
+              "validation_stages": 424
+            },
+            "B3": {
+              "AbstentionAccuracy": {
+                "denominator": 144,
+                "numerator": 72,
+                "value": 0.5
+              },
+              "CRR": {
+                "denominator": 432,
+                "numerator": 144,
+                "value": 0.3333333333333333
+              },
+              "FBR": {
+                "denominator": 432,
+                "numerator": 288,
+                "value": 0.6666666666666666
+              },
+              "SchemaValidityRate": {
+                "denominator": 216,
+                "numerator": 216,
+                "value": 1.0
+              },
+              "SemanticEquivalenceRate": {
+                "denominator": 216,
+                "numerator": 144,
+                "value": 0.6666666666666666
+              },
+              "UHR": {
+                "denominator": 216,
+                "numerator": 72,
+                "value": 0.3333333333333333
+              },
+              "calls": 0,
+              "cost": 0.0,
+              "input_tokens": 0,
+              "latency_mean": 0.00037818545651033573,
+              "output_tokens": 0,
+              "samples": 576,
+              "validation_stages": 216
+            },
+            "D0": {
+              "AbstentionAccuracy": {
+                "denominator": 144,
+                "numerator": 0,
+                "value": 0.0
+              },
+              "CRR": {
+                "denominator": 432,
+                "numerator": 432,
+                "value": 1.0
+              },
+              "FBR": {
+                "denominator": 432,
+                "numerator": 0,
+                "value": 0.0
+              },
+              "SchemaValidityRate": {
+                "denominator": 576,
+                "numerator": 576,
+                "value": 1.0
+              },
+              "SemanticEquivalenceRate": {
+                "denominator": 576,
+                "numerator": 432,
+                "value": 0.75
+              },
+              "UHR": {
+                "denominator": 576,
+                "numerator": 144,
+                "value": 0.25
+              },
+              "calls": 0,
+              "cost": 0.0,
+              "input_tokens": 0,
+              "latency_mean": 0.0035282092857313626,
+              "output_tokens": 0,
+              "samples": 576,
+              "validation_stages": 576
+            },
+            "D1": {
+              "AbstentionAccuracy": {
+                "denominator": 144,
+                "numerator": 144,
+                "value": 1.0
+              },
+              "CRR": {
+                "denominator": 432,
+                "numerator": 432,
+                "value": 1.0
+              },
+              "FBR": {
+                "denominator": 432,
+                "numerator": 0,
+                "value": 0.0
+              },
+              "SchemaValidityRate": {
+                "denominator": 576,
+                "numerator": 576,
+                "value": 1.0
+              },
+              "SemanticEquivalenceRate": {
+                "denominator": 432,
+                "numerator": 432,
+                "value": 1.0
+              },
+              "UHR": {
+                "denominator": 432,
+                "numerator": 0,
+                "value": 0.0
+              },
+              "calls": 0,
+              "cost": 0.0,
+              "input_tokens": 0,
+              "latency_mean": 0.003048602058091395,
+              "output_tokens": 0,
+              "samples": 576,
+              "validation_stages": 1224
+            },
+            "M1": {
+              "AbstentionAccuracy": {
+                "denominator": 144,
+                "numerator": 144,
+                "value": 1.0
+              },
+              "CRR": {
+                "denominator": 432,
+                "numerator": 365,
+                "value": 0.8449074074074074
+              },
+              "FBR": {
+                "denominator": 432,
+                "numerator": 67,
+                "value": 0.1550925925925926
+              },
+              "SchemaValidityRate": {
+                "denominator": 443,
+                "numerator": 443,
+                "value": 1.0
+              },
+              "SemanticEquivalenceRate": {
+                "denominator": 365,
+                "numerator": 365,
+                "value": 1.0
+              },
+              "UHR": {
+                "denominator": 365,
+                "numerator": 0,
+                "value": 0.0
+              },
+              "calls": 446,
+              "cost": null,
+              "input_tokens": null,
+              "latency_mean": 8.985270919417315,
+              "output_tokens": null,
+              "samples": 576,
+              "validation_stages": 958
+            }
+          }
+        },
+        "without-rules": {
+          "integrity": {
+            "benchmark_digest": "8c25d957612790b719ddf5925dcca602f911f998d2a0c13647f345167a5fe190",
+            "checks": [
+              "hashes",
+              "matrix",
+              "labels",
+              "recovery_input",
+              "semantic_evaluation",
+              "summary"
+            ],
+            "methods": [
+              "B3",
+              "D0",
+              "D1",
+              "B2",
+              "M1"
+            ],
+            "records": 2880,
+            "repeats": 3,
+            "scenarios": 192,
+            "source_digest": "ccd2591e512801b45a81d0a1c426c802a5b380ec680ae03c13c2fd31efd24397",
+            "status": "PASS"
+          },
+          "metrics": {
+            "B2": {
+              "AbstentionAccuracy": {
+                "denominator": 144,
+                "numerator": 27,
+                "value": 0.1875
+              },
+              "CRR": {
+                "denominator": 432,
+                "numerator": 359,
+                "value": 0.8310185185185185
+              },
+              "FBR": {
+                "denominator": 432,
+                "numerator": 73,
+                "value": 0.16898148148148148
+              },
+              "SchemaValidityRate": {
+                "denominator": 491,
+                "numerator": 476,
+                "value": 0.9694501018329938
+              },
+              "SemanticEquivalenceRate": {
+                "denominator": 476,
+                "numerator": 359,
+                "value": 0.7542016806722689
+              },
+              "UHR": {
+                "denominator": 476,
+                "numerator": 117,
+                "value": 0.24579831932773108
+              },
+              "calls": 594,
+              "cost": null,
+              "input_tokens": null,
+              "latency_mean": 8.35224727124983,
+              "output_tokens": null,
+              "samples": 576,
+              "validation_stages": 491
+            },
+            "B3": {
+              "AbstentionAccuracy": {
+                "denominator": 144,
+                "numerator": 72,
+                "value": 0.5
+              },
+              "CRR": {
+                "denominator": 432,
+                "numerator": 144,
+                "value": 0.3333333333333333
+              },
+              "FBR": {
+                "denominator": 432,
+                "numerator": 288,
+                "value": 0.6666666666666666
+              },
+              "SchemaValidityRate": {
+                "denominator": 216,
+                "numerator": 216,
+                "value": 1.0
+              },
+              "SemanticEquivalenceRate": {
+                "denominator": 216,
+                "numerator": 144,
+                "value": 0.6666666666666666
+              },
+              "UHR": {
+                "denominator": 216,
+                "numerator": 72,
+                "value": 0.3333333333333333
+              },
+              "calls": 0,
+              "cost": 0.0,
+              "input_tokens": 0,
+              "latency_mean": 0.0003523007332357035,
+              "output_tokens": 0,
+              "samples": 576,
+              "validation_stages": 216
+            },
+            "D0": {
+              "AbstentionAccuracy": {
+                "denominator": 144,
+                "numerator": 0,
+                "value": 0.0
+              },
+              "CRR": {
+                "denominator": 432,
+                "numerator": 144,
+                "value": 0.3333333333333333
+              },
+              "FBR": {
+                "denominator": 432,
+                "numerator": 288,
+                "value": 0.6666666666666666
+              },
+              "SchemaValidityRate": {
+                "denominator": 576,
+                "numerator": 288,
+                "value": 0.5
+              },
+              "SemanticEquivalenceRate": {
+                "denominator": 288,
+                "numerator": 144,
+                "value": 0.5
+              },
+              "UHR": {
+                "denominator": 288,
+                "numerator": 144,
+                "value": 0.5
+              },
+              "calls": 0,
+              "cost": 0.0,
+              "input_tokens": 0,
+              "latency_mean": 0.0030299321578139723,
+              "output_tokens": 0,
+              "samples": 576,
+              "validation_stages": 576
+            },
+            "D1": {
+              "AbstentionAccuracy": {
+                "denominator": 144,
+                "numerator": 144,
+                "value": 1.0
+              },
+              "CRR": {
+                "denominator": 432,
+                "numerator": 144,
+                "value": 0.3333333333333333
+              },
+              "FBR": {
+                "denominator": 432,
+                "numerator": 288,
+                "value": 0.6666666666666666
+              },
+              "SchemaValidityRate": {
+                "denominator": 576,
+                "numerator": 288,
+                "value": 0.5
+              },
+              "SemanticEquivalenceRate": {
+                "denominator": 144,
+                "numerator": 144,
+                "value": 1.0
+              },
+              "UHR": {
+                "denominator": 144,
+                "numerator": 0,
+                "value": 0.0
+              },
+              "calls": 0,
+              "cost": 0.0,
+              "input_tokens": 0,
+              "latency_mean": 0.002435287458663677,
+              "output_tokens": 0,
+              "samples": 576,
+              "validation_stages": 936
+            },
+            "M1": {
+              "AbstentionAccuracy": {
+                "denominator": 144,
+                "numerator": 144,
+                "value": 1.0
+              },
+              "CRR": {
+                "denominator": 432,
+                "numerator": 308,
+                "value": 0.7129629629629629
+              },
+              "FBR": {
+                "denominator": 432,
+                "numerator": 124,
+                "value": 0.28703703703703703
+              },
+              "SchemaValidityRate": {
+                "denominator": 423,
+                "numerator": 423,
+                "value": 1.0
+              },
+              "SemanticEquivalenceRate": {
+                "denominator": 308,
+                "numerator": 308,
+                "value": 1.0
+              },
+              "UHR": {
+                "denominator": 308,
+                "numerator": 0,
+                "value": 0.0
+              },
+              "calls": 375,
+              "cost": null,
+              "input_tokens": null,
+              "latency_mean": 6.6387034442222,
+              "output_tokens": null,
+              "samples": 576,
+              "validation_stages": 918
+            }
+          }
+        }
+      },
+      "known_issue": {
+        "scope": "D0 malformed rule outside frozen corpus",
+        "before": "regression FAIL AttributeError",
+        "fix_phase": "phase/19-publication-package"
+      }
+    },
+    "local": {
+      "python": "3.11.4",
+      "pytest": {
+        "passed": 233,
+        "skipped": 2,
+        "failed": 0,
+        "xfail": 0
+      },
+      "coverage": {
+        "covered_lines": 1433,
+        "num_statements": 1433,
+        "percent_covered": 100.0,
+        "percent_covered_display": "100",
+        "missing_lines": 0,
+        "excluded_lines": 13,
+        "percent_statements_covered": 100.0,
+        "percent_statements_covered_display": "100",
+        "num_branches": 546,
+        "num_partial_branches": 0,
+        "covered_branches": 546,
+        "missing_branches": 0,
+        "percent_branches_covered": 100.0,
+        "percent_branches_covered_display": "100"
+      },
+      "clean_wheel": {
+        "passed": 233,
+        "skipped": 2,
+        "coverage": 100
+      },
+      "source_digest": "da4464885a161d2cf6be5ad61ce061ecbe32e631b08a457100bb6582534c6ef0",
+      "benchmark_digest": "ef002e38917804b246bdd0d9a5c104160f89b76a4f15de34499c5dcb2b2ce8de",
+      "packages": {
+        "mcp_compat-0.1.0-py3-none-any.whl": "1ca774d40cf173482a5f6c7d9373793df8324a591b81b7a5fbda3879e8aff7dc",
+        ".gitignore": "684888c0ebb17f374298b65ee2807526c066094c701bcc7ebbe1c1095f494fc1",
+        "mcp_compat-0.1.0.tar.gz": "014c7ee44b1aef22db25c2ed297732639ea9126d203d953f6f355d14225c6850"
+      }
+    },
+    "phase14": {
+      "date": "2026-11-02",
+      "code_commit": "8a5a7789",
+      "source_digest": "3a1881f1c7e9ec13df38db63b4955d0d55a92d2dda5bd74f693ab071422b41d1",
+      "pytest": {
+        "passed": 286,
+        "failed": 0,
+        "skipped": 5
+      },
+      "coverage": {
+        "covered_lines": 1732,
+        "num_statements": 1732,
+        "percent_covered": 100.0,
+        "percent_covered_display": "100",
+        "missing_lines": 0,
+        "excluded_lines": 13,
+        "percent_statements_covered": 100.0,
+        "percent_statements_covered_display": "100",
+        "num_branches": 638,
+        "num_partial_branches": 0,
+        "covered_branches": 638,
+        "missing_branches": 0,
+        "percent_branches_covered": 100.0,
+        "percent_branches_covered_display": "100"
+      },
+      "clean_wheel": {
+        "passed": 286,
+        "failed": 0,
+        "skipped": 5
+      },
+      "clean_coverage": {
+        "covered_lines": 1732,
+        "num_statements": 1732,
+        "percent_covered": 100.0,
+        "percent_covered_display": "100",
+        "missing_lines": 0,
+        "excluded_lines": 13,
+        "percent_statements_covered": 100.0,
+        "percent_statements_covered_display": "100",
+        "num_branches": 638,
+        "num_partial_branches": 0,
+        "covered_branches": 638,
+        "missing_branches": 0,
+        "percent_branches_covered": 100.0,
+        "percent_branches_covered_display": "100"
+      },
+      "packages": {
+        "mcp_compat-0.1.0-py3-none-any.whl": "999515b93ae7268a15c3cf48bbbd6809b3e770ffdd28a2e661500bb9bdbf1f9e",
+        "mcp_compat-0.1.0.tar.gz": "2c8a5b56dcb3910f135c84846a153bf2bfdfeb3d6cfe14b654c80821abaec9cd"
+      }
+    }
+  },
+  "historical_source_commit": "1ac4231772eb618783768bb0deab8091d3b8f7b0"
+}

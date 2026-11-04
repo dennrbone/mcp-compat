@@ -1,64 +1,82 @@
 # MCP-Compat
 
-Phase 20 завершена: GPT-6.1 Terra проверена на 5760 решениях; 788 провайдерных
-отказов повторены и перезаписаны по указанию автора. [Результаты сравнения](docs/TERRA_RESULTS.md),
-[условия и ограничения](docs/TERRA_COMPARISON.md).
+Исследовательский прототип восстановления и проверки совместимости вызовов
+инструментов Model Context Protocol. Кандидат миграции проверяется по новой
+схеме и наблюдаемому поведению доверенных старой и новой реализаций.
 
-MCP-Compat — исследовательский прототип восстановления вызовов после изменения
-контрактов MCP. Включает типизированные модели, консервативный diff C1–C8,
-контролируемые адаптеры, независимую проверку локальных реализаций и отказ при
-недостатке оснований. Реальные тесты выполнены через установленный GigaCode
-CodeAgent и отдельный адаптер GPT-6.1 Terra через Codex CLI; интерфейс LLMClient и стандартный MCP позволяют подключать других
-клиентов без привязки ядра к конкретному поставщику.
+Строгий критерий сравнивает **результат и состояние**, требует явно заданного
+профиля наблюдений и финального повторного допуска. Профиль предоставляет
+оператор; атомарность последующего реального исполнения обеспечивает приложение.
+Прототип не устанавливает безопасность произвольных MCP-серверов.
 
-Завершены один полный исходный прогон, детерминированные контроли и отдельная
-прикладная проверка с тремя повторами в двух условиях. Первоначальный план с
-несколькими семействами моделей целиком не выполнен. Результаты, включая
-невыгодные для полного гибрида сравнения: [подтверждённое состояние](docs/RESULTS_STATUS.md),
-[рукопись](docs/ARTICLE_DRAFT.md), [отчёты фаз](docs/PHASE_REPORTS.md).
-Прототип не объявляется готовым для production; ограничения проверки — в статье.
+## Научные документы
 
-## Исследовательское дополнение от 04.11.2026
+- [Научно-технический отчёт DOCX](docs/publication/MCP_COMPAT_SCIENTIFIC_REPORT.docx).
+- [Статья DOCX для адаптации под журнал ВАК К3](docs/publication/MCP_COMPAT_ARTICLE_VAK.docx).
+- [Математическая модель и условные свойства](docs/METHOD_FORMALIZATION.md).
+- [Сопоставление с исследованиями](docs/SCIENTIFIC_NOVELTY.md).
+- [Подтверждённые результаты](docs/RESULTS.md) и [готовность к авторской проверке](docs/JOURNAL_READINESS.md).
 
-Новый EvidenceVerifier сравнивает результат **и** состояние, записывает
-привязанное свидетельство и требует финального admit/replay. Полнота
-наблюдения задаётся доверенным оператором; атомарность реального исполнения
-должно обеспечить приложение. Прежние генераторы, SDK и frozen результаты сохранены.
+Автор: Россинский Андрей Евгеньевич, Франкфурт, dennrbone@gmail.com.
+Конкретный журнал не выбран; соответствие его редакционным требованиям
+и принятие статьи не установлены.
 
-Внешний опыт: 3 репозитория, 8 исторических переименований, 4 benign-контроля,
-51 явно сконструированный случай. В V2 — 441 решение и 1453 source tool-вызова;
-B: 27/30 CRR, 0/27 UHR против 27/30 и 21/48 прежней проверки на одинаковых
-кандидатах. Полный M1 без mapper: 14/30, 0/14; CRR не вырос. Значимость
-не установлена, эффект по ошибочным допускам относится к сконструированным
-контролям. [Фактические результаты и ограничения](docs/EXTERNAL_EXPERIMENT_RESULTS.md).
+## Измеренный результат
 
-[Формализация](docs/METHOD_FORMALIZATION.md),
-[происхождение внешних источников](docs/EXTERNAL_DATASET_PROVENANCE.md),
-[минимальный профиль MCP 2026-07-28 / отдельный SDK2](docs/MCP_2026_COMPATIBILITY.md),
-[новая рукопись](docs/ARTICLE_DRAFT.md),
-[воспроизведение](docs/PUBLICATION_SUPPLEMENT.md),
-[готовность к авторской проверке](docs/JOURNAL_READINESS.md).
-375 тестов PASS, 8 SKIP; пакет 100% строк/ветвей; ещё 10 SDK2 тестов PASS.
-Удалённый CI нового исследования NOT RUN: коммиты сохраняются локально.
+Внешний набор: три репозитория, восемь исторических переименований,
+четыре контроля сохранения поведения и 51 явно сконструированный случай.
+V2 содержит 441 решение и 1453 вызова инструментов. На одинаковых кандидатах:
 
-## Setup
+| Проверка | Корректное восстановление, CRR | Неверные допуски, UHR | FAR на общих 36 неприемлемых кандидатах |
+|---|---:|---:|---:|
+| Прежняя A | 27/30 | 21/48 | 21/36 |
+| Строгая B | 27/30 | 0/27 | 0/36 |
+| Только входная схема C | 27/30 | 33/60 | 33/36 |
 
-Use Python 3.11.4:
+Дополнительная парная абляция: 126 решений, 666 вызовов. Финальный допуск
+отклонил три неверных TOCTOU-кандидата, сохранив те же 27 корректных:
+FAR 0/36 с ним и 3/36 без него. Это проверка подготовленных отрицательных
+контролей; на исторических положительных случаях различия не установлены.
+При трёх источниках p=0,25, статистически значимое превосходство не установлено.
+UHR и FAR имеют разные знаменатели, их определения сохраняются раздельно.
 
-```bash
-python3.11 -m venv .venv
-source .venv/bin/activate
-python -m pip install --upgrade pip
-python -m pip install --require-hashes -r requirements.lock
-python -m pip install --no-deps -e .
+Полный Hybrid M1 без mapper — самостоятельное условие: CRR 14/30, UHR 0/14,
+FBR 16/30. Его покрытие не равно проверке предоставленного кандидата B/FULL.
+Нулевые наблюдаемые ошибки не доказывают нулевого риска.
+
+## Установка
+
+Для ядра и исторических опытов нужен Python **3.11.4**:
+
+```sh
+uv venv --python 3.11.4 .venv
+uv pip sync --python .venv/bin/python --require-hashes requirements.lock
+uv pip install --python .venv/bin/python --no-deps -e .
 ```
 
-## Validation example
+Либо создайте venv точным интерпретатором 3.11.4 и установите зависимости
+через `pip install --require-hashes -r requirements.lock`, затем `pip install
+--no-deps -e .`. Доступность зависимостей требует сети или подготовленного кеша.
 
-`ToolCall.validate_against` returns `None` for a valid call and raises `ToolCallValidationError` for a wrong tool name or invalid arguments.
+## Проверки
+
+```sh
+.venv/bin/python -m pytest -q --cov=mcp_compat --cov-branch --cov-report=term-missing --cov-fail-under=100
+.venv/bin/ruff check src tests examples
+.venv/bin/mypy src
+.venv/bin/python -m build
+```
+
+Проверка пакета сохраняет 100% покрытия statements и branches. Опциональные
+реальные модельные проверки требуют отдельного доступа; пропуск обозначается
+SKIP, а не успехом. Исторические зависимости SDK1 сохранены. Новый минимальный
+профиль MCP 2026-07-28 проверяется на SDK2 в отдельном окружении:
+[объём поддержки и команды](docs/MCP_2026_COMPATIBILITY.md).
+
+## Использование
 
 ```python
-from mcp_compat import ToolCall, ToolCallValidationError, ToolContract
+from mcp_compat import ToolCall, ToolContract
 
 contract = ToolContract(
     name="reserve_stock",
@@ -68,80 +86,48 @@ contract = ToolContract(
         "required": ["quantity"],
     },
 )
-
 ToolCall(tool_name="reserve_stock", arguments={"quantity": 2}).validate_against(contract)
-
-try:
-    ToolCall(tool_name="reserve_stock", arguments={}).validate_against(contract)
-except ToolCallValidationError as error:
-    print(error)
 ```
 
-Models use Pydantic's `model_dump_json` and `model_validate_json` for JSON round trips. Pass `model_dump(mode="json")` to `canonical_json` or `canonical_bytes` when deterministic serialization is required.
+`validate_against` возвращает None при допустимом вызове и выбрасывает
+ToolCallValidationError при неверном имени/аргументах. Это структурная проверка;
+она не подтверждает прикладной смысл вызова.
 
-## Tests
+`SchemaDiffEngine` распознаёт ограниченный набор изменений. Неподдерживаемые
+конструкции остаются opaque. `EvidenceVerifier.verify` создаёт preview;
+для окончательного допуска требуется `admit(..., current_state=...)`.
+Подмена свидетельства или известная смена состояния дают отказ, но гонка
+до фактического commit требует транзакционного решения приложения.
 
-Run the tests:
+## Агенты и MCP
 
-```bash
-pytest -q
-```
+Для модельных опытов используется GigaCode CodeAgent; ядро зависит от общего
+интерфейса LLMClient. Другие модели подключаются через этот интерфейс,
+агенты — через стандартный MCP, без изменения критериев проверки.
 
-Run the full quality gate:
+- [Подключение моделей и агентов](docs/CLIENT_INTEGRATION.md).
+- [Настройка GigaCode и реальные проверки](docs/PROVIDERS.md).
+- [Исторический MCP SDK1](docs/MCP_INTEGRATION.md).
+- [Отдельный профиль SDK2](docs/MCP_2026_COMPATIBILITY.md).
 
-```bash
-pytest -q --cov=mcp_compat --cov-branch --cov-report=term-missing --cov-report=xml --cov-fail-under=100
-```
+## Воспроизводимость
 
-All source modules retain the Phase 2 requirement of 100% statement and branch
-coverage. GitHub Actions includes tests, lint, types, packaging and offline e2e.
-Real provider smoke tests are opt-in and otherwise report SKIP / NOT RUN.
-The installed GigaCode uses CodeAgent; other models and agents connect through
-the generic model interface and standard MCP. See [provider setup and test commands](docs/PROVIDERS.md).
+[Инструкции](docs/REPRODUCIBILITY.md), [научное приложение](docs/PUBLICATION_SUPPLEMENT.md),
+[происхождение внешних данных](docs/EXTERNAL_DATASET_PROVENANCE.md),
+[дополнительный протокол](docs/FINAL_STUDY_PROTOCOL.md),
+[таблицы внешнего опыта](docs/EXTERNAL_EXPERIMENT_RESULTS.md).
 
-Development and recovery improvements use separate stacked branches; no merge into main has
-been performed. Review dependencies are listed in docs/IMPLEMENTATION_PLAN.md.
+Сохранённые данные можно проверять без новых обращений к моделям или серверам.
+Для нового опыта требуется отдельный каталог. Первичные результаты и эталоны
+не перезаписываются; точные исходные версии доступны по Git-коммитам.
 
-## Offline demo
+Для Word-документов предусмотрены отдельные исходные тексты, изображения и
+сборщик: [воспроизведение документов](docs/publication/README.md).
+Временные PDF и изображения страниц служат визуальной проверке и не входят
+в публичный комплект.
 
-```bash
-mcp-compat-demo --output /tmp/mcp-offline-demo
-mcp-compat-analyze --run /tmp/mcp-offline-demo --output /tmp/mcp-offline-analysis
-```
+## Лицензии
 
-This runs 45 frozen cases for B0–B3/M1/A1–A4 using an explicitly fake provider.
-It tests the pipeline, not model quality. Main studies need actual model versions,
-authorized access/resources and independently supplied runtime verification;
-unbound M1 cases abstain. Active data: `benchmark/manifest.json` (evobench-1.2).
-
-
-## Deterministic schema diff
-
-```python
-from mcp_compat import SchemaDiffEngine, canonical_bytes
-
-diff = SchemaDiffEngine.compare(old_contract, new_contract)
-print(diff.has_changes, diff.is_complete)
-print(canonical_bytes(diff.model_dump(mode="json")))
-```
-
-The engine reports typed changes with stable schema paths and ordering. It handles
-properties, required membership, nested objects, array items, types/nullable unions,
-formats, enums and acyclic local `$defs` references. Parameter renames require
-unique unchanged reference identity; matching names/types alone never suffice.
-C8 uses explicit `semantic_unit` markers only. Nesting/flattening may appear as
-primitive additions/removals. Unsupported constructs appear in `diff.opaque`;
-`has_changes=False` does not imply a complete comparison when `is_complete=False`.
-The engine makes no EXECUTE/ABSTAIN decision. See
-[implementation conventions and limitations](docs/IMPLEMENTATION_NOTES.md).
-
-## Материалы исследования на русском
-
-- [Рукопись](docs/ARTICLE_DRAFT.md) и [обзор первичных источников](docs/LITERATURE_REVIEW.md).
-- [Данные, протокол и команды](docs/PUBLICATION_SUPPLEMENT.md).
-- [Подтверждённые результаты и ограничения](docs/RESULTS_STATUS.md).
-
-Завершены исходные 19440 решений CodeAgent, 4320 детерминированных контролей
-и отдельный прикладной опыт из 5760 решений с тремя повторами в двух условиях.
-Контроли не подтверждают универсального превосходства полного гибрида.
-Репозиторий приватный; публикация статьи и merge в main не выполнялись.
+Vendored внешние источники и официальный schema source сохраняют MIT notices
+в соответствующих каталогах. Лицензия собственного кода проекта пока не назначена;
+публикация репозитория не заменяет отдельного авторского решения о лицензии.

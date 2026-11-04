@@ -2,7 +2,7 @@
 
 Status: engineering implementation, pilots and one complete CodeAgent benchmark
 (2160 scenarios × nine methods, one repeat). The planned repeated study and H1–H4
-confirmation remain incomplete. Observed descriptive results are in IMPROVEMENTS.md.
+confirmation remain incomplete. Observed descriptive results are in RESULTS.md.
 The Research Spec, definitions, categories, C1–C8 and metric formulas are unchanged.
 
 ## Frozen inputs
@@ -50,10 +50,9 @@ their original source fingerprint and must not be silently recomputed.
 
 One full CodeAgent repeat completed on 2026-11-02; no paid request was authorized.
 This does not complete the planned multi-repeat study. Current real CLI smoke,
-pilot and full-run evidence is recorded in IMPROVEMENTS.md; AGENT_TESTS.md preserves
-historical Phase 11 failures. Provider versions/quotas and
-broader independent runtime bindings still limit the full comparison. Git push
-authorization does not authorize inference charges.
+pilot and full-run evidence, including historical Phase 11 failures, is recorded
+in RESULTS.md. Provider versions/quotas and
+broader independent runtime bindings still limit the full comparison.
 
 ## Metrics and denominators
 
@@ -111,7 +110,7 @@ their numbers and p-values are not evidence about real LLM quality or hypotheses
 Выполнены дополнительные D0/D1 на всех 2160 исходных случаях (4320 решений)
 и отдельные 192 прикладных сценария в двух условиях с тремя повторами
 (5760 решений). Все матрицы, хеши и закрытые оценки проверены. Условия и
-прерывания: STUDY_PROTOCOL_1_4.md. Результаты: RESULTS_STATUS.md и ARTICLE_DRAFT.md.
+прерывания: STUDY_PROTOCOL_1_4.md. Результаты: RESULTS.md и publication/ARTICLE.md.
 Более простые контроли ограничивают утверждение о превосходстве M1; эти
 отрицательные результаты сохранены. Массовые стратегии и MCP wire-тесты
 учитываются отдельно. Неизвестное использование при прерывании не обнуляется.

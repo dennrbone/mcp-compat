@@ -1,6 +1,7 @@
 .coverage
 .pytest_cache/
 .venv/
+.python/
 __pycache__/
 coverage.xml
 *.egg-info/
@@ -10,5 +11,19 @@ coverage.xml
 build/
 dist/
 
-# Локальное задание с промптами не публикуется.
-CODEX_MASTER_TASKS_03_10.md
+# Локальные конфигурации, задания и временные результаты.
+/*_MASTER_TASKS_*.md
+/.vscode/
+/.codex/
+/.agents/
+/.aws/
+.env
+.env.*
+*.log
+*.lock.tmp
+.DS_Store
+/experiments/full-codeagent-2026-11-02/.supervisor.lock
+/experiments/full-codeagent-2026-11-02/connectivity-during-run/
+/experiments/full-codeagent-2026-11-02/detached-preflight*/
+/experiments/full-codeagent-2026-11-02/preflight/
+/experiments/full-codeagent-2026-11-02/status.json

@@ -1,0 +1,153 @@
+{
+  "date": "2026-11-05",
+  "scope": "Release checks for the recorded core digest; empirical conclusions remain limited to the specified datasets",
+  "core": {
+    "modules": 26,
+    "sha256_concatenated_sorted_modules": "3a0f53b649ab11f3f36c2917575aea5e9962b6ee2397500a72ba20730b7beeca",
+    "evidence_version": "admission-evidence-3"
+  },
+  "tests": {
+    "source": {
+      "tests": 387,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 8,
+      "passed": 379
+    },
+    "installed_wheel": {
+      "tests": 387,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 8,
+      "passed": 379
+    },
+    "official_sdk2_and_cross_sdk": {
+      "tests": 10,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "passed": 10
+    },
+    "skip_reasons": [
+      "7 opt-in provider checks without new inference authorization",
+      "SDK2 directory is skipped under SDK1; all 10 checks passed in a separate SDK2 environment"
+    ]
+  },
+  "coverage_scope": "mcp_compat package; example and document scripts excluded from this percentage",
+  "coverage": {
+    "covered_lines": 2216,
+    "num_statements": 2216,
+    "percent_covered": 100.0,
+    "percent_covered_display": "100",
+    "missing_lines": 0,
+    "excluded_lines": 13,
+    "percent_statements_covered": 100.0,
+    "percent_statements_covered_display": "100",
+    "num_branches": 828,
+    "num_partial_branches": 0,
+    "covered_branches": 828,
+    "missing_branches": 0,
+    "percent_branches_covered": 100.0,
+    "percent_branches_covered_display": "100"
+  },
+  "ruff": "PASS",
+  "mypy_modules": 26,
+  "dependency_check_environments": 3,
+  "package": {
+    "module_count": 26,
+    "wheel_matches_source": true,
+    "artifacts": {
+      "dist/publication-final-2026-11-05/mcp_compat-0.1.0-py3-none-any.whl": {
+        "sha256": "bb13ed72ed4f79f313ee3c4b2996e2a1b3816ad336b26c423ee9a16c32ab6786",
+        "bytes": 58873
+      },
+      "dist/publication-final-2026-11-05/mcp_compat-0.1.0.tar.gz": {
+        "sha256": "61f8e2160a968facdf9b51d5c31cde7928e9d5c5b91cfd0c04a77f947c7fc60e",
+        "bytes": 94836
+      }
+    },
+    "offline_demo_and_analysis": "PASS",
+    "comparison_replica_byte_matches": true,
+    "installed_import_from_site_packages": true
+  },
+  "historical_integrity": {
+    "baseline_commit": "1ac4231772eb618783768bb0deab8091d3b8f7b0",
+    "files": 76295,
+    "changed": 0,
+    "old_archives_unchanged": [
+      {
+        "path": "dist/mcp-compat-publication-2026-11-03.zip",
+        "sha256": "3b9e5070d85ac7651b9723917b83a0094fa03e6e5c583d3bfb8325e70eff86b6",
+        "bytes": 66483237
+      },
+      {
+        "path": "dist/mcp-compat-publication-phase20-2026-11-03.zip",
+        "sha256": "4d89d67827da27cf2ea1d859cafbfe5853545551eef1e08baa26044284d2b893",
+        "bytes": 77103384
+      },
+      {
+        "path": "dist/mcp-compat-publication-research-2026-11-04.zip",
+        "sha256": "024f3f3bcdf1d35bb589138a5f08c465a8412143398c1cb75f8b661f7e356e73",
+        "bytes": 84512227
+      }
+    ]
+  },
+  "reproduction": {
+    "verified_source_snapshots": 6,
+    "completed_resume_records": {
+      "external_v2": 441,
+      "final_admission": 126
+    },
+    "comparison_json_csv_byte_matches": true,
+    "figures_png_svg_byte_matches": true,
+    "historical_terra_readonly_analysis": "PASS",
+    "new_model_calls": 0
+  },
+  "documents": {
+    "docs/publication/MCP_COMPAT_SCIENTIFIC_REPORT.docx": {
+      "sha256": "0b3ac8b22dc819472341db229f1254d1510d4fdad0aab62cef977cbd04cb95ca",
+      "bytes": 179698,
+      "pages": 31,
+      "tables": 5,
+      "native_math_objects": 30,
+      "bibliography_entries": 18,
+      "visual_review_pages": 31,
+      "format_checks": "PASS",
+      "data_table_checks": "PASS",
+      "zip_and_open_checks": "PASS",
+      "blank_pages": 0,
+      "toc_matches_rendered_chapters": true
+    },
+    "docs/publication/MCP_COMPAT_ARTICLE_VAK.docx": {
+      "sha256": "fa81105d6e449888e52a8d643b6639e177cf25ea0137a57dc99ddec3c9212cba",
+      "bytes": 104865,
+      "pages": 16,
+      "tables": 4,
+      "native_math_objects": 27,
+      "bibliography_entries": 18,
+      "visual_review_pages": 16,
+      "format_checks": "PASS",
+      "data_table_checks": "PASS",
+      "zip_and_open_checks": "PASS",
+      "blank_pages": 0,
+      "toc_matches_rendered_chapters": null
+    }
+  },
+  "document_runtime": {
+    "python": "3.12.13",
+    "python_docx": "1.2.0",
+    "libreoffice": "26.8.1.1",
+    "rendered_and_visually_checked_pages": 47,
+    "pdf_png_deliverables": false
+  },
+  "tree_scan": {
+    "files_scanned": 77353,
+    "credential_and_marker_findings": [],
+    "large_files_over_5mb": [],
+    "work_document_names": [],
+    "missing_relative_links": []
+  },
+  "main_gate": {
+    "status": "NOT_RUN"
+  }
+}

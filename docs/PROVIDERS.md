@@ -28,8 +28,8 @@ pilot/full runner supports identical-configuration resume through the CLI or Pyt
 The pilot starts only after a strict JSON smoke succeeds. The separate real
 pytest case requires `MCP_COMPAT_RUN_PROVIDER_SMOKE=1`; enabled failures fail.
 Missing credentials/configuration, quota errors, malformed JSON and timeouts
-are never converted to passes. Current results: [IMPROVEMENTS.md](IMPROVEMENTS.md).
-Historical Phase 11 failures: [AGENT_TESTS.md](AGENT_TESTS.md).
+are never converted to passes. Current results: [RESULTS.md](RESULTS.md).
+Historical pilot failures and subsequent studies are kept separate there.
 
 `--full` selects all 2160 frozen scenarios for B0–B3/M1/A1–A4: 19440 decisions
 in one repeat. It uses the same installed CodeAgent transport, mapper limits and

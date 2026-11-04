@@ -69,7 +69,8 @@ PYTHONPATH=src .venv/bin/python examples/external_study.py --output /private/tmp
 `experimental-source/external-v2-1dcaffe3/` внутри ZIP и включённые в него
 данные. V1 надо исполнять его сохранённым кодом: новый final admit намеренно
 меняет поведение. Файлы источников, worker, runtime и lock сверяются с
-`source-fingerprints.json`; каталоги old результатов нельзя продолжать кодом
+`manifest.source_digest` (канонический словарь относительных путей и SHA-256)
+и `manifest.node_dependencies`; каталоги old результатов нельзя продолжать кодом
 с несовпадающими fingerprint. Получение каталогов исторического кода на pinned
 SDK не является реконструкцией всего исторического окружения сервера.
 

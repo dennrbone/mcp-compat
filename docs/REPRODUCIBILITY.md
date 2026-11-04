@@ -19,7 +19,9 @@ python3.11 -m venv .venv
 Check the interpreter's full version before running: `python3.11` may select a
 different patch release. The lock pins exact dependency versions and distribution
 hashes. Phase 1–2 and all added modules retain the same 100% statement/branch
-gate; no exclusions or coverage pragmas are used. Third-party SciPy/Matplotlib
+gate; no project-specific coverage exclusions or pragmas are added. The current
+coverage tool reports 13 default-excluded typing/protocol lines; these are
+listed in its JSON, not counted as executed statements. Third-party SciPy/Matplotlib
 imports lack complete stubs; mypy checks our source and ignores missing stubs
 only for those third-party namespaces.
 
@@ -103,3 +105,13 @@ latencies with serial pilot latency or label an incomplete run as completed.
 поэтому для точного продолжения нужен экспериментальный снимок. Репозиторий
 приватный; локальный пакет для рецензента содержит материалы и этот снимок
 без секретов и Markdown с мастер-промптом. Видимость репозитория не изменялась.
+
+## Внешнее исследование и новый комплект, 04.11.2026
+
+См. PUBLICATION_SUPPLEMENT.md (пять снимков кода),
+EXTERNAL_DATASET_PROVENANCE.md (MIT sources/commits/разделение gold),
+EXTERNAL_EXPERIMENT_RESULTS.md (V1/V2, аудит без запуска серверов) и
+MCP_2026_COMPATIBILITY.md (отдельный SDK2). Новый установленный wheel прошёл
+375 tests/8 skips при 100% statements/branches; новый SDK2 — 10 tests без
+пропусков. Итоговый инженерный отчёт: validation/publication-final.json.
+Архив и companion SHA/verification сохраняются отдельно от старых комплектов.

@@ -22,8 +22,10 @@
 [происхождение](EXTERNAL_DATASET_PROVENANCE.md), [формализация](METHOD_FORMALIZATION.md),
 [новизна](SCIENTIFIC_NOVELTY.md), [протокол](MCP_2026_COMPATIBILITY.md),
 [рукопись](ARTICLE_DRAFT.md), [готовность](JOURNAL_READINESS.md),
-[этапы и коммиты](PUBLICATION_PROGRESS.md). Статус чистого wheel, архива и
-окончательной проверки неизменности — в финальном validation/publication-final.json.
+[этапы и коммиты](PUBLICATION_PROGRESS.md). Чистый wheel: **375 PASS / 8 SKIP**, 100% пакета; проверены 71874 прежних
+файла и оба старых ZIP — без изменений. Инженерный отчёт:
+validation/publication-final.json; целостность нового архива — companion
+dist/mcp-compat-publication-research-2026-11-04.verification.json.
 Показатели прежних исследований ниже относятся к их историческим версиям.
 
 # Историческое состояние Phase 20 — 3 ноября 2026 года

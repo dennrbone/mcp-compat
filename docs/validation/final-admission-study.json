@@ -1,0 +1,209 @@
+{
+  "status": "PASS",
+  "source_commit": "8f11d69bc",
+  "source_calls": 666,
+  "records": 126,
+  "errors": 0,
+  "candidate_population": {
+    "acceptable": 27,
+    "cases": 63,
+    "oracle": "V2 C evaluator traces after all decisions, or invalid input schema; distinct from scenario recoverability",
+    "unacceptable": 36
+  },
+  "FULL": {
+    "classification": {
+      "FAR": {
+        "denominator": 36,
+        "numerator": 0,
+        "value": 0.0
+      },
+      "FN": 0,
+      "FP": 0,
+      "TN": 36,
+      "TP": 27,
+      "candidate_false_block_rate": {
+        "denominator": 27,
+        "numerator": 0,
+        "value": 0.0
+      }
+    },
+    "historical_metrics": {
+      "AbstentionAccuracy": {
+        "denominator": 33,
+        "numerator": 33,
+        "value": 1.0
+      },
+      "CRR": {
+        "denominator": 30,
+        "numerator": 27,
+        "value": 0.9
+      },
+      "FBR": {
+        "denominator": 30,
+        "numerator": 3,
+        "value": 0.1
+      },
+      "SchemaValidityRate": {
+        "denominator": 63,
+        "numerator": 60,
+        "value": 0.9523809523809523
+      },
+      "SemanticEquivalenceRate": {
+        "denominator": 27,
+        "numerator": 27,
+        "value": 1.0
+      },
+      "UHR": {
+        "denominator": 27,
+        "numerator": 0,
+        "value": 0.0
+      },
+      "calls": 0,
+      "cost": 0.0,
+      "input_tokens": 0,
+      "latency_mean": 1.8345836481940563,
+      "output_tokens": 0,
+      "samples": 63,
+      "validation_stages": 153
+    }
+  },
+  "NO_FINAL": {
+    "classification": {
+      "FAR": {
+        "denominator": 36,
+        "numerator": 3,
+        "value": 0.08333333333333333
+      },
+      "FN": 0,
+      "FP": 3,
+      "TN": 33,
+      "TP": 27,
+      "candidate_false_block_rate": {
+        "denominator": 27,
+        "numerator": 0,
+        "value": 0.0
+      }
+    },
+    "historical_metrics": {
+      "AbstentionAccuracy": {
+        "denominator": 33,
+        "numerator": 30,
+        "value": 0.9090909090909091
+      },
+      "CRR": {
+        "denominator": 30,
+        "numerator": 27,
+        "value": 0.9
+      },
+      "FBR": {
+        "denominator": 30,
+        "numerator": 3,
+        "value": 0.1
+      },
+      "SchemaValidityRate": {
+        "denominator": 63,
+        "numerator": 60,
+        "value": 0.9523809523809523
+      },
+      "SemanticEquivalenceRate": {
+        "denominator": 30,
+        "numerator": 27,
+        "value": 0.9
+      },
+      "UHR": {
+        "denominator": 30,
+        "numerator": 3,
+        "value": 0.1
+      },
+      "calls": 0,
+      "cost": 0.0,
+      "input_tokens": 0,
+      "latency_mean": 1.1736821692514543,
+      "output_tokens": 0,
+      "samples": 63,
+      "validation_stages": 123
+    }
+  },
+  "contrast": {
+    "all_decisions": {
+      "False_False": 33,
+      "False_True": 3,
+      "True_False": 0,
+      "True_True": 27
+    },
+    "leave_one_out": {
+      "calculator": {
+        "assumption": "exploratory; exchangeable whole-cluster method labels, not established by purposive sampling",
+        "clusters": 2,
+        "confidence": 0.95,
+        "difference": -0.08333333333333333,
+        "draws": 2000,
+        "high": -0.08333333333333333,
+        "low": -0.08333333333333333,
+        "negatives": 24,
+        "pvalue": 0.5,
+        "seed": 42,
+        "status": "computed"
+      },
+      "fs": {
+        "assumption": "exploratory; exchangeable whole-cluster method labels, not established by purposive sampling",
+        "clusters": 2,
+        "confidence": 0.95,
+        "difference": -0.08333333333333333,
+        "draws": 2000,
+        "high": -0.08333333333333333,
+        "low": -0.08333333333333333,
+        "negatives": 24,
+        "pvalue": 0.5,
+        "seed": 42,
+        "status": "computed"
+      },
+      "sqlite": {
+        "assumption": "exploratory; exchangeable whole-cluster method labels, not established by purposive sampling",
+        "clusters": 2,
+        "confidence": 0.95,
+        "difference": -0.08333333333333333,
+        "draws": 2000,
+        "high": -0.08333333333333333,
+        "low": -0.08333333333333333,
+        "negatives": 24,
+        "pvalue": 0.5,
+        "seed": 42,
+        "status": "computed"
+      }
+    },
+    "lineage": {
+      "assumption": "exploratory; exchangeable whole-cluster method labels, not established by purposive sampling",
+      "clusters": 2,
+      "confidence": 0.95,
+      "difference": -0.08333333333333333,
+      "draws": 2000,
+      "high": -0.08333333333333333,
+      "low": -0.08333333333333333,
+      "negatives": 36,
+      "pvalue": 0.5,
+      "seed": 42,
+      "status": "computed"
+    },
+    "repository": {
+      "assumption": "exploratory; exchangeable whole-cluster method labels, not established by purposive sampling",
+      "clusters": 3,
+      "confidence": 0.95,
+      "difference": -0.08333333333333333,
+      "draws": 2000,
+      "high": -0.08333333333333333,
+      "low": -0.08333333333333333,
+      "negatives": 36,
+      "pvalue": 0.25,
+      "seed": 42,
+      "status": "computed"
+    },
+    "unacceptable_only": {
+      "False_False": 33,
+      "False_True": 3,
+      "True_False": 0,
+      "True_True": 0
+    }
+  },
+  "interpretation": "Known constructed TOCTOU controls, same candidates/runtime; exploratory, not independent holdout or production evidence"
+}

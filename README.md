@@ -54,7 +54,8 @@ uv pip sync --python .venv/bin/python --require-hashes requirements.lock
 uv pip install --python .venv/bin/python --no-deps -e .
 ```
 
-Либо создайте venv точным интерпретатором 3.11.4 и установите зависимости
+Либо создайте venv точным интерпретатором 3.11.4, обновите его pip через
+`python -m pip install --upgrade pip` и установите зависимости
 через `pip install --require-hashes -r requirements.lock`, затем `pip install
 --no-deps -e .`. Доступность зависимостей требует сети или подготовленного кеша.
 

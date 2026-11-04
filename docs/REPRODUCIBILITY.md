@@ -18,7 +18,10 @@ uv pip install --python .venv/bin/python --no-deps -e .
 .venv/bin/python -m build
 ```
 
-Для pip используйте `pip install --require-hashes -r requirements.lock` и
+Для pip сначала выполните `python -m pip install --upgrade pip` в созданном
+venv. Старый pip 23.1.2 из Python 3.11.4 не разрешает закреплённые extras
+coverage[toml] в данном lock. Затем используйте
+`pip install --require-hashes -r requirements.lock` и
 затем `pip install --no-deps -e .`. Offline установка требует доступных wheels
 или подготовленного кеша; lock сам по себе их не поставляет. В build isolation
 backend setuptools может потребовать отдельной загрузки.

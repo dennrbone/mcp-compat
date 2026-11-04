@@ -178,6 +178,19 @@
     "ruff": "PASS",
     "mypy": "PASS",
     "git_object_integrity": "PASS",
-    "later_changes": "validation metadata and public documentation wording only; package, tests, DOCX and experimental data unchanged"
+    "later_changes": "validation metadata, public documentation and CI pip bootstrap only; package modules, tests, DOCX, dependency locks and experimental data unchanged"
+  },
+  "ci_bootstrap": {
+    "python": "3.11.4",
+    "fresh_venv_pip": "23.1.2",
+    "verified_updated_pip": "26.3",
+    "strict_hash_lock_install": "PASS",
+    "installed_dependency_check": "PASS",
+    "sdk2_cross_sdk_with_fresh_legacy_venv": {
+      "passed": 10,
+      "skipped": 0
+    },
+    "requirements_lock_sha256": "9f604116bd032ee1348c4a986fd3c68d59c7e75dfc8b69ac1dd4d65d0cdc6f1a",
+    "dependency_locks_changed": false
   }
 }

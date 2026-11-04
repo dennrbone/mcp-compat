@@ -60,6 +60,7 @@ Extras `mcp` и `mcp2026` устанавливаются в **разные** о�
 
 ```sh
 python3.11 -m venv /tmp/mcp2026
+/tmp/mcp2026/bin/python -m pip install --upgrade pip
 /tmp/mcp2026/bin/python -m pip install --require-hashes -r requirements-mcp2026.lock
 /tmp/mcp2026/bin/python -m pip install --no-deps -e .
 MCP_COMPAT_LEGACY_PYTHON="$PWD/.venv/bin/python" /tmp/mcp2026/bin/python -m pytest -q tests/mcp2026

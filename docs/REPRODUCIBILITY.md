@@ -3,14 +3,8 @@
 ## Локальные тесты
 
 ```sh
-.venv/bin/python -m pytest -q tests/test_upstream_contracts.py
 .venv/bin/python -m pytest -q tests/test_external.py tests/test_external_results.py
 ```
-
-`tests/fixtures/upstream-catalogs.json` содержит исходные каталоги `tools/list`,
-записанные ответы на выбранные вызовы, версии пакетов, ссылки на npm и
-контрольные суммы архивов. Тесты проверяют 50 изменений схем, происхождение
-набора и пять пар записанных вызовов Filesystem и Memory.
 
 ## Проверки на 200 сценариях
 

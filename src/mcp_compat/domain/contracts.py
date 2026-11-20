@@ -1,6 +1,6 @@
 """Tool contract domain model."""
 
-from typing import Any
+from typing import Any, Self
 
 from jsonschema.exceptions import SchemaError
 from pydantic import BaseModel, Field, field_validator
@@ -9,13 +9,22 @@ from mcp_compat.schema.validator import validate_schema
 
 
 class ToolContract(BaseModel):
-    """A tool name and its JSON Schema Draft 2020-12 contract."""
+    """A tool name and its JSON Schema contract."""
 
     name: str = Field(min_length=1)
     description: str | None = None
     input_schema: dict[str, Any]
     output_schema: dict[str, Any] | None = None
     metadata: dict[str, Any] = Field(default_factory=dict)
+
+    @classmethod
+    def from_legacy(cls, contract: dict[str, Any]) -> Self:
+        """Import an older catalog that omitted the required argument object type."""
+        schema = contract.get("input_schema")
+        if isinstance(schema, dict) and "type" not in schema:
+            # ToolCall only accepts argument objects, so this preserves validation for calls.
+            contract = {**contract, "input_schema": {**schema, "type": "object"}}
+        return cls.model_validate(contract)
 
     @field_validator("name")
     @classmethod

@@ -107,7 +107,7 @@ def test_result_integrity(tmp_path,mode):
 
 def test_artifacts_come_from_actual_records_and_cli(tmp_path,capsys):
     rows = []
-    for method in ('B0','B1','B2','B3','M1','A1','A2','A3','A4'):
+    for method in ('B0','B3','M1','A1','A2','A3','A4'):
         for i in range(2):
             r = row(semantic=method=='M1')
             r.method,r.scenario_id,r.base_tool = method,str(i),str(i)

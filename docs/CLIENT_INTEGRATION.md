@@ -1,79 +1,61 @@
-# Connecting a model or agent
+# Подключение модели к Hybrid
 
-Only GigaCode CodeAgent is configured and used for real tests. The recovery
-engine depends on the `LLMClient` protocol, not a provider name or SDK. A new
-client supplies one method:
+Для CodeAgent и Terra используются разные клиенты с общим интерфейсом
+`LLMClient`. Метод `complete(request: LLMRequest, timeout: float) -> LLMResponse`
+получает инструкцию, данные и схему ответа. Он возвращает исходный текст,
+идентификатор модели и сведения об использовании ресурсов. Неизвестные
+значения расхода передаются как `None`. Настройка установленных клиентов
+описана в [инструкции по подключению](PROVIDERS.md).
+
+`Mapper` ограничивает размер сообщения и число попыток, проверяет схему
+ответа и принимает операции над аргументами либо отказ. Hybrid обращается
+к нему, когда встроенный поиск не дал подходящего вызова.
+
+## Выбор режима
+
+Один режим передаётся при чтении контрактов и создании Hybrid.
+`read_snapshot` возвращает актуальный снимок состояния. В примере
+`checker` — экземпляр `EvidenceVerifier`, привязанный к разобранным
+контрактам и двум доверенным обработчикам, которые работают на копиях
+состояния.
 
 ```python
-from mcp_compat.llm import LLMClient, LLMRequest, LLMResponse, Mapper
+from mcp_compat.benchmark import RecoveryInput
+from mcp_compat.hybrid import Hybrid
+from mcp_compat.llm import Mapper
 
-# your_client implements complete(request: LLMRequest, timeout: float) -> LLMResponse
-mapper = Mapper(your_client, attempts=2, timeout=120)
+mode = "compat"
+request = RecoveryInput.from_catalogs(raw_request, mode=mode)
+mapper = Mapper(client, attempts=2, timeout=120)
+engine = Hybrid(mapper, checker, mode=mode, current_state=read_snapshot)
+decision = engine.recover(request)
 ```
 
-The method sends the supplied system/data/response schema to the chosen model,
-honors the timeout, and returns raw text plus its real model ID and measured
-usage (or null for unknown usage). Credentials belong to that client's local
-configuration. Return the raw reply and follow the supplied mode-specific response schema.
-Do not fabricate tokens/cost or convert transport errors into model replies.
-`Mapper` handles one whole JSON fence without dropping schema checks and validates
-limits, retries and declarative operations.
+- `strict` применяется по умолчанию. Он требует явного типа `object`
+  у входных схем и полного сравнения контрактов.
+- `compat` допускает импорт прежней схемы без типа `object` и продолжает
+  проверку при поддерживаемых частично разобранных изменениях. Режиму
+  обязательны `EvidenceVerifier` и `current_state`.
 
-Pass this mapper into `LLMBaseline("B2", mapper)` or `Hybrid(mapper, verifier)`.
-The verifier must use independently authored, contract-bound implementations;
-the benchmark oracle is never a substitute. The generic interface is exercised
-with injected clients in `test_llm.py` and `test_providers.py`.
+При переданном `current_state` Hybrid в обоих режимах перед допуском
+сверяет снимок и повторяет проверку поведения. Для изменяемых данных
+приложение связывает проверку и исполнение транзакцией или проверкой
+версии состояния. Изменения единиц измерения требуют явного правила.
+Готовые операции можно передать через `context.rules` и проверить
+с помощью `VerifiedDeclaredRules`.
 
-## Standard MCP agents
+## Подключение MCP-клиента
 
-The runnable `examples/mcp_server.py` exposes `check_migration` over the official
-MCP SDK's stdio transport. Use an absolute Python executable with the project's
-`mcp` dependency and the absolute script path as the MCP server command. No
-provider SDK is needed in the connecting agent.
+Пример `examples/mcp_server.py` предоставляет инструмент `check_migration`
+через стандартный ввод и вывод. В настройках MCP-клиента указываются
+абсолютный путь к Python из окружения с SDK и абсолютный путь к скрипту.
 
 ```sh
-/path/to/python /path/to/mcp-compat/examples/mcp_server.py
+/путь/к/python /путь/к/mcp-compat/examples/mcp_server.py
 ```
 
-This is a protocol process: stdout is reserved for MCP messages. An MCP client
-starts it, initializes a session, lists tools and sends a `RecoveryInput` JSON
-object to `check_migration`. Tool descriptions expose the complete input/output
-schemas. The example computes a migration decision and never invokes a business
-tool. It supplies a registry of trusted synthetic fixture implementations. Known
-structural migrations can return verified EXECUTE; unknown contract digests return
-ABSTAIN. It does not automatically trust arbitrary production contracts. Register
-your own SandboxVerifier implementations in RuntimeRegistry when embedding the
-engine, then pass that registry and your mapper to Hybrid.
-
-When structural rules decline, Hybrid may preview the unchanged arguments against
-the registered old/new implementations before asking a model. Both schema checks
-and equivalent outcomes are required; a failed preview falls back to mapping.
-Unit changes still require explicit conversion rules. The preview uses isolated
-state and must never invoke a live side-effecting service.
-
-In installed GigaCode use `gigacode mcp add`, select a local stdio server and set
-the executable/arguments above. Other MCP clients use their own server settings;
-the wire protocol is the same. This project does not edit global agent settings.
-
-`serve_stdio(server)` exposes any existing server built by `make_server` or
-`make_proxy`. The proxy accepts a standard upstream `ClientSession` and an
-injected recovery strategy. Existing input/output checks and fail-closed behavior
-apply independently of which agent/model connects.
-
-`test_model_independent_stdio_example` starts a real subprocess and verifies
-handshake, ping, discovery, a structured ABSTAIN and invalid-input handling through
-the official SDK client. It does not claim every third-party agent has been tested.
-
-## Уточнения исследовательской версии 1.4
-
-При достоверных готовых операциях можно использовать
-`VerifiedDeclaredRules(verifier)` из `mcp_compat.declared_rules` и передать их
-через `context.rules`. Эта стратегия сохраняет независимую проверку и не
-обращается к модели. На завершённом исходном наборе она восстановила больше
-случаев, чем M1 с генератором; результаты и границы вывода приведены в статье.
-
-Протокольные проверки закреплены на SDK 1.30.0 и протоколе 2025-11-25. Подключение
-относится к клиентам, поддерживающим этот обмен; вся спецификация MCP
-2026-07-28 здесь не испытана. Фактически проверен установленный CodeAgent,
-а переносимость интерфейса подтверждена инъекцией клиентов и стандартным
-transport, без утверждения о тестировании каждого внешнего агента.
+Клиент запускает процесс, устанавливает сессию и передаёт
+`RecoveryInput` в `check_migration`. Пример использует режим `strict`
+и реестр тестовых обработчиков. Он возвращает решение о миграции.
+Проверки прикладных инструментов из эксперимента выполняются в отдельном
+стенде. [Интеграция с MCP SDK](MCP_INTEGRATION.md).

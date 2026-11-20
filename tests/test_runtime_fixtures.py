@@ -1,21 +1,19 @@
 from copy import deepcopy
-import json
-from pathlib import Path
 
 import pytest
 
 from mcp_compat import ToolCall
-from mcp_compat.benchmark import equivalent, load, recovery_input
+from mcp_compat.benchmark import equivalent, recovery_input
 from mcp_compat.experiments import OfflineClient
 from mcp_compat.hybrid import Hybrid, RuntimeRegistry, SandboxVerifier, digest
 from mcp_compat.llm import Mapper
 from mcp_compat.runtime_fixtures import base_contract, fixture_verifier
+from test_benchmark import sample_cases
 
 
 @pytest.fixture(scope="module")
 def corpus():
-    index = json.loads(Path("benchmark/manifest.json").read_bytes())
-    return load(Path(index["path"]), index["digest"])
+    return sample_cases()
 
 
 @pytest.fixture(scope="module")
@@ -23,7 +21,7 @@ def registry():
     return fixture_verifier()
 
 
-def test_full_corpus_correct_calls_and_side_effects_are_verified(corpus, registry):
+def test_sample_correct_calls_and_side_effects_are_verified(corpus, registry):
     counts = {"verified": 0, "unbound": 0, "must_abstain": 0}
     for scenario in corpus:
         request = recovery_input(scenario)
@@ -43,11 +41,11 @@ def test_full_corpus_correct_calls_and_side_effects_are_verified(corpus, registr
         else:
             assert result.passed, (scenario.scenario_id, result)
             counts["verified"] += 1
-    assert counts == dict(verified=1056, unbound=192, must_abstain=912)
+    assert counts == dict(verified=60, unbound=12, must_abstain=48)
     assert len(registry.bindings) > 1000
 
 
-def test_full_corpus_hybrid_has_no_unsafe_execution_with_declared_rule_client(
+def test_sample_hybrid_has_no_unsafe_execution_with_declared_rule_client(
     corpus, registry
 ):
     engine = Hybrid(Mapper(OfflineClient(), attempts=1), registry)
@@ -58,7 +56,7 @@ def test_full_corpus_hybrid_has_no_unsafe_execution_with_declared_rule_client(
             assert equivalent(scenario, decision.adapted_call), scenario.scenario_id
             assert decision.evidence["verification"]["passed"]
             executed += 1
-    assert executed == 1056
+    assert executed == 60
 
 
 def test_schema_equivalence_does_not_identify_an_implementation(corpus, registry):
@@ -164,3 +162,14 @@ def test_trusted_packed_implementation_checks_actual_decoded_values(corpus,regis
     assert not registry.verify(request,ToolCall(tool_name=correct.tool_name,arguments=arguments)).passed
     arguments['packed']='invalid'
     assert registry.verify(request,ToolCall(tool_name=correct.tool_name,arguments=arguments)).reason=='verification_error'
+
+
+@pytest.mark.parametrize(("tool", "operation"), [("return", 3), ("cancel", 4)])
+def test_trusted_state_changes_match_the_reference(tool, operation, registry):
+    from random import Random
+    from mcp_compat.benchmark import _case
+
+    scenario = _case("commerce", tool, operation, "C1", 0, Random(42))
+    call = ToolCall.model_validate(scenario.oracle["expected_call"])
+    assert equivalent(scenario, call)
+    assert registry.verify(recovery_input(scenario), call).passed

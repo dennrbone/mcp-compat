@@ -8,8 +8,7 @@ from mcp_compat.recovery import abstain, validate_candidate
 
 
 class DeclaredRuleMapper:
-    def propose_mapping(self, request: RecoveryInput, purpose: str = "mapping",
-                        error: str | None = None) -> MappingResult:
+    def propose_mapping(self, request: RecoveryInput) -> MappingResult:
         trace = dict(source="declared_rules", calls=0, responses=[])
         try:
             payload = dict(action="EXECUTE", operations=request.context.get("rules", []))

@@ -9,7 +9,7 @@ from typing import Annotated, Any, Callable, Literal, Protocol, Self
 from pydantic import BaseModel, ConfigDict, Field, JsonValue, model_serializer, model_validator
 from jsonschema.exceptions import ValidationError as JSONSchemaError
 
-from mcp_compat import ToolCall, canonical_json
+from mcp_compat import canonical_json
 from mcp_compat.benchmark import RecoveryInput
 from mcp_compat.schema import validate_instance
 
@@ -58,27 +58,20 @@ class Operation(StrictModel):
         return self
 
 
-class ProposedCall(ToolCall):
-    model_config = ConfigDict(extra="forbid", strict=True)
-
-
 class Proposal(StrictModel):
     action: Literal["EXECUTE", "ABSTAIN"]
-    call: ProposedCall | None = None
     operations: Annotated[list[Operation], Field(max_length=32)] = []
 
     @model_validator(mode="after")
     def check_action(self) -> Self:
-        if self.action == "ABSTAIN" and (self.call is not None or self.operations):
-            raise ValueError("ABSTAIN must not contain a candidate")
-        if self.call is not None and self.operations:
-            raise ValueError("provide a call or operations")
+        if self.action == "ABSTAIN" and self.operations:
+            raise ValueError("ABSTAIN must not contain operations")
         return self
 
 
 def response_schema(purpose: str, request: RecoveryInput | None = None) -> dict:
     """Advertise exactly the same operands and mode constraints we validate."""
-    if purpose not in ("mapping", "B1", "B2"):
+    if purpose != "mapping":
         raise ValueError("unknown mapping purpose")
     definitions = Proposal.model_json_schema()["$defs"]
     operands = definitions["Operation"]["properties"]
@@ -102,13 +95,12 @@ def response_schema(purpose: str, request: RecoveryInput | None = None) -> dict:
             properties["factor"] = dict(type="integer", minimum=1, maximum=1000000)
         variants.append(dict(type="object", properties=properties, required=list(properties), additionalProperties=False))
     definitions["Operation"] = {"oneOf":variants}
-    field = "operations" if purpose == "mapping" else "candidate"
-    candidate = dict(type="array", items={"$ref":"#/$defs/Operation"}, maxItems=32) if purpose == "mapping" else definitions["ProposedCall"]
-    definitions = {key:definitions[key] for key in ("Operation","JsonValue")} if purpose == "mapping" else {}
-    return {"type":"object", "properties":{"action":{"type":"string","enum":["EXECUTE","ABSTAIN"]},field:candidate},
+    operations = dict(type="array", items={"$ref":"#/$defs/Operation"}, maxItems=32)
+    definitions = {key:definitions[key] for key in ("Operation","JsonValue")}
+    return {"type":"object", "properties":{"action":{"type":"string","enum":["EXECUTE","ABSTAIN"]},"operations":operations},
         "required":["action"], "additionalProperties":False, "$defs":definitions, "oneOf":[
         dict(type="object", properties=dict(action={"const":"ABSTAIN"}), required=["action"], additionalProperties=False),
-        dict(type="object", properties={"action":{"const":"EXECUTE"}, field:candidate}, required=["action",field], additionalProperties=False),
+        dict(type="object", properties={"action":{"const":"EXECUTE"}, "operations":operations}, required=["action","operations"], additionalProperties=False),
     ]}
 
 
@@ -124,8 +116,6 @@ def parse_proposal(text: str, purpose: str, schema: dict | None = None) -> tuple
         validate_instance(payload, response_schema(purpose) if schema is None else schema)
     except JSONSchemaError:
         raise ValueError("proposal_schema_mismatch") from None
-    if purpose in ("B1","B2") and payload["action"] == "EXECUTE":
-        payload = dict(action="EXECUTE",call=payload["candidate"])
     return Proposal.model_validate(payload), "json_fence" if fence is not None else "json"
 
 
@@ -157,7 +147,7 @@ class MappingResult(StrictModel):
 
 
 class SemanticMapper(Protocol):
-    def propose_mapping(self, request: RecoveryInput, purpose: str = "mapping", error: str | None = None) -> MappingResult: ...
+    def propose_mapping(self, request: RecoveryInput) -> MappingResult: ...
 
 
 def _pairs(pairs: list[tuple[str, Any]]) -> dict:
@@ -182,24 +172,17 @@ class Mapper:
         self.client, self.attempts, self.timeout, self.backoff = client, attempts, timeout, backoff
         self.clock, self.wait = clock, wait
 
-    def propose_mapping(self, request: RecoveryInput, purpose: str = "mapping", error: str | None = None) -> MappingResult:
+    def propose_mapping(self, request: RecoveryInput) -> MappingResult:
         data = request.model_dump(mode="json")
-        if purpose == "B1":
-            data = dict(new_contract=data["new_contract"], original_intent=data["old_call"], error=error)
-        data["purpose"] = purpose
+        data["purpose"] = "mapping"
         instruction = (
             'For this task return {"action":"EXECUTE","operations":[...]} or {"action":"ABSTAIN"}. '
             'Never include a call field. Operations describe changes to the original arguments; unchanged fields are preserved. '
             'All paths are relative to the argument object: never prefix a path with arguments, old_call or new_call. '
             'A move reads the source path and removes it before writing the target path. '
             'Use only the operands allowed for each operation in response_schema; never supply unused/null operands.'
-            if purpose == "mapping" else
-            'For this task return {"action":"EXECUTE","candidate":{"tool_name":...,"arguments":{...}}} or {"action":"ABSTAIN"}. '
-            'Never include operations or call fields. candidate is a JSON object, never a serialized JSON string. '
-            'Its tool_name is the business tool from new_contract, not StructuredOutput. '
-            'The candidate must include all required new arguments and preserve the original intent.'
         )
-        message = LLMRequest(system=SYSTEM_PROMPT+" "+instruction, data=data, response_schema=response_schema(purpose,request))
+        message = LLMRequest(system=SYSTEM_PROMPT+" "+instruction, data=data, response_schema=response_schema("mapping",request))
         trace: dict[str, Any] = dict(prompt_version=PROMPT_VERSION, request=message.model_dump(), calls=0, responses=[], requests=[], parse_errors=[])
         deadline = self.clock() + self.timeout
         for attempt in range(self.attempts):
@@ -215,7 +198,7 @@ class Mapper:
                 trace["responses"].append(response.model_dump())
                 if self.clock() > deadline:
                     return MappingResult(reason="timeout", trace=trace)
-                proposal, transport_format = parse_proposal(response.text, purpose,message.response_schema)
+                proposal, transport_format = parse_proposal(response.text, "mapping", message.response_schema)
                 trace.update(parse_status="parsed", transport_format=transport_format)
                 return MappingResult(proposal=proposal, reason="parsed", trace=trace)
             except Exception as exc:

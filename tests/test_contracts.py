@@ -51,6 +51,24 @@ def test_non_object_input_schema_is_rejected() -> None:
         ToolContract(name="broken", input_schema={"type": "array"})
 
 
+def test_legacy_draft_seven_contract_checks_arguments() -> None:
+    from mcp_compat import SchemaDiffEngine, ToolCall, ToolCallValidationError
+
+    schema = {"$schema": "http://json-schema.org/draft-07/schema#",
+              "properties": {"point": {"items": [{"type": "integer"}], "additionalItems": False}}}
+    raw = dict(name="legacy", input_schema=schema)
+    with pytest.raises(ValidationError, match="root must have type 'object'"):
+        ToolContract.model_validate(raw)
+    contract = ToolContract.from_legacy(raw)
+    assert contract.input_schema == {**schema, "type": "object"} and "type" not in schema
+    ToolCall(tool_name="legacy", arguments={"point": [1]}).validate_against(contract)
+    with pytest.raises(ToolCallValidationError):
+        ToolCall(tool_name="legacy", arguments={"point": [1, 2]}).validate_against(contract)
+    with pytest.raises(ValidationError, match="unsupported JSON Schema dialect"):
+        ToolContract.from_legacy(dict(name="legacy", input_schema={"$schema": "urn:unknown"}))
+    assert not SchemaDiffEngine.compare(contract, contract).is_complete
+
+
 def test_valid_output_schema() -> None:
     contract = ToolContract(
         name="reserve_stock",

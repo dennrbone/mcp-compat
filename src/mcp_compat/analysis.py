@@ -194,7 +194,7 @@ def artifacts(directory: Path, output: Path, *, seed: int = 42, draws: int = 200
         for category,values in summary["categories"].items():
             category_rows.append(dict(method=method,category=category,samples=values["samples"],**{m:values[m]["value"] for m in RATES}))
     comparisons: dict[str, Any] = {}
-    for baseline in ("B0","B1","B2","B3","D0","D1"):
+    for baseline in ("B0","B3","D0","D1"):
         if "M1" not in grouped or baseline not in grouped:
             comparisons[baseline] = dict(status="missing_methods")
             continue

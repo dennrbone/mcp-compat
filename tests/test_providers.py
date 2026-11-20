@@ -7,10 +7,8 @@ from types import SimpleNamespace
 import pytest
 from pydantic import ValidationError
 
-from mcp_compat.llm import LLMRequest, Mapper
+from mcp_compat.llm import LLMRequest
 from mcp_compat.providers import AgentProvider, MODEL_ID, ProviderConfig, ProviderError, from_env
-from mcp_compat.recovery import LLMBaseline
-from test_llm import FakeClient, request
 
 
 def config(**kwargs):
@@ -135,21 +133,3 @@ def test_usage_missing_is_unknown(monkeypatch):
     mock_cli(monkeypatch,'\n'.join(json.dumps(e) for e in events()).encode())
     response=AgentProvider(config()).complete(LLMRequest(system='s',data={},response_schema={}),1)
     assert response.input_tokens is response.output_tokens is response.cost is None
-
-
-def test_llm_baselines():
-    with pytest.raises(ValueError):
-        LLMBaseline('B9',Mapper(FakeClient()))
-    r = request()
-    fake = FakeClient('{"action":"EXECUTE","candidate":{"tool_name":"t","arguments":{}}}')
-    assert LLMBaseline('B1',Mapper(fake)).recover(r).action == 'EXECUTE'
-    assert not fake.requests
-    r.old_call.tool_name = 'old'
-    b1 = LLMBaseline('B1',Mapper(fake)).recover(r)
-    assert b1.action == 'EXECUTE' and b1.evidence['initial_attempt']['action'] == 'ABSTAIN'
-    assert fake.requests[0][0].data['error']
-    for text in ('{"action":"ABSTAIN"}', 'malformed'):
-        result = LLMBaseline('B2',Mapper(FakeClient(text),attempts=1)).recover(r)
-        assert result.action == 'ABSTAIN'
-    text = '{"action":"EXECUTE","candidate":{"tool_name":"wrong","arguments":{}}}'
-    assert LLMBaseline('B2',Mapper(FakeClient(text))).recover(r).reasons == ['schema_invalid']

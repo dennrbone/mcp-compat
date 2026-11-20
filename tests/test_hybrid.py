@@ -7,6 +7,7 @@ from mcp_compat import ToolCall, ToolContract
 from mcp_compat.benchmark import RecoveryInput
 from mcp_compat.hybrid import Hybrid, SandboxVerifier, adapt, normalize
 from mcp_compat.llm import Mapper, Operation
+from mcp_compat.verification import EvidenceVerifier, ObservationProfile
 from test_llm import FakeClient
 
 
@@ -219,3 +220,79 @@ def test_zero_unit_values_still_require_an_explicit_conversion_rule():
     result=Hybrid(Mapper(fake,attempts=1),verifier(r)).recover(r)
     assert result.reasons==['unit_rule_missing'] and len(fake.requests)==1
     assert 'identity_probe' not in result.evidence
+
+
+@pytest.mark.parametrize(('new_properties', 'new_result', 'current_state', 'reason', 'probes'), [
+    ({}, 2, {}, 'verified_admission', 8),
+    ({}, 3, {}, 'semantic_mismatch', 4),
+    ({}, 2, {'changed': True}, 'state_changed', 4),
+    ({'required': ['value', 'missing']}, 2, {}, 'schema_invalid', 0),
+    ({'unrecognizedConstraint': True}, 2, {}, 'opaque', 0),
+])
+def test_partial_comparison_requires_replayed_evidence(new_properties, new_result, current_state, reason, probes):
+    request = optional_drop_request()
+    request.new_contract.input_schema.update(additionalProperties=False, **new_properties)
+    calls = []
+
+    def observe(result):
+        def execute(arguments, state):
+            calls.append(arguments)
+            return result
+        return execute
+
+    verifier = EvidenceVerifier(request.old_contract, request.new_contract, observe(2), observe(new_result),
+        profile=ObservationProfile(name='local', complete=True, closed_environment=True,
+                                   deterministic=True, unambiguous=True), handler_ids=('old', 'new'))
+    assert Hybrid(verifier=verifier).recover(request).reasons == ['opaque'] and not calls
+    strict = Hybrid(verifier=verifier, current_state=lambda: current_state, mode='strict')
+    assert strict.recover(request).reasons == ['opaque'] and not calls
+    decision = Hybrid(verifier=verifier, current_state=lambda: current_state, mode='compat').recover(request)
+    assert decision.reasons == [reason] and len(calls) == probes
+    assert (decision.action == 'EXECUTE') == (reason == 'verified_admission')
+
+
+def test_partial_comparison_cannot_use_the_legacy_verifier():
+    request = unit_request()
+    with pytest.raises(ValueError, match='requires EvidenceVerifier'):
+        Hybrid(verifier=verifier(request), current_state=dict, mode='compat')
+    with pytest.raises(ValueError, match='requires EvidenceVerifier and current_state'):
+        Hybrid(mode='compat')
+    with pytest.raises(ValueError, match='not a valid RecoveryMode'):
+        Hybrid(mode='typo')
+
+
+def test_partial_comparison_checks_a_mapped_call_and_replays_it():
+    request = optional_drop_request()
+    request.new_contract.input_schema = dict(type='object', properties={'count': {'type': 'integer'}},
+                                             required=['count'], additionalProperties=False)
+    checker = EvidenceVerifier(request.old_contract, request.new_contract,
+        lambda arguments, state: arguments['value'], lambda arguments, state: arguments['count'],
+        profile=ObservationProfile(name='local', complete=True, closed_environment=True,
+                                   deterministic=True, unambiguous=True), handler_ids=('old', 'new'))
+    mapping = mapper([dict(op='move', source=['value'], target=['count'])])
+    decision = Hybrid(mapping, checker, current_state=dict, mode='compat').recover(request)
+    assert decision.reasons == ['verified_admission']
+    assert decision.adapted_call.arguments == {'count': 2}
+    assert decision.evidence['admission']['passed']
+
+
+@pytest.mark.parametrize(("change", "reason"), [
+    ("output", "verified_admission"),
+    ("metadata", "opaque"),
+    ("units", "mapper_unavailable"),
+])
+def test_compat_keeps_the_gate_for_uninterpreted_changes(change, reason):
+    request = unit_request() if change == "units" else optional_drop_request()
+    if change == "metadata":
+        request.new_contract.metadata["uninterpreted"] = True
+    else:
+        request.new_contract.output_schema = {"type": "integer"}
+    checker = EvidenceVerifier(
+        request.old_contract, request.new_contract,
+        lambda arguments, state: 2, lambda arguments, state: 2,
+        profile=ObservationProfile(name="local", complete=True, closed_environment=True,
+                                   deterministic=True, unambiguous=True),
+        handler_ids=("old", "new"),
+    )
+    decision = Hybrid(verifier=checker, current_state=dict, mode="compat").recover(request)
+    assert decision.reasons == [reason]

@@ -1,6 +1,7 @@
 from copy import deepcopy
 from hashlib import sha256
 import json
+from random import Random
 
 import pytest
 from hypothesis import given, settings, strategies as st
@@ -8,22 +9,26 @@ from pydantic import ValidationError
 
 from mcp_compat import ToolCall, canonical_bytes
 from mcp_compat.benchmark import (
-    RecoveryInput, _case, _view, equivalent, freeze, generate, load,
+    RecoveryInput, SUBTYPES, _case, _view, equivalent, freeze, load,
     recovery_input, simulate,
 )
 
 
+def sample_cases(seed=42):
+    rng = Random(seed)
+    return [_case(domain, tool, index, family, variant, rng)
+            for domain, tool, index in (("commerce", "quote", 0), ("commerce", "order", 2),
+                                         ("finance", "credit", 2))
+            for family in SUBTYPES for variant in range(5)]
+
+
 @pytest.fixture(scope="module")
 def corpus():
-    return generate()
+    return sample_cases()
 
 
-def test_corpus_validity_diversity_and_ground_truth(corpus):
-    assert len(corpus) == len({s.scenario_id for s in corpus}) == 2160
-    assert len({s.metadata['base_tool'] for s in corpus}) == 48
-    assert len({canonical_bytes(s.old_contract.model_dump()) for s in corpus}) == 48
-    assert len({s.metadata['domain'] for s in corpus}) == 8
-    assert sum(s.metadata['composed'] for s in corpus) == 240
+def test_sample_validity_and_ground_truth(corpus):
+    assert len(corpus) == len({s.scenario_id for s in corpus}) == 120
     assert {s.ground_truth for s in corpus} == {'SAFE_AUTO', 'CONDITIONAL', 'MUST_ABSTAIN'}
     assert len({(s.mutation_family, s.mutation_subtype) for s in corpus}) == 40
     for s in corpus:
@@ -35,9 +40,9 @@ def test_corpus_validity_diversity_and_ground_truth(corpus):
         else:
             assert s.ground_truth == 'MUST_ABSTAIN'
     # Seed changes values, not labels or mutation composition.
-    again = generate()
+    again = sample_cases()
     assert canonical_bytes([s.model_dump() for s in corpus]) == canonical_bytes([s.model_dump() for s in again])
-    assert generate(43)[0].old_call != corpus[0].old_call
+    assert sample_cases(43)[0].old_call != corpus[0].old_call
 
 
 def test_recovery_boundary_has_no_labels_or_oracle(corpus):

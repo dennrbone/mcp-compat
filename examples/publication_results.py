@@ -5,8 +5,8 @@ from collections import Counter, defaultdict
 from pathlib import Path
 
 from mcp_compat import canonical_bytes
-from mcp_compat.analysis import artifacts, clustered_recovery_comparison, read_results
-from mcp_compat.experiments import metrics, summaries
+from mcp_compat.analysis import read_results
+from mcp_compat.experiments import metrics
 
 
 def repeated_outcomes(records):
@@ -32,9 +32,7 @@ def repeated_outcomes(records):
 
 
 if __name__ == '__main__':
-    from replay_candidate_verification import replay
     from validate_publication_run import validate
-    from mcp_compat.case_study_runtime import registry
 
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--regime',choices=('with-rules','without-rules'))
@@ -44,11 +42,9 @@ if __name__ == '__main__':
         directory = root/'runs'/regime
         integrity = validate(directory,root/'data'/regime)
         manifest,records = read_results(directory)
-        artifacts(directory,root/'analysis'/regime,seed=42,draws=2000)
-        replayed,details = replay(records,registry())
-        result = dict(source_manifest=manifest,integrity=integrity,repeated_outcomes=repeated_outcomes(records),
-                      replay=dict(scope='same_B2_candidates_verifier_only_not_full_M1',details=details,summary=summaries(replayed),
-                                  comparison=clustered_recovery_comparison(records+replayed,'M1','B2V'),
-                                  comparison_by_domain=clustered_recovery_comparison(records+replayed,'M1','B2V',cluster_by='domain')))
-        (root/'analysis'/regime/'repeated-and-replay.json').write_bytes(canonical_bytes(result))
-        print(regime,'проверено и проанализировано:',len(records),'решений',flush=True)
+        records = [record for record in records if record.method == "M1"]
+        result = dict(source_manifest=manifest, integrity=integrity, repeated_outcomes=repeated_outcomes(records))
+        output = root/'analysis'/regime
+        output.mkdir(parents=True, exist_ok=True)
+        (output/'repeated-outcomes.json').write_bytes(canonical_bytes(result))
+        print(regime, len(records), 'Hybrid decisions', flush=True)

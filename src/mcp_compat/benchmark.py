@@ -1,12 +1,13 @@
 """Seeded synthetic corpus. Evaluation data never belongs in RecoveryInput."""
 
 from copy import deepcopy
+from enum import StrEnum
 from hashlib import sha256
 import json
 from pathlib import Path
 import random
 import re
-from typing import Any
+from typing import Any, Self
 
 from pydantic import BaseModel, ConfigDict
 
@@ -14,16 +15,6 @@ from mcp_compat import EvolutionScenario, ToolCall, ToolContract, canonical_byte
 from mcp_compat.domain.scenarios import GroundTruth, MutationFamily
 
 VERSION = "evobench-1.2"
-DOMAINS = {
-    "commerce": ("quote", "discount", "order", "return", "cancel", "receipt"),
-    "inventory": ("count", "capacity", "reserve", "release", "move", "audit"),
-    "calendar": ("duration", "availability", "schedule", "reschedule", "delete", "agenda"),
-    "documents": ("word_count", "size", "create", "append", "archive", "search"),
-    "messaging": ("length", "quota", "enqueue", "deliver", "revoke", "history"),
-    "booking": ("price", "vacancies", "book", "extend", "cancel", "itinerary"),
-    "analytics": ("sum", "mean", "record", "aggregate", "purge", "report"),
-    "finance": ("balance", "tax", "credit", "debit", "reverse", "ledger"),
-}
 SUBTYPES: dict[MutationFamily, tuple[str, ...]] = {
     "C1": ("tool_rename", "value_rename", "target_rename", "two_renames", "ambiguous_rename"),
     "C2": ("optional_added", "unused_removed", "used_removed", "optional_nullable", "optional_default"),
@@ -36,6 +27,11 @@ SUBTYPES: dict[MutationFamily, tuple[str, ...]] = {
 }
 
 
+class RecoveryMode(StrEnum):
+    STRICT = "strict"
+    COMPAT = "compat"
+
+
 class RecoveryInput(BaseModel):
     """Only observable contracts/call and separately allowlisted context."""
 
@@ -44,6 +40,14 @@ class RecoveryInput(BaseModel):
     new_contract: ToolContract
     old_call: ToolCall
     context: dict[str, Any] = {}
+
+    @classmethod
+    def from_catalogs(cls, data: dict[str, Any], *, mode: str = RecoveryMode.STRICT) -> Self:
+        """Read a recovery request using the selected catalog compatibility policy."""
+        old = data.get("old_contract")
+        if RecoveryMode(mode) is RecoveryMode.COMPAT and isinstance(old, dict):
+            data = {**data, "old_contract": ToolContract.from_legacy(old)}
+        return cls.model_validate(data)
 
 
 def recovery_input(scenario: EvolutionScenario) -> RecoveryInput:
@@ -254,25 +258,6 @@ def _case(domain: str, operation: str, index: int, family: MutationFamily, varia
         metadata=dict(domain=domain, base_tool=old.name, composed=False,
             recoverable=truth != "MUST_ABSTAIN", public_context={"rules": rules}),
     )
-
-
-def generate(seed: int = 42) -> list[EvolutionScenario]:
-    rng = random.Random(seed)
-    scenarios = []
-    for domain, operations in DOMAINS.items():
-        for index, operation in enumerate(operations):
-            for family in SUBTYPES:
-                for variant in range(5):
-                    scenarios.append(_case(domain, operation, index, family, variant, rng))
-            for variant in range(5):
-                s = _case(domain, operation, index, "C8", variant, rng)
-                s.scenario_id += "-composed"
-                s.new_contract.name += "_next"
-                if s.oracle["expected_call"] is not None:
-                    s.oracle["expected_call"]["tool_name"] = s.new_contract.name
-                s.metadata.update(composed=True, families=["C1", "C8"])
-                scenarios.append(s)
-    return scenarios
 
 
 def _view(arguments: dict, view: dict) -> dict:

@@ -18,7 +18,6 @@ from mcp_compat.experiments import Record, _atomic, _evaluate, summaries
 from mcp_compat.hybrid import Hybrid
 from mcp_compat.llm import Mapper
 from mcp_compat.providers import ProviderError
-from mcp_compat.recovery import LLMBaseline
 
 ROOT = Path('experiments/terra-2026-11-03')
 SOURCE = 'ccd2591e512801b45a81d0a1c426c802a5b380ec680ae03c13c2fd31efd24397'
@@ -78,7 +77,7 @@ def execute(executable):
                 else:
                     shutil.copyfile(directory/name, target/name)
             for row in records:
-                if provider_failure(row):
+                if row.method == "M1" and provider_failure(row):
                     name = f'{row.repeat}-{row.method}-{row.scenario_id}.json'
                     data = (directory/name).read_bytes()
                     if (target/name).exists() and (target/name).read_bytes() != data:
@@ -100,7 +99,7 @@ def execute(executable):
             raise ValueError('completed replacement hash mismatch')
         return plan
     mapper = Mapper(CodexClient(executable), attempts=2, timeout=120)
-    methods = dict(B2=LLMBaseline('B2', mapper), M1=Hybrid(mapper, registry()))
+    methods = dict(M1=Hybrid(mapper, registry()))
     cases = {regime:{s.scenario_id:s for s in load(
         Path('experiments/publication-2026-11-03/case-study/data')/regime,
         manifest['config']['benchmark_digest'])} for regime, manifest in plan['original_manifests'].items()}

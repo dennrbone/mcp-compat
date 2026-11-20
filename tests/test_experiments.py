@@ -8,8 +8,9 @@ from pydantic import ValidationError
 from mcp_compat import MigrationDecision, ToolCall, canonical_bytes
 from mcp_compat.benchmark import _case, freeze
 from mcp_compat.experiments import Record, RunConfig, demo_cli, metrics, run, summaries
+from mcp_compat.hybrid import Hybrid
 from mcp_compat.llm import Mapper
-from mcp_compat.recovery import LLMBaseline, NoRecovery, RuleBased, abstain
+from mcp_compat.recovery import NoRecovery, RuleBased, abstain
 from test_llm import FakeClient
 
 
@@ -129,22 +130,24 @@ def test_failed_strategy_unknown_usage_and_invalid_candidate(tmp_path,frozen):
 
 def test_llm_usage_known_and_incomplete(tmp_path,frozen):
     directory,digest,_ = frozen
-    config = RunConfig(kind='offline_demo',benchmark_digest=digest,scenario_ids=['commerce-0-C2-0'])
+    config = RunConfig(kind='offline_demo',benchmark_digest=digest,scenario_ids=['commerce-0-C3-1'])
     for label,responses in [('known',['{"action":"ABSTAIN"}']),('unknown',[TimeoutError('private'),'{"action":"ABSTAIN"}'])]:
         mapper = Mapper(FakeClient(*responses),backoff=0)
-        record = run(config,[LLMBaseline('B2',mapper)],directory,tmp_path/label)[0]
+        record = run(config,[Hybrid(mapper)],directory,tmp_path/label)[0]
         assert record.calls == (1 if label == 'known' else 2)
         assert record.cost == (0. if label == 'known' else None)
 
 
-def test_offline_demo_cli(tmp_path,frozen,capsys):
+@pytest.mark.parametrize("custom_index", [False, True])
+def test_offline_demo_cli(tmp_path,frozen,capsys,custom_index):
     directory,digest,_ = frozen
     index = tmp_path/'index.json'
     index.write_text(json.dumps(dict(path=str(directory),digest=digest)))
     output = tmp_path/'demo'
-    demo_cli(['--index',str(index),'--output',str(output)])
+    args = ["--index", str(index)] if custom_index else []
+    demo_cli([*args, "--output", str(output)])
     assert 'OFFLINE DEMO ONLY' in capsys.readouterr().out
-    assert len(list(output.glob('0-*.json'))) == 36
+    assert len(list(output.glob('0-*.json'))) == 28
     m1 = Record.model_validate_json((output/'0-M1-commerce-0-C8-0.json').read_bytes())
     assert m1.decision.action == 'EXECUTE'
     assert m1.semantic_equivalent is True
@@ -204,13 +207,13 @@ def test_resume_rejects_changed_mapper_limits_before_inference(tmp_path,frozen):
     cfg=RunConfig(kind='offline_demo',benchmark_digest=digest,scenario_ids=[cases[0].scenario_id])
     first=Mapper(FakeClient('{"action":"ABSTAIN"}'),attempts=1)
     output=tmp_path/'run'
-    run(cfg,[LLMBaseline('B2',first)],directory,output)
+    run(cfg,[Hybrid(first)],directory,output)
     manifest=json.loads((output/'manifest.json').read_bytes())
-    assert manifest['mapper_limits']['B2']['attempts']==1
+    assert manifest['mapper_limits']['M1']['attempts']==1
     client=FakeClient('{"action":"ABSTAIN"}')
     changed=Mapper(client,attempts=2)
     with pytest.raises(ValueError,match='resume configuration mismatch'):
-        run(cfg,[LLMBaseline('B2',changed)],directory,output)
+        run(cfg,[Hybrid(changed)],directory,output)
     assert not client.requests
 
 

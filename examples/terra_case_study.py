@@ -14,7 +14,7 @@ from mcp_compat.declared_rules import DeclaredRules, VerifiedDeclaredRules
 from mcp_compat.experiments import RunConfig, run
 from mcp_compat.hybrid import Hybrid
 from mcp_compat.llm import Mapper
-from mcp_compat.recovery import LLMBaseline, RuleBased
+from mcp_compat.recovery import RuleBased
 
 
 class TerraRunConfig(RunConfig):
@@ -37,7 +37,7 @@ if __name__ == '__main__':
     mapper = Mapper(client, attempts=2, timeout=120)
     verifier = registry()
     methods = [RuleBased(), DeclaredRules(), VerifiedDeclaredRules(verifier),
-               LLMBaseline('B2', mapper), Hybrid(mapper, verifier)]
+               Hybrid(mapper, verifier)]
     root = Path('experiments/publication-2026-11-03/case-study/data')
     helper_digest = sha256(Path(__file__).read_bytes()+Path(__file__).with_name('codex_transport.py').read_bytes()).hexdigest()
     for regime in ('with-rules', 'without-rules'):

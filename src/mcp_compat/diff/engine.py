@@ -52,6 +52,8 @@ def _path(parent: str, key: str) -> str:
 def _resolve(schema: Any, root: dict, seen: tuple[str, ...] = ()) -> Any:
     if isinstance(schema, bool):
         return schema
+    if not isinstance(schema, dict):
+        raise ValueError("structural comparison only supports object or boolean sub-schemas")
     node = deepcopy(schema)
     if "$id" in node:
         raise ValueError("$id resource scopes are unsupported")

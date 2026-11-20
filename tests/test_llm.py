@@ -96,20 +96,11 @@ def test_invalid_operands(data):
         Operation.model_validate(data)
 
 
-def test_valid_operations_and_direct_calls():
+def test_valid_operations():
     for data in [dict(op='set',target=['x'],value=None),dict(op='enum',source=['x'],target=['x'],values={'a':'b'}),dict(op='scale',source=['x'],target=['x'],factor=100)]:
         op = Operation.model_validate(data)
         assert Operation.model_validate_json(op.model_dump_json()) == op
         assert op.op == data['op']
-    text = '{"action":"EXECUTE","candidate":{"tool_name":"t","arguments":{}}}'
-    for purpose in ('B1','B2'):
-        client = FakeClient(text)
-        result = Mapper(client).propose_mapping(request(),purpose,error='invalid args')
-        assert result.proposal.call.tool_name == 't'
-        if purpose == 'B1':
-            assert 'old_contract' not in client.requests[0][0].data
-        invalid = Mapper(FakeClient('{"action":"EXECUTE"}'),attempts=1).propose_mapping(request(),purpose)
-        assert invalid.proposal is None
     assert Proposal(action='ABSTAIN').operations == []
 
 
@@ -124,11 +115,8 @@ def test_wire_schema_matches_actual_mode_and_opcode_constraints():
         assert parsed.operations[0].op==data['op']
         with pytest.raises(ValueError):
             parse_proposal(json.dumps(dict(action='EXECUTE',operations=[{**data,'unexpected':None}])),'mapping')
-    for purpose in ('B1','B2'):
-        parsed,_=parse_proposal('{"action":"EXECUTE","candidate":{"tool_name":"t","arguments":{}}}',purpose)
-        assert parsed.call.tool_name=='t'
-        with pytest.raises(ValueError):
-            parse_proposal('{"action":"EXECUTE","candidate":{"tool_name":"t","arguments":{}},"operations":[]}',purpose)
+    with pytest.raises(ValueError):
+        parse_proposal('{"action":"EXECUTE","candidate":{"tool_name":"t","arguments":{}}}','mapping')
 
 
 @pytest.mark.parametrize('fence',['```json\n{}\n```','```\n{}\n```','```JSON\r\n{}\r\n```'])
@@ -162,13 +150,9 @@ def test_repair_feedback_records_each_request_without_echoing_error_contents():
     assert 'Never include a call' in feedback['requirement']
 
 
-def test_proposal_domain_guards_still_reject_conflicting_candidates():
-    from mcp_compat.llm import ProposedCall
-    call=ProposedCall(tool_name='t',arguments={})
+def test_proposal_domain_guards_reject_operations_on_abstain():
     with pytest.raises(ValueError):
-        Proposal(action='ABSTAIN',call=call)
-    with pytest.raises(ValueError):
-        Proposal(action='EXECUTE',call=call,operations=[Operation(op='set',target=['x'],value=1)])
+        Proposal(action='ABSTAIN',operations=[Operation(op='set',target=['x'],value=1)])
 
 
 def test_paths_are_bounded_by_observable_argument_and_schema_roots():

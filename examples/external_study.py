@@ -13,6 +13,7 @@ from time import perf_counter
 
 from external_runtime import ROOT, execute, isolation_check
 from mcp_compat import ToolCall, canonical_bytes
+from mcp_compat.benchmark import RecoveryMode
 from mcp_compat.experiments import Record, _atomic, summaries
 from mcp_compat.external import load_gold, load_inputs
 from mcp_compat.hybrid import Hybrid, SandboxVerifier
@@ -140,13 +141,15 @@ def verifier(case, runtime, *, legacy=False, profile=None):
         initial=case.initial, timeout=120)
 
 
-def decide(case, method, runtime):
+def decide(case, method, runtime, *, hybrid_mode=RecoveryMode.STRICT):
     if method.startswith("M1_"):
         checker = verifier(case, runtime, legacy=method == "M1_old")
-        strategy = Hybrid(verifier=checker)
+        if method == "M1_new":
+            strategy = Hybrid(verifier=checker, mode=hybrid_mode, current_state=lambda: current_state(case))
+        else:
+            strategy = Hybrid(verifier=checker)
         strategy.name = method
-        decision = strategy.recover(case.request.model_copy(deep=True))
-        return checker.admit(case.request,decision,current_state=current_state(case)) if method == "M1_new" else decision
+        return strategy.recover(case.request.model_copy(deep=True))
     decision = validate_candidate(case.request, case.candidate, method)
     if decision.action != "EXECUTE" or method == "C":
         return decision

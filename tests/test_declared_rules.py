@@ -1,10 +1,9 @@
 from copy import deepcopy
-import json
-from pathlib import Path
+from random import Random
 
 import pytest
 
-from mcp_compat.benchmark import equivalent, load, recovery_input
+from mcp_compat.benchmark import _case, equivalent, freeze, recovery_input
 from mcp_compat.declared_rules import DeclaredRuleMapper, DeclaredRules, VerifiedDeclaredRules
 from mcp_compat.experiments import RunConfig, run
 from mcp_compat.runtime_fixtures import fixture_verifier
@@ -65,9 +64,11 @@ def test_declared_rule_target_through_scalar_abstains():
         assert decision.evidence['declared_rules']['calls']==0 and request==snapshot
 
 
-def test_full_corpus_declared_controls_are_a_real_zero_inference_comparison(tmp_path):
-    index=json.loads(Path('benchmark/manifest.json').read_bytes())
-    corpus=load(Path(index['path']),index['digest'])
+def test_declared_controls_compare_without_inference(tmp_path):
+    corpus = [_case("commerce", "quote", 0, family, variant, Random(42))
+              for family, variant in (("C1", 0), ("C3", 1), ("C7", 0), ("C8", 0))]
+    directory = tmp_path / "cases"
+    digest = freeze(corpus, directory, 42)
     engine=VerifiedDeclaredRules(fixture_verifier())
     executed=0
     for scenario in corpus:
@@ -76,8 +77,7 @@ def test_full_corpus_declared_controls_are_a_real_zero_inference_comparison(tmp_
         if decision.action=='EXECUTE':
             assert equivalent(scenario,decision.adapted_call)
             executed+=1
-    assert executed==1056
-    selected=[s.scenario_id for s in corpus[:2]]
-    records=run(RunConfig(kind='deterministic',benchmark_digest=index['digest'],scenario_ids=selected),
-        [DeclaredRules(),engine],Path(index['path']),tmp_path/'run')
-    assert len(records)==4 and all(r.calls==r.cost==r.input_tokens==0 for r in records)
+    assert executed == 3
+    records = run(RunConfig(kind="deterministic", benchmark_digest=digest),
+                  [DeclaredRules(), engine], directory, tmp_path / "run")
+    assert len(records)==8 and all(r.calls==r.cost==r.input_tokens==0 for r in records)

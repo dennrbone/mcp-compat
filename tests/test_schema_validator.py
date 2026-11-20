@@ -54,3 +54,9 @@ def test_nonfinite_values_are_not_json(number):
         canonical_json({'value':number})
     with pytest.raises(ValueError):
         validate_instance({'value':number},{'type':'object','properties':{'value':{'type':'number'}}})
+
+
+@pytest.mark.parametrize("dialect", [42, "https://example.invalid/schema"])
+def test_instance_validation_rejects_unsupported_dialects(dialect):
+    with pytest.raises(ValueError, match="unsupported JSON Schema dialect"):
+        validate_instance({}, {"type": "object", "$schema": dialect})

@@ -5,15 +5,18 @@ from hashlib import sha256
 import json
 import math
 from time import monotonic
-from typing import Any, Callable, Literal, Protocol
+from typing import Any, Callable, Literal, Protocol, TYPE_CHECKING
 
 from pydantic import BaseModel, Field
 
 from mcp_compat import MigrationDecision, SchemaDiffEngine, ToolCall, ToolContract, canonical_bytes
-from mcp_compat.benchmark import RecoveryInput
-from mcp_compat.diff.engine import _path
+from mcp_compat.benchmark import RecoveryInput, RecoveryMode
+from mcp_compat.diff.engine import OpaqueChange, _path
 from mcp_compat.llm import Operation, SemanticMapper
 from mcp_compat.recovery import RuleBased, abstain, validate_candidate
+
+if TYPE_CHECKING:
+    from mcp_compat.verification import EvidenceVerifier
 
 
 class Verification(BaseModel):
@@ -142,12 +145,39 @@ def adapt(request: RecoveryInput, operations: list[Operation]) -> ToolCall:
     return ToolCall(tool_name=request.new_contract.name, arguments=args)
 
 
+def _can_verify_opaque(change: OpaqueChange) -> bool:
+    if change.reason in ("output schema added/removed", "tool description change", "annotation/dialect change"):
+        return True
+    if change.reason != "unsupported schema keyword":
+        return False
+    keyword = change.path.rsplit(".", 1)[-1]
+    if keyword == "additionalProperties":
+        return all(value is None or isinstance(value, bool) for value in (change.old_value, change.new_value))
+    return keyword in {
+        "default", "const", "minimum", "maximum", "exclusiveMinimum", "exclusiveMaximum",
+        "multipleOf", "minLength", "maxLength", "minItems", "maxItems", "uniqueItems",
+        "minProperties", "maxProperties",
+    }
+
+
 class Hybrid:
     name = "M1"
 
     def __init__(self, mapper: SemanticMapper | None = None, verifier: RuntimeVerifier | None = None,
-                 *, ablation: Literal["A1", "A2", "A3", "A4"] | None = None):
+                 *, ablation: Literal["A1", "A2", "A3", "A4"] | None = None,
+                 current_state: Callable[[], dict] | None = None, mode: str = RecoveryMode.STRICT):
         self.mapper, self.verifier, self.ablation = mapper, verifier, ablation
+        self.mode = RecoveryMode(mode)
+        if self.mode is RecoveryMode.COMPAT and current_state is None:
+            raise ValueError("compat mode requires EvidenceVerifier and current_state")
+        self.current_state = current_state
+        self.admission: EvidenceVerifier | None = None
+        if current_state is not None:
+            from mcp_compat.verification import EvidenceVerifier as StrictEvidenceVerifier
+
+            if not isinstance(verifier, StrictEvidenceVerifier) or ablation is not None:
+                raise ValueError("current_state requires EvidenceVerifier and full verification")
+            self.admission = verifier
         if ablation is not None:
             self.name = ablation
 
@@ -157,15 +187,16 @@ class Hybrid:
             request.old_call.validate_against(request.old_contract)
             diff = SchemaDiffEngine.compare(request.old_contract, request.new_contract)
             stages["diff"] = diff.model_dump()
-            if not diff.is_complete:
+            if not diff.is_complete and (self.mode is RecoveryMode.STRICT
+                                         or not all(map(_can_verify_opaque, diff.opaque))):
                 return abstain("opaque", **stages)
             stages["candidates"] = sorted(set(request.old_contract.input_schema.get("properties", {})) & set(request.new_contract.input_schema.get("properties", {})))
             operations = []
             call = None
             verification = None
             stages["verification_attempts"] = 0
-            deterministic = RuleBased().recover(request)
-            if deterministic.action == "EXECUTE" and self.ablation != "A2":
+            deterministic = RuleBased().recover(request) if diff.is_complete else None
+            if deterministic is not None and deterministic.action == "EXECUTE" and self.ablation != "A2":
                 call = deterministic.adapted_call
                 assert call is not None
                 stages["candidate_source"] = "structural"
@@ -182,6 +213,12 @@ class Hybrid:
                 if self.ablation == "A3":
                     return abstain("no_deterministic_candidate", **stages)
                 if self.mapper is None:
+                    if not diff.is_complete:
+                        identity_evidence = stages.get("identity_probe")
+                        if identity_evidence is not None:
+                            return abstain(identity_evidence["reason"], **stages)
+                        if not any(c.family == "C8" for c in diff.changes):
+                            return abstain("schema_invalid", **stages)
                     return abstain("mapper_unavailable", **stages)
                 mapping = self.mapper.propose_mapping(request)
                 stages["llm"] = mapping.trace
@@ -241,6 +278,8 @@ class Hybrid:
                     stages["unit_rules_proven"] = sorted(proven)
             decision.evidence.update(stages, semantic_verified=verification.passed)
             decision.reasons = ["verified" if verification.passed else "ablation_unverified"]
+            if self.admission is not None and self.current_state is not None:
+                return self.admission.admit(request, decision, current_state=self.current_state())
             return decision
         except Exception as exc:
             return abstain("pipeline_error", **stages, error_type=type(exc).__name__)

@@ -8,19 +8,21 @@ from importlib.metadata import PackageNotFoundError, version
 import json
 from pathlib import Path
 import platform
+from random import Random
 import re
 from statistics import mean
+from tempfile import TemporaryDirectory
 from time import perf_counter, sleep
 from typing import Any, Literal
 
 from pydantic import Field, model_validator
 
 from mcp_compat import MigrationDecision, ToolCall, canonical_bytes
-from mcp_compat.benchmark import VERSION, equivalent, load, recovery_input
+from mcp_compat.benchmark import VERSION, _case, equivalent, freeze, load, recovery_input
 from mcp_compat.domain.scenarios import EvolutionScenario, GroundTruth, MutationFamily
 from mcp_compat.hybrid import Hybrid, RuntimeVerifier
 from mcp_compat.llm import LLMRequest, LLMResponse, Mapper, PROMPT_VERSION, StrictModel
-from mcp_compat.recovery import LLMBaseline, NoRecovery, RuleBased, Strategy, abstain
+from mcp_compat.recovery import NoRecovery, RuleBased, Strategy, abstain
 from mcp_compat.runtime_fixtures import fixture_verifier
 
 
@@ -237,9 +239,7 @@ class OfflineClient:
     """Protocol demo, no model inference and no oracle access."""
 
     def complete(self, request: LLMRequest, timeout: float) -> LLMResponse:
-        proposal = {"action":"ABSTAIN"}
-        if request.data["purpose"] == "mapping":
-            proposal = dict(action="EXECUTE",operations=request.data["context"].get("rules",[]))
+        proposal = dict(action="EXECUTE",operations=request.data["context"].get("rules",[]))
         return LLMResponse(text=json.dumps(proposal),model="offline-demo-no-inference",
                            input_tokens=0,output_tokens=0,cost=0.)
 
@@ -248,7 +248,7 @@ def recovery_methods(mapper: Mapper, verifier: RuntimeVerifier | None = None) ->
     if verifier is None:
         verifier = fixture_verifier()
     ablations: list[Literal["A1","A2","A3","A4"]] = ["A1","A2","A3","A4"]
-    return [NoRecovery(),LLMBaseline("B1",mapper),LLMBaseline("B2",mapper),RuleBased(),Hybrid(mapper,verifier),
+    return [NoRecovery(),RuleBased(),Hybrid(mapper,verifier),
             *[Hybrid(mapper,verifier,ablation=a) for a in ablations]]
 
 
@@ -258,13 +258,24 @@ def offline_methods() -> list[Strategy]:
 
 def demo_cli(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(description="Offline engineering demo; not a scientific experiment")
-    parser.add_argument("--index",type=Path,default=Path("benchmark/manifest.json"))
-    parser.add_argument("--output",type=Path,default=Path("experiments/offline-demo"))
+    parser.add_argument("--index", type=Path)
+    parser.add_argument("--output", type=Path, default=Path("experiments/offline-demo"))
     args = parser.parse_args(argv)
-    index = json.loads(args.index.read_bytes())
-    scenarios = load(Path(index["path"]),index["digest"])
-    ids = [s.scenario_id for s in scenarios if s.metadata["base_tool"] == "commerce_quote"]
-    config = RunConfig(kind="offline_demo",benchmark_digest=index["digest"],scenario_ids=ids,
-        model_versions={"fake":"offline-demo-no-inference"})
-    records = run(config,offline_methods(),Path(index["path"]),args.output)
+    with TemporaryDirectory(prefix="mcp-compat-demo-") as temporary:
+        if args.index is None:
+            benchmark = Path(temporary) / "cases"
+            mutations: tuple[tuple[MutationFamily, int], ...] = (
+                ("C1", 0), ("C3", 1), ("C7", 0), ("C8", 0),
+            )
+            cases = [_case("commerce", "quote", 0, family, variant, Random(42))
+                     for family, variant in mutations]
+            digest = freeze(cases, benchmark, 42)
+        else:
+            index = json.loads(args.index.read_bytes())
+            benchmark, digest = Path(index["path"]), index["digest"]
+            cases = load(benchmark, digest)
+        ids = [s.scenario_id for s in cases if s.metadata["base_tool"] == "commerce_quote"]
+        config = RunConfig(kind="offline_demo", benchmark_digest=digest, scenario_ids=ids,
+                           model_versions={"fake": "offline-demo-no-inference"})
+        records = run(config, offline_methods(), benchmark, args.output)
     print(f"OFFLINE DEMO ONLY: {len(records)} records; no real LLM inference")

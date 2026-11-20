@@ -16,47 +16,11 @@ import external_study as old
 from external_200_dataset import read
 from external_runtime import isolation_check
 from mcp_compat import MigrationDecision, ToolCall, canonical_bytes
+from mcp_compat.benchmark import RecoveryMode
 from mcp_compat.experiments import Record, _atomic, metrics
-from mcp_compat.llm import MappingResult
-from mcp_compat.recovery import abstain, validate_candidate
 from mcp_compat.verification import fingerprint
 
 FIXED = (*old.METHODS, "FULL", "NO_FINAL")
-
-
-def in_workload(case, candidate):
-    """Allow only reviewed business inputs to be passed to the pinned servers."""
-    args = old.native_arguments(case, candidate.arguments)
-    if case.project != "fs":
-        return args in (case.request.old_call.arguments, old.native_arguments(case, case.candidate.arguments))
-    return (args.get("path") in case.initial["files"] and args.keys() <= {"path", "head", "tail"}
-            and all(type(args[key]) in (int, float) and 0 <= args[key] <= 32
-                    for key in args.keys() & {"head", "tail"}))
-
-
-def generated(case, mapping, runtime, method):
-    proposal = mapping.proposal
-    if proposal is None or proposal.action == "ABSTAIN":
-        return abstain(mapping.reason if proposal is None else "model_abstain")
-    call = proposal.call
-    assert call is not None
-    decision = validate_candidate(case.request, call, method)
-    if decision.action == "ABSTAIN":
-        return decision
-    try:
-        allowed = in_workload(case, call)
-    except (KeyError, TypeError, ValueError):
-        allowed = False
-    if not allowed:
-        return abstain("out_of_fixture", **decision.evidence)
-    if method.startswith("C_"):
-        return decision
-    return old.decide(case.model_copy(update={"candidate": call}), "B", runtime)
-
-
-def semantic(case, decision, expected, runtime):
-    result = old.evaluate(case, decision, expected, runtime)
-    return result
 
 
 def input_valid(case, decision):
@@ -72,23 +36,17 @@ def input_valid(case, decision):
     return True
 
 
-def study(lane, output, workers, proposals):
+def study(output, workers, *, hybrid_mode=RecoveryMode.STRICT):
     digest, cases = read("public.json")
-    methods = FIXED if lane == "fixed" else (f"C_{lane}", f"B_{lane}")
+    methods = FIXED
     output.mkdir(parents=True, exist_ok=True)
-    proposal_files = {}
-    if lane != "fixed":
-        manifest = json.loads((proposals / "manifest.json").read_bytes())
-        if manifest["dataset"] != digest or manifest["provider"] != lane:
-            raise ValueError("model inputs do not match the frozen benchmark")
-        proposal_files = {c.case_id: (proposals / f"{c.case_id}.json").read_bytes() for c in cases}
     files = list((old.ROOT / "src/mcp_compat").rglob("*.py")) + [
         Path(__file__), Path(old.__file__), *[old.ROOT / "examples" / f for f in
         ("admission_ablation.py", "external_runtime.py", "external_worker.py")]
     ]
-    identity = dict(lane=lane, data=digest, methods=methods, workers=workers, python=platform.python_version(),
-                    code=fingerprint({str(p.relative_to(old.ROOT)): sha256(p.read_bytes()).hexdigest() for p in files}),
-                    proposals=fingerprint({k: sha256(v).hexdigest() for k, v in proposal_files.items()}))
+    identity = dict(lane="fixed", data=digest, methods=methods, workers=workers, python=platform.python_version(),
+                    hybrid_mode=hybrid_mode,
+                    code=fingerprint({str(p.relative_to(old.ROOT)): sha256(p.read_bytes()).hexdigest() for p in files}))
     identity["methods"] = list(methods)
     manifest_file = output / "manifest.json"
     if manifest_file.exists():
@@ -102,34 +60,25 @@ def study(lane, output, workers, proposals):
         folder = output / case.case_id
         folder.mkdir(exist_ok=True)
         runtime = old.Runtime(folder)
-        mapping = None
-        proposal = None
-        if proposal_files:
-            proposal = json.loads(proposal_files[case.case_id])
-            assert proposal["request"] == fingerprint(case.request.model_dump())
-            mapping = MappingResult.model_validate(proposal["mapping"])
         for method in methods:
             path = folder / f"decision-{method}.json"
             if path.exists():
                 continue
             start = perf_counter()
             before = runtime.counter
-            if mapping is not None:
-                decision = generated(case, mapping, runtime, method)
-            elif method in ("FULL", "NO_FINAL"):
+            if method in ("FULL", "NO_FINAL"):
                 decision = admission_ablation.decide(case, method, runtime)
             else:
-                decision = old.decide(case, method, runtime)
+                decision = old.decide(case, method, runtime, hybrid_mode=hybrid_mode)
             _atomic(path, dict(decision=decision.model_dump(), seconds=perf_counter() - start,
-                               source_calls=runtime.counter - before,
-                               model_seconds=0 if proposal is None else proposal["seconds"]))
+                               source_calls=runtime.counter - before))
         return case.case_id
 
     def execute(fn, stage):
         with ThreadPoolExecutor(max_workers=workers) as pool:
             for i, result in enumerate(pool.map(fn, cases), start=1):
                 if i % 10 == 0 or i == len(cases):
-                    print(f"{lane} {stage}: {i}/{len(cases)} ({result})", flush=True)
+                    print(f"fixed {stage}: {i}/{len(cases)} ({result})", flush=True)
 
     execute(decide_case, "decisions")
     gold_digest, gold = read("gold.json")
@@ -153,7 +102,7 @@ def study(lane, output, workers, proposals):
                 continue
             data = json.loads((folder / f"decision-{method}.json").read_bytes())
             decision = MigrationDecision.model_validate(data["decision"])
-            equivalent = semantic(case, decision, label["expected"], runtime)
+            equivalent = old.evaluate(case, decision, label["expected"], runtime)
             _atomic(path, Record(scenario_id=case.case_id, method=method, repeat=0, mutation_family=case.family,
                 ground_truth=label["ground_truth"], recoverable=label["recoverable"], base_tool=case.project,
                 composed=False, decision=decision, schema_valid=input_valid(case, decision),
@@ -177,8 +126,8 @@ def study(lane, output, workers, proposals):
         seconds = [r["seconds"] for r in saved]
         result["operational"][method] = dict(source_calls=sum(r["source_calls"] for r in saved),
             median_seconds=median(seconds), p95_seconds=quantiles(seconds, n=100, method="inclusive")[94])
-    classifications = FIXED[:5] + ("FULL", "NO_FINAL") if lane == "fixed" else methods
-    structural = records["C" if lane == "fixed" else f"C_{lane}"]
+    classifications = FIXED[:5] + ("FULL", "NO_FINAL")
+    structural = records["C"]
     acceptable = {k: r.semantic_equivalent is True for k, r in structural.items()}
     result["classification"] = {m: confusion(acceptable, {k: r.decision.action == "EXECUTE"
         for k, r in records[m].items()}) for m in classifications}
@@ -187,25 +136,23 @@ def study(lane, output, workers, proposals):
             if row.decision.action == "EXECUTE":
                 assert row.decision.adapted_call == structural[row.scenario_id].decision.adapted_call
                 assert row.semantic_equivalent is acceptable[row.scenario_id]
-    if lane == "fixed":
-        result["contrasts"] = {}
-        for a, b in (("B", "A"), ("FULL", "NO_FINAL")):
-            rows = [dict(source=c.project, acceptable=acceptable[c.case_id],
-                         a=records[a][c.case_id].decision.action == "EXECUTE",
-                         b=records[b][c.case_id].decision.action == "EXECUTE") for c in cases]
-            lineage = [dict(row, source="independent" if row["source"] == "calculator" else "official") for row in rows]
-            result["contrasts"][f"{a}-{b}"] = dict(repository=far_contrast(rows), lineage=far_contrast(lineage))
+    result["contrasts"] = {}
+    for a, b in (("B", "A"), ("FULL", "NO_FINAL")):
+        rows = [dict(source=c.project, acceptable=acceptable[c.case_id],
+                     a=records[a][c.case_id].decision.action == "EXECUTE",
+                     b=records[b][c.case_id].decision.action == "EXECUTE") for c in cases]
+        lineage = [dict(row, source="independent" if row["source"] == "calculator" else "official") for row in rows]
+        result["contrasts"][f"{a}-{b}"] = dict(repository=far_contrast(rows), lineage=far_contrast(lineage))
     _atomic(output / "summary.json", result)
-    print(lane, result["decisions"], "decisions;", result["source_calls"], "actual source calls", flush=True)
+    print("fixed", result["decisions"], "decisions;", result["source_calls"], "actual source calls", flush=True)
 
 
 if __name__ == "__main__":
     p = argparse.ArgumentParser(description=__doc__)
-    p.add_argument("lane", choices=("fixed", "codeagent", "terra"))
+    p.add_argument("lane", choices=("fixed",))
     p.add_argument("--output", type=Path, required=True)
-    p.add_argument("--proposals", type=Path)
     p.add_argument("--workers", type=int, choices=range(1, 13), default=8)
+    p.add_argument("--hybrid-mode", type=RecoveryMode, choices=list(RecoveryMode), default=RecoveryMode.STRICT,
+                   help="M1_new recovery mode in the fixed-candidate lane")
     a = p.parse_args()
-    if (a.lane == "fixed") == (a.proposals is not None):
-        p.error("--proposals is required only for model lanes")
-    study(a.lane, a.output, a.workers, a.proposals)
+    study(a.output, a.workers, hybrid_mode=a.hybrid_mode)

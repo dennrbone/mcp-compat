@@ -7,6 +7,7 @@ import pytest
 
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/"examples"))
 import external_study as study
+from external_200_dataset import read
 from mcp_compat import canonical_bytes
 from mcp_compat.external import load_inputs
 
@@ -119,3 +120,15 @@ def test_all_valid_pinned_candidates_have_executable_fixture_wrappers(tmp_path):
         state = deepcopy(c.initial)
         result = runtime.implementation(c,"new",visible=False)(c.candidate.arguments,state)
         canonical_bytes(dict(result=result,state=state))
+
+def test_extended_dataset_preserves_original_cases_and_has_distinct_new_inputs():
+    digest, extended = read("public.json")
+    oracle_digest, labels = read("gold.json")
+    original = load_inputs(study.DATA, study.DIGEST)
+    assert digest == oracle_digest
+    assert extended[:len(original)] == original
+    assert len(extended) == len(labels) == 200
+    assert {case.case_id for case in extended} == set(labels)
+    new_inputs = {canonical_bytes(case.request.model_dump()) for case in extended[len(original):]}
+    assert len(new_inputs) == 137
+    assert all(not case.request.context for case in extended)

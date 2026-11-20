@@ -2,7 +2,7 @@ from copy import deepcopy
 from hashlib import sha256
 import json
 from pathlib import Path
-import shutil
+from zipfile import ZipFile
 import sys
 
 import pytest
@@ -77,9 +77,10 @@ def test_undefined_permutations_are_not_silently_removed():
 @pytest.mark.parametrize("tamper",["semantic","label"])
 def test_independent_trace_audit_rejects_self_consistently_rehashed_results(tmp_path,tamper):
     root=Path(__file__).resolve().parents[1]
-    source=root/"experiments/external-admission-2026-11-04"
+    source=root/"tests/fixtures/external-admission-v1.zip"
     directory=tmp_path/"run"
-    shutil.copytree(source,directory)
+    with ZipFile(source) as fixture:
+        fixture.extractall(directory)
     path=directory/"0-B-calculator-00-none.json"
     record=json.loads(path.read_bytes())
     if tamper=="semantic":

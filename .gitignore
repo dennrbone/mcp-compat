@@ -11,7 +11,7 @@ coverage.xml
 build/
 dist/
 
-# Локальные конфигурации, задания и временные результаты.
+# Локальные настройки, документы и результаты.
 /*_MASTER_TASKS_*.md
 /.vscode/
 /.codex/
@@ -22,8 +22,5 @@ dist/
 *.log
 *.lock.tmp
 .DS_Store
-/experiments/full-codeagent-2026-11-02/.supervisor.lock
-/experiments/full-codeagent-2026-11-02/connectivity-during-run/
-/experiments/full-codeagent-2026-11-02/detached-preflight*/
-/experiments/full-codeagent-2026-11-02/preflight/
-/experiments/full-codeagent-2026-11-02/status.json
+/experiments/
+*.docx

@@ -1,84 +1,36 @@
-# GigaCode CodeAgent
+# Подключение генератора кандидатов
 
-The configured real-test provider is the already installed GigaCode CLI
-**26.10.76**, model **CodeAgent**. Its actual catalog identifier is
-`gigacode/GigaCode`; the installed extension's older examples use another
-spelling. The catalog reports zero token cost. Its underlying model family and
-immutable service revision are not exposed and must not be invented.
+`Mapper` принимает реализацию интерфейса `LLMClient`. Провайдер получает
+описания инструментов и старый вызов. Парсер принимает один JSON-объект
+с кандидатом, операциями преобразования или отказом, в зависимости от режима.
 
-The [official CLI documentation](https://gitverse.ru/docs/ai/ai-assistant-gigacode/gigacode-cli/commands)
-and the installed CLI's `run --help`, `models gigacode --verbose` and
-`mcp --help` were inspected. The local extension supplies the executable;
-no additional client is installed by this project.
+## CodeAgent
 
-Set `GIGACODE_BIN` to its absolute path when absent from PATH. Credentials remain
-in the existing client store; never put them in repository files or transcripts.
-The adapter does not change global authentication or shell profiles.
+Для локального клиента укажите абсолютный путь в `GIGACODE_BIN`.
+Транспорт использует идентификатор `gigacode/GigaCode`. Проверка подключения
+выполняется нейтральным запросом и сохраняет результат.
 
 ```sh
-mcp-compat-agents --output experiments/codeagent-smoke
-mcp-compat-agents --pilot --output experiments/codeagent-pilot
-mcp-compat-agents --full --workers 8 --output experiments/codeagent-full
-# Continue the exact same run after interruption:
-mcp-compat-agents --full --workers 8 --resume --output experiments/codeagent-full
+.venv/bin/mcp-compat-agents --output experiments/provider-smoke
 ```
 
-Each output directory is new: smoke evidence is written exclusively. The nested
-pilot/full runner supports identical-configuration resume through the CLI or Python API.
-The pilot starts only after a strict JSON smoke succeeds. The separate real
-pytest case requires `MCP_COMPAT_RUN_PROVIDER_SMOKE=1`; enabled failures fail.
-Missing credentials/configuration, quota errors, malformed JSON and timeouts
-are never converted to passes. Current results: [RESULTS.md](RESULTS.md).
-Historical pilot failures and subsequent studies are kept separate there.
+Для прогона на расширенном наборе используется отдельная команда.
 
-`--full` selects all 2160 frozen scenarios for B0–B3/M1/A1–A4: 19440 decisions
-in one repeat. It uses the same installed CodeAgent transport, mapper limits and
-independent runtimes as the pilot. `--workers` permits 1–8 concurrent decisions
-(default 1); each worker waits one second between decisions. Workers are part of
-the frozen run identity because service load can affect latency and failures.
-Completed records are saved atomically and never replaced on resume. A resume
-requires a previously passed smoke, the same CLI version, source and configuration.
-A single full repeat does not complete the planned repeated two-family study.
+```sh
+.venv/bin/python examples/external_200_propose.py codeagent \
+  --output experiments/external-mcp-200/codeagent
+```
 
-The adapter uses an empty temporary workspace and isolated config directories,
-`--pure`, disabled plugins/external skills/project config/title/summary/compaction,
-disabled sharing/snapshots, and denied tools. Normal and small-model IDs are both
-pinned to CodeAgent. The installed client still supplies its own system context;
-this is a CLI-harness experiment, not a bare-API comparison. Mapping instructions
-are repeated in the final user message because the client otherwise treated a
-schema-only message as an ordinary coding question.
+## GPT-6.1 Terra
 
-The CLI agent has a two-step ceiling with tools denied; successful requests must
-still emit exactly one completed text-generation step. The previous one-step
-ceiling could inject a summarization instruction on the first response. Temperature
-0, a 2048-token output cap and a shared deadline up to 120 s remain fixed.
-Inherited client-specific config variables are removed before applying the
-isolated profile. Tool/error/incomplete/multiple-step events and nonzero reported
-cost are rejected. Stderr is discarded; at most 1 MiB of stdout is decoded.
+Команда использует настроенный локальный клиент и зафиксированный
+идентификатор `gpt-6.1-terra`.
 
-Protocol **mapping-2.0** supplies separate wire schemas. Mapping replies contain
-`operations`; B1/B2 replies contain a `candidate` object, converted to the existing
-internal `Proposal.call` only after validation. Unused mode definitions are absent.
-The schema enforces opcode-specific operands and observable argument-path roots.
-Paths are relative to arguments, with no `arguments` or `old_call` prefix.
+```sh
+.venv/bin/python examples/external_200_propose.py terra \
+  --output experiments/external-mcp-200/terra
+```
 
-The common parser accepts plain JSON or one complete JSON Markdown fence. Prose,
-multiple objects/blocks, duplicate keys, nonfinite numbers, extra fields and
-incorrect mode/operand shapes remain rejected. Raw replies are preserved. A
-bounded retry supplies the required shape and error class, without copying error
-messages or treating model output as instructions. Every request, response,
-normalization and retry is recorded under the same total deadline.
-
-`calls` counts wrapper invocations; response details record observed CLI steps.
-These are not an independent audit of hidden backend retries or billing. Missing
-usage remains null; reported cache reads/writes and reasoning count toward usage.
-
-A native structured-output calibration was also attempted. The installed client
-sometimes captured schema-invalid objects or timed out. It was not adopted as a
-conformance guarantee. Production parsing remains in the shared validated mapper.
-The earlier `mapping-1.1` pilot is historical evidence and is preserved unchanged.
-
-Other models use the existing `LLMClient.complete(request, timeout)` protocol and
-`Mapper` injection. Standard MCP agents connect through stdio. These extension
-points require no provider-specific recovery logic; see
-[CLIENT_INTEGRATION.md](CLIENT_INTEGRATION.md).
+Ответы и ошибки клиента сохраняются по сценариям. Число решений, число
+обращений к клиенту и число полученных ответов учитываются отдельно.
+Финальный допуск вычисляет верификатор по схемам и результатам исполнения.

@@ -1,12 +1,13 @@
 # Воспроизведение проверок Hybrid
 
-Оба набора запускаются на macOS в изолированной среде с Python 3.11 и Node.js
+Команды запускаются из корня проекта после [установки окружения](../README.md#установка).
+Для прогонов с внешними серверами нужны macOS, `sandbox-exec`, `npm` и Node.js
 из `/opt/homebrew/bin/node`. Перед вызовами стенд проверяет, что серверы
 не могут читать служебные файлы проекта, писать за пределами рабочей папки
 или подключаться к сети. Модели подключаются через локальные клиенты.
 [Настройка клиентов](PROVIDERS.md).
 
-## Набор из 200 сценариев
+## 200 сценариев на Filesystem, SQLite и Calculator
 
 Входы и эталон хранятся в `benchmark/external-mcp-200`.
 Эталон открывается после записи решений Hybrid. Версии тестовых серверов
@@ -28,7 +29,7 @@ for mode in strict compat; do
 done
 ```
 
-## Набор из 23 исторических изменений
+## 23 изменения схем Filesystem и Memory
 
 В `tests/fixtures/upstream-catalogs.json` сохранены реальные каталоги
 четырёх выпусков Filesystem и Memory и контрольные суммы npm.
@@ -62,24 +63,33 @@ done
 системной инструкции. `summary.json` содержит число сценариев
 с обращением к модели, число запросов и допусков. По каждому сценарию
 сохраняются решение и независимая оценка поведения. При повторном запуске
-та же конфигурация продолжает сохранённый прогон. Предыдущие запросы
-остаются в журнале. В сводной таблице повторным считается каждый запрос
-после первого в том же сценарии.
+стенд использует сохранённые решения. Флаг
+`--retry-unavailable` повторяет сценарии с ошибкой `ProviderError`, если
+ответ не разобран, и сохраняет предыдущие попытки в журнале. В сводной
+таблице повторным считается каждый запрос после первого в том же сценарии.
 
 ## Проверка propertyNames и patternProperties
+
+В сводных таблицах восемь синтетических проверок входят в основной набор
+из 208 сценариев, а шесть проверок опубликованных серверов входят
+в исторический набор из 29. При подсчёте складываются результаты одного
+режима и одной модели по сценариям каждой группы.
 
 Синтетический набор запускается без установки внешних серверов.
 Флаг `--provider` принимает `none`, `terra` или `codeagent`. Каждый
 запуск сравнивает `strict` и `compat` на одних и тех же входах.
 
 ```sh
-.venv/bin/python examples/schema_keyword_study.py --dataset synthetic --provider terra \
-  --output experiments/keywords/synthetic-terra.json
+for provider in codeagent terra; do
+  .venv/bin/python examples/schema_keyword_study.py \
+    --dataset synthetic --provider "$provider" \
+    --output "experiments/keywords/synthetic-$provider.json"
+done
 ```
 
-Для проверок опубликованных серверов сохраняются исходные каталоги
-`tools/list` и контрольные суммы. Firecrawl и Random User запускаются
-по MCP. Ответы их внешних API задают локальные тестовые обработчики.
+Исходные каталоги `tools/list` и контрольные суммы опубликованных серверов
+хранятся в `tests/fixtures/schema-keyword-catalogs.json`. Firecrawl и Random
+User запускаются по MCP. Ответы их внешних API задают локальные обработчики.
 Стенд фиксирует сформированные сервером запросы к API, ответ MCP и
 содержимое тестового файла. Сеть дочерних процессов заблокирована.
 Две версии DOCX MCP нужны для контроля изменения схемы, обнаруживаемого
@@ -109,9 +119,19 @@ for tag in v0.4.0 v0.5.0; do
   npm ci --ignore-scripts --no-audit --no-fund --prefix "$target"
   "$target/node_modules/.bin/tsc" --project "$target/tsconfig.json"
 done
-MCP_EXTERNAL_NODE_RUNTIME="$runtime" .venv/bin/python examples/schema_keyword_study.py \
-  --dataset published --provider none --output experiments/keywords/published-none.json
+for provider in codeagent terra; do
+  MCP_EXTERNAL_NODE_RUNTIME="$runtime" .venv/bin/python examples/schema_keyword_study.py \
+    --dataset published --provider "$provider" \
+    --output "experiments/keywords/published-$provider.json"
+done
 ```
+
+Для контрольного прогона без модели используйте `for provider in none`.
+В JSON-файлах проверок ключей `rows` содержит строки обоих режимов.
+Для сводки сопоставьте их с `score.json` и `decision.json` каждого сценария
+из соответствующего прогона `hybrid_study.py`. Допуски после LLM имеют
+`source: "llm"` в строках проверок ключей и `evidence.candidate_source: "llm"`
+в решениях Hybrid.
 
 Запуск `tests/test_schema_keyword_study.py` проверяет сохранённые схемы
 и синтетические сценарии. Чтобы включить в него вызовы опубликованных

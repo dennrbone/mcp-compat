@@ -64,6 +64,7 @@ def test_published_tool_contract_change(change):
         assert change['analysis'] == 'invalid_input_root'
         with pytest.raises(ValidationError, match="root must have type 'object'"):
             RecoveryInput.from_catalogs(raw, mode='strict')
+        assert RecoveryInput.from_catalogs(raw, mode='strict', import_legacy=True) == compatible
         assert 'type' not in before['inputSchema']
         assert compatible.old_contract.input_schema == {**before['inputSchema'], 'type': 'object'}
     else:

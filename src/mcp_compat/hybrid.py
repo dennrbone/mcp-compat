@@ -156,7 +156,7 @@ def _can_verify_opaque(change: OpaqueChange) -> bool:
     return keyword in {
         "default", "const", "minimum", "maximum", "exclusiveMinimum", "exclusiveMaximum",
         "multipleOf", "minLength", "maxLength", "minItems", "maxItems", "uniqueItems",
-        "minProperties", "maxProperties",
+        "minProperties", "maxProperties", "patternProperties", "propertyNames",
     }
 
 
@@ -185,7 +185,7 @@ class Hybrid:
         stages: dict[str, Any] = {"method": self.name}
         try:
             request.old_call.validate_against(request.old_contract)
-            diff = SchemaDiffEngine.compare(request.old_contract, request.new_contract)
+            diff = SchemaDiffEngine.compare(request.old_contract, request.new_contract, extended=True)
             stages["diff"] = diff.model_dump()
             if not diff.is_complete and (self.mode is RecoveryMode.STRICT
                                          or not all(map(_can_verify_opaque, diff.opaque))):
@@ -213,10 +213,10 @@ class Hybrid:
                 if self.ablation == "A3":
                     return abstain("no_deterministic_candidate", **stages)
                 if self.mapper is None:
+                    identity_evidence = stages.get("identity_probe")
+                    if identity_evidence is not None:
+                        return abstain(identity_evidence["reason"], **stages)
                     if not diff.is_complete:
-                        identity_evidence = stages.get("identity_probe")
-                        if identity_evidence is not None:
-                            return abstain(identity_evidence["reason"], **stages)
                         if not any(c.family == "C8" for c in diff.changes):
                             return abstain("schema_invalid", **stages)
                     return abstain("mapper_unavailable", **stages)

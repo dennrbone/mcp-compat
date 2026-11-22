@@ -4,20 +4,18 @@ import asyncio
 from base64 import b64decode
 from copy import deepcopy
 import json
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 import stat
 from tempfile import TemporaryDirectory
 
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
-from pydantic import ValidationError
 
 import external_runtime
 from mcp_compat import canonical_bytes
 from mcp_compat.benchmark import RecoveryInput
 from mcp_compat.experiments import _atomic
 from mcp_compat.hybrid import Hybrid, normalize
-from mcp_compat.recovery import abstain
 from mcp_compat.verification import EvidenceVerifier, ObservationProfile
 
 PIXEL = b64decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aX1sAAAAASUVORK5CYII=')
@@ -36,6 +34,19 @@ def replace_path(value, old, new):
     if isinstance(value, list):
         return [replace_path(item, old, new) for item in value]
     return value.replace(old, new) if isinstance(value, str) else value
+
+
+def fixture_arguments(value, directory):
+    if isinstance(value, dict):
+        return {key: fixture_arguments(item, directory) for key, item in value.items()}
+    if isinstance(value, list):
+        return [fixture_arguments(item, directory) for item in value]
+    if not isinstance(value, str):
+        return value
+    path = PurePosixPath(value)
+    if ".." in path.parts or (path.is_absolute() and not path.is_relative_to("/fixture")):
+        raise ValueError("path outside the experiment fixture")
+    return str(directory / path.relative_to("/fixture")) if path.is_absolute() else value
 
 
 def memory_json(text):
@@ -88,9 +99,13 @@ async def invoke(project, version, package, tool, arguments, work, trial):
         async with stdio_client(params, errlog=server_log) as (reader, writer):
             async with ClientSession(reader, writer) as session:
                 await asyncio.wait_for(session.initialize(), 12)
+                try:
+                    native = fixture_arguments(arguments, data) if project == 'filesystem' else arguments
+                except ValueError:
+                    trial['blocked'] = True
+                    raise
                 trial['called'] = True
-                reply = await asyncio.wait_for(session.call_tool(tool,
-                    replace_path(arguments, '/fixture', str(data))), 12)
+                reply = await asyncio.wait_for(session.call_tool(tool, native), 12)
                 result = replace_path(reply.model_dump(mode='json', exclude_none=True), str(data), '/fixture')
                 trial['response'] = result
                 if reply.isError:
@@ -149,9 +164,6 @@ def handlers(case, request, traces):
             trial = dict(era=era, release=release, tool=contract.name, called=False)
             traces.append(trial)
             try:
-                if arguments != case['data']['old_call']['arguments']:
-                    trial['blocked'] = True
-                    raise ValueError('call outside the fixed historical workload')
                 with TemporaryDirectory(prefix='mcp-hybrid-history-', dir='/private/tmp') as temp:
                     result, snapshot = asyncio.run(invoke(project, version, package, contract.name,
                                                           arguments, Path(temp), trial))
@@ -176,18 +188,12 @@ def handlers(case, request, traces):
 
 def decide(case, mapper, mode, folder):
     traces = []
-    try:
-        request = RecoveryInput.from_catalogs(case['data'], mode=mode)
-    except ValidationError as error:
-        if mode != 'strict' or 'type' in case['data']['old_contract']['input_schema']:
-            raise
-        decision = abstain('invalid_input_root', error_type=type(error).__name__)
-    else:
-        checker = EvidenceVerifier(request.old_contract, request.new_contract, *handlers(case, request, traces),
-            profile=ObservationProfile(name='local-file-or-graph-fixture', state_components=('data','client_content'),
-                complete=True, closed_environment=True, deterministic=True, unambiguous=True),
-            handler_ids=tuple(case['identifiers']), timeout=55)
-        decision = Hybrid(mapper, checker, mode=mode, current_state=dict).recover(request)
+    request = RecoveryInput.from_catalogs(case['data'], mode=mode, import_legacy=True)
+    checker = EvidenceVerifier(request.old_contract, request.new_contract, *handlers(case, request, traces),
+        profile=ObservationProfile(name='local-file-or-graph-fixture', state_components=('data','client_content'),
+            complete=True, closed_environment=True, deterministic=True, unambiguous=True),
+        handler_ids=tuple(case['identifiers']), timeout=55)
+    decision = Hybrid(mapper, checker, mode=mode, current_state=dict).recover(request)
     return dict(decision=decision.model_dump(mode='json'), probes=traces,
                 blocked_probes=sum(t.get('blocked', False) for t in traces))
 
@@ -195,7 +201,7 @@ def decide(case, mapper, mode, folder):
 def evaluate(case, decision, folder):
     if decision.action != 'EXECUTE':
         return None
-    request = RecoveryInput.from_catalogs(case['data'], mode='compat')
+    request = RecoveryInput.from_catalogs(case['data'], import_legacy=True)
     traces = []
     previous, updated = handlers(case, request, traces)
     observations = []

@@ -49,7 +49,14 @@ def _path(parent: str, key: str) -> str:
     return f"{parent}[{canonical_json(key)}]"
 
 
-def _resolve(schema: Any, root: dict, seen: tuple[str, ...] = ()) -> Any:
+COMPOSITIONS = ("allOf", "anyOf", "oneOf")
+ANNOTATIONS = ("title", "description", "$comment", "default", "examples")
+LIMITS = ("const", "minimum", "maximum", "exclusiveMinimum", "exclusiveMaximum",
+          "multipleOf", "minLength", "maxLength", "minItems", "maxItems", "uniqueItems",
+          "minProperties", "maxProperties")
+
+
+def _resolve(schema: Any, root: dict, seen: tuple[str, ...] = (), *, extended: bool = False) -> Any:
     if isinstance(schema, bool):
         return schema
     if not isinstance(schema, dict):
@@ -71,12 +78,16 @@ def _resolve(schema: Any, root: dict, seen: tuple[str, ...] = ()) -> Any:
             target = target[token]
         if not isinstance(target, (dict, bool)):
             raise ValueError("$ref target is not a schema")
-        return _resolve(target, root, seen + (ref,))
+        return _resolve(target, root, seen + (ref,), extended=extended)
     node.pop("$defs", None)
     for name in sorted(node.get("properties", {})):
-        node["properties"][name] = _resolve(node["properties"][name], root, seen)
+        node["properties"][name] = _resolve(node["properties"][name], root, seen, extended=extended)
     if "items" in node:
-        node["items"] = _resolve(node["items"], root, seen)
+        node["items"] = _resolve(node["items"], root, seen, extended=extended)
+    if extended:
+        for keyword in COMPOSITIONS:
+            if keyword in node:
+                node[keyword] = [_resolve(branch, root, seen, extended=True) for branch in node[keyword]]
     if "type" in node:
         value = node["type"]
         node["type"] = sorted([value] if isinstance(value, str) else value)
@@ -89,7 +100,7 @@ def _resolve(schema: Any, root: dict, seen: tuple[str, ...] = ()) -> Any:
 
 class SchemaDiffEngine:
     @staticmethod
-    def compare(old_contract: ToolContract, new_contract: ToolContract) -> SchemaDiff:
+    def compare(old_contract: ToolContract, new_contract: ToolContract, *, extended: bool = False) -> SchemaDiff:
         """Compare versions of one scenario; never infer semantic equivalence."""
         result = SchemaDiff()
 
@@ -105,18 +116,47 @@ class SchemaDiffEngine:
                 path=path, reason=reason, old_value=deepcopy(old), new_value=deepcopy(new),
             ))
 
-        def walk(old: Any, new: Any, path: str, raw_old: Any, raw_new: Any) -> None:
+        def walk(old: Any, new: Any, path: str, raw_old: Any, raw_new: Any,
+                 *, in_composition: bool = False) -> None:
             if isinstance(old, bool) or isinstance(new, bool):
                 if old != new:
-                    opaque(path, "boolean schema comparison", old, new)
+                    if extended and isinstance(old, bool) and isinstance(new, bool):
+                        emit("C5", "constraint_changed", path, old, new)
+                    else:
+                        opaque(path, "boolean schema comparison", old, new)
                 return
+            if not isinstance(raw_old, dict):
+                raw_old = {}
+            if not isinstance(raw_new, dict):
+                raw_new = {}
             supported = {"type", "properties", "required", "items", "enum", "format",
                          "semantic_unit", "$schema", "title", "description", "$comment"}
+            if extended:
+                supported.update(ANNOTATIONS, LIMITS, COMPOSITIONS)
+                if in_composition:
+                    supported.remove("semantic_unit")
+                if all(value is None or isinstance(value, bool)
+                       for value in (old.get("additionalProperties"), new.get("additionalProperties"))):
+                    supported.add("additionalProperties")
             for key in sorted((old.keys() | new.keys()) - supported):
                 opaque(_path(path, key), "unsupported schema keyword", old.get(key), new.get(key))
-            for key in ("title", "description", "$comment", "$schema"):
-                if old.get(key) != new.get(key):
-                    opaque(_path(path, key), "annotation/dialect change", old.get(key), new.get(key))
+            for key in (*ANNOTATIONS, "$schema") if extended else ("title", "description", "$comment", "$schema"):
+                if (key in old) != (key in new) or canonical_json(old.get(key)) != canonical_json(new.get(key)):
+                    if extended:
+                        emit("C5", "dialect_changed" if key == "$schema" else "annotation_changed",
+                             _path(path, key), old.get(key), new.get(key))
+                    else:
+                        opaque(_path(path, key), "annotation/dialect change", old.get(key), new.get(key))
+            if extended:
+                for key in (*LIMITS, *COMPOSITIONS, "additionalProperties"):
+                    if key in supported and ((key in old) != (key in new)
+                            or canonical_json(old.get(key)) != canonical_json(new.get(key))):
+                        emit("C5", "constraint_changed", _path(path, key), old.get(key), new.get(key))
+                for key in COMPOSITIONS:
+                    # Inspect every branch; validation enforces the composition at runtime.
+                    for side, node in (("old", old), ("new", new)):
+                        for index, branch in enumerate(node.get(key, [])):
+                            walk(branch, branch, f"{path}.{key}.{side}[{index}]", {}, {}, in_composition=True)
             a, b = set(old.get("type", [])), set(new.get("type", []))
             if ("null" in a) != ("null" in b):
                 emit("C5", "nullable_changed", path + ".type", "null" in a, "null" in b)
@@ -163,12 +203,16 @@ class SchemaDiffEngine:
             for name in sorted(removed):
                 emit("C4" if name in required_old else "C2", "parameter_removed",
                      _path(path + ".properties", name), op[name], None)
+                if extended:
+                    walk(op[name], op[name], _path(path + ".properties", name), {}, {}, in_composition=in_composition)
             for name in sorted(added):
                 emit("C3" if name in required_new else "C2", "parameter_added",
                      _path(path + ".properties", name), None, np[name])
+                if extended:
+                    walk(np[name], np[name], _path(path + ".properties", name), {}, {}, in_composition=in_composition)
             for name in sorted(set(op) & set(np)):
                 walk(op[name], np[name], _path(path + ".properties", name),
-                     ro.get(name, {}), rn.get(name, {}))
+                     ro.get(name, {}), rn.get(name, {}), in_composition=in_composition)
             for name in sorted(required_old ^ required_new):
                 if name in removed | added | renamed:
                     continue
@@ -176,12 +220,15 @@ class SchemaDiffEngine:
                      name in required_old, name in required_new)
             if "items" in old or "items" in new:
                 walk(old.get("items", {}), new.get("items", {}), path + ".items",
-                     raw_old.get("items", {}), raw_new.get("items", {}))
+                     raw_old.get("items", {}), raw_new.get("items", {}), in_composition=in_composition)
 
         if old_contract.name != new_contract.name:
             emit("C1", "tool_renamed", "name", old_contract.name, new_contract.name)
         if old_contract.description != new_contract.description:
-            opaque("description", "tool description change", old_contract.description, new_contract.description)
+            if extended:
+                emit("C5", "annotation_changed", "description", old_contract.description, new_contract.description)
+            else:
+                opaque("description", "tool description change", old_contract.description, new_contract.description)
         for key in sorted(old_contract.metadata.keys() | new_contract.metadata.keys()):
             old, new = old_contract.metadata.get(key), new_contract.metadata.get(key)
             if canonical_json(old) != canonical_json(new):
@@ -193,10 +240,15 @@ class SchemaDiffEngine:
                                ("output", old_contract.output_schema, new_contract.output_schema)):
             if old is None or new is None:
                 if old != new:
-                    opaque(path, "output schema added/removed", old, new)
-                continue
+                    if not extended:
+                        opaque(path, "output schema added/removed", old, new)
+                        continue
+                    emit("C5", "output_schema_changed", path, old, new)
+                else:
+                    continue
             try:
-                resolved_old, resolved_new = _resolve(old, old), _resolve(new, new)
+                resolved_old = _resolve(old or {}, old or {}, extended=extended)
+                resolved_new = _resolve(new or {}, new or {}, extended=extended)
             except ValueError as error:
                 opaque(path, str(error), old, new)
                 continue

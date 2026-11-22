@@ -42,10 +42,12 @@ class RecoveryInput(BaseModel):
     context: dict[str, Any] = {}
 
     @classmethod
-    def from_catalogs(cls, data: dict[str, Any], *, mode: str = RecoveryMode.STRICT) -> Self:
+    def from_catalogs(cls, data: dict[str, Any], *, mode: str = RecoveryMode.STRICT,
+                      import_legacy: bool = False) -> Self:
         """Read a recovery request using the selected catalog compatibility policy."""
         old = data.get("old_contract")
-        if RecoveryMode(mode) is RecoveryMode.COMPAT and isinstance(old, dict):
+        catalog_mode = RecoveryMode(mode)
+        if (import_legacy or catalog_mode is RecoveryMode.COMPAT) and isinstance(old, dict):
             data = {**data, "old_contract": ToolContract.from_legacy(old)}
         return cls.model_validate(data)
 

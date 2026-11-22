@@ -18,7 +18,7 @@ from mcp_compat.agent_checks import cli_version
 from mcp_compat.benchmark import RecoveryMode
 from mcp_compat.experiments import _atomic
 from mcp_compat.hybrid import Hybrid
-from mcp_compat.llm import Mapper
+from mcp_compat.llm import Mapper, PROMPT_VERSION
 from mcp_compat.providers import AgentProvider, from_env
 from mcp_compat.verification import fingerprint
 
@@ -95,7 +95,8 @@ def study(dataset, provider_name, mode, output, workers, retry):
         data_digest = fingerprint(keys)
 
     manifest = dict(dataset=dataset, inputs=data_digest, provider=provider_name, model=model, cli=version,
-                    mode=mode, scope="hybrid-mapping", attempts=mapper.attempts, timeout=mapper.timeout)
+                    mode=mode, scope="hybrid-mapping", prompt_version=PROMPT_VERSION,
+                    attempts=mapper.attempts, timeout=mapper.timeout)
     path = output / "manifest.json"
     if path.exists():
         assert json.loads(path.read_bytes()) == manifest, "run identity changed"

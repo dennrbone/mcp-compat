@@ -108,7 +108,7 @@ def test_nondeterminism_error_and_elapsed_timeout():
 
 def test_unsupported_semantic_diff_remains_opaque():
     r, _, v = setup_verifier()
-    r.new_contract.input_schema["oneOf"] = [{"required": ["x"]}]
+    r.new_contract.input_schema["not"] = {"required": ["x"]}
     assert Hybrid(verifier=v).recover(r).reasons == ["opaque"]
 
 

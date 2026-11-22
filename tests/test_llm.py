@@ -150,6 +150,17 @@ def test_repair_feedback_records_each_request_without_echoing_error_contents():
     assert 'Never include a call' in feedback['requirement']
 
 
+def test_schema_feedback_locates_the_invalid_operation():
+    invalid = '{"action":"EXECUTE","operations":[{"op":"missing","target":["x"]}]}'
+    client = FakeClient(invalid, '{"action":"ABSTAIN"}')
+    result = Mapper(client, wait=lambda _: None).propose_mapping(request())
+    assert result.proposal.action == 'ABSTAIN'
+    feedback = client.requests[1][0].data['protocol_feedback']
+    assert feedback['path'][:1] == ['operations']
+    assert isinstance(feedback['keyword'], str)
+    assert 'missing' not in json.dumps(feedback)
+
+
 def test_proposal_domain_guards_reject_operations_on_abstain():
     with pytest.raises(ValueError):
         Proposal(action='ABSTAIN',operations=[Operation(op='set',target=['x'],value=1)])

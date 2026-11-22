@@ -67,6 +67,8 @@ def test_pipeline_safe_failures():
     wrong = [dict(op='set',target=['value'],value='bad')]
     assert Hybrid(mapper(wrong),verifier(r)).recover(r).reasons == ['schema_invalid']
     r.new_contract.input_schema['additionalProperties'] = False
+    assert Hybrid().recover(r).reasons == ['mapper_unavailable']
+    r.new_contract.input_schema['unsupported'] = True
     assert Hybrid().recover(r).reasons == ['opaque']
     r.old_call.tool_name = 'wrong'
     assert Hybrid().recover(r).reasons == ['pipeline_error']
@@ -229,7 +231,7 @@ def test_zero_unit_values_still_require_an_explicit_conversion_rule():
     ({'required': ['value', 'missing']}, 2, {}, 'schema_invalid', 0),
     ({'unrecognizedConstraint': True}, 2, {}, 'opaque', 0),
 ])
-def test_partial_comparison_requires_replayed_evidence(new_properties, new_result, current_state, reason, probes):
+def test_supported_constraints_require_replayed_evidence(new_properties, new_result, current_state, reason, probes):
     request = optional_drop_request()
     request.new_contract.input_schema.update(additionalProperties=False, **new_properties)
     calls = []
@@ -243,12 +245,12 @@ def test_partial_comparison_requires_replayed_evidence(new_properties, new_resul
     verifier = EvidenceVerifier(request.old_contract, request.new_contract, observe(2), observe(new_result),
         profile=ObservationProfile(name='local', complete=True, closed_environment=True,
                                    deterministic=True, unambiguous=True), handler_ids=('old', 'new'))
-    assert Hybrid(verifier=verifier).recover(request).reasons == ['opaque'] and not calls
-    strict = Hybrid(verifier=verifier, current_state=lambda: current_state, mode='strict')
-    assert strict.recover(request).reasons == ['opaque'] and not calls
-    decision = Hybrid(verifier=verifier, current_state=lambda: current_state, mode='compat').recover(request)
-    assert decision.reasons == [reason] and len(calls) == probes
-    assert (decision.action == 'EXECUTE') == (reason == 'verified_admission')
+    for mode in ('strict', 'compat'):
+        calls.clear()
+        decision = Hybrid(verifier=verifier, current_state=lambda: current_state, mode=mode).recover(request)
+        expected = 'mapper_unavailable' if reason == 'schema_invalid' else reason
+        assert decision.reasons == [expected] and len(calls) == probes
+        assert (decision.action == 'EXECUTE') == (reason == 'verified_admission')
 
 
 def test_partial_comparison_cannot_use_the_legacy_verifier():
@@ -274,6 +276,29 @@ def test_partial_comparison_checks_a_mapped_call_and_replays_it():
     assert decision.reasons == ['verified_admission']
     assert decision.adapted_call.arguments == {'count': 2}
     assert decision.evidence['admission']['passed']
+
+
+@pytest.mark.parametrize(("constraint", "strict_action", "compat_action"), [
+    ({"oneOf": [{"required": ["dial"]}, {"required": ["offset"]}]}, "EXECUTE", "EXECUTE"),
+    ({"oneOf": [{"required": ["dial"]}, {"properties": {"dial": {"minimum": 0}}}]}, "ABSTAIN", "ABSTAIN"),
+    ({"oneOf": [{"properties": {"dial": {"unknownPolicy": True}}}]}, "ABSTAIN", "ABSTAIN"),
+    ({"propertyNames": {"pattern": "^[a-z]+$"}}, "ABSTAIN", "EXECUTE"),
+])
+def test_composed_constraints_preserve_admission_checks(constraint, strict_action, compat_action):
+    old = ToolContract(name="measure", input_schema={"type": "object",
+                       "properties": {"dial": {"type": "integer"}, "offset": {"type": "integer"}}})
+    new = old.model_copy(deep=True)
+    new.input_schema.update(constraint)
+    request = RecoveryInput(old_contract=old, new_contract=new,
+                            old_call=ToolCall(tool_name="measure", arguments={"dial": 17}))
+    checker = EvidenceVerifier(old, new, lambda a, s: a["dial"], lambda a, s: a["dial"],
+        profile=ObservationProfile(name="test", complete=True, closed_environment=True,
+                                   deterministic=True, unambiguous=True), handler_ids=("old", "new"))
+    for mode, expected in (("strict", strict_action), ("compat", compat_action)):
+        decision = Hybrid(verifier=checker, current_state=dict, mode=mode).recover(request)
+        assert decision.action == expected
+        if expected == "EXECUTE":
+            assert decision.evidence["admission"]["passed"]
 
 
 @pytest.mark.parametrize(("change", "reason"), [

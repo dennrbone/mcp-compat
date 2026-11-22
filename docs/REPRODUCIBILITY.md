@@ -66,9 +66,61 @@ done
 остаются в журнале. В сводной таблице повторным считается каждый запрос
 после первого в том же сценарии.
 
+## Проверка propertyNames и patternProperties
+
+Синтетический набор запускается без установки внешних серверов.
+Флаг `--provider` принимает `none`, `terra` или `codeagent`. Каждый
+запуск сравнивает `strict` и `compat` на одних и тех же входах.
+
+```sh
+.venv/bin/python examples/schema_keyword_study.py --dataset synthetic --provider terra \
+  --output experiments/keywords/synthetic-terra.json
+```
+
+Для проверок опубликованных серверов сохраняются исходные каталоги
+`tools/list` и контрольные суммы. Firecrawl и Random User запускаются
+по MCP. Ответы их внешних API задают локальные тестовые обработчики.
+Стенд фиксирует сформированные сервером запросы к API, ответ MCP и
+содержимое тестового файла. Сеть дочерних процессов заблокирована.
+Две версии DOCX MCP нужны для контроля изменения схемы, обнаруживаемого
+до пробного исполнения.
+
+```sh
+runtime=/private/tmp/mcp-keywords-release
+for version in 3.24.0 3.25.0; do
+  target="$runtime/npm/firecrawl-mcp/$version"
+  mkdir -p "$target"
+  cp "benchmark/schema-keywords/firecrawl/$version/"package*.json "$target/"
+  npm ci --ignore-scripts --no-audit --no-fund --prefix "$target"
+done
+for rev in 531e85abff91c3ecf08cba9ace21b8ff440930dd 28d483c3492dd53bb739fbc499da0d3854e751cd; do
+  target="$runtime/source/randomuser/$rev"
+  mkdir -p "$target"
+  curl -fsSL "https://codeload.github.com/rycid/randomuserMCP/tar.gz/$rev" -o "$target/source.tar.gz"
+  tar -xzf "$target/source.tar.gz" --strip-components=1 -C "$target"
+  npm ci --ignore-scripts --no-audit --no-fund --prefix "$target"
+  "$target/node_modules/.bin/tsc" --project "$target/tsconfig.json"
+done
+for tag in v0.4.0 v0.5.0; do
+  target="$runtime/source/docx/$tag"
+  mkdir -p "$target"
+  curl -fsSL "https://codeload.github.com/lihongjie0209/docx-mcp/tar.gz/refs/tags/$tag" -o "$target/source.tar.gz"
+  tar -xzf "$target/source.tar.gz" --strip-components=1 -C "$target"
+  npm ci --ignore-scripts --no-audit --no-fund --prefix "$target"
+  "$target/node_modules/.bin/tsc" --project "$target/tsconfig.json"
+done
+MCP_EXTERNAL_NODE_RUNTIME="$runtime" .venv/bin/python examples/schema_keyword_study.py \
+  --dataset published --provider none --output experiments/keywords/published-none.json
+```
+
+Запуск `tests/test_schema_keyword_study.py` проверяет сохранённые схемы
+и синтетические сценарии. Чтобы включить в него вызовы опубликованных
+серверов, задайте `MCP_COMPAT_RUN_PUBLISHED_KEYWORDS=1` и
+`MCP_EXTERNAL_NODE_RUNTIME` с путём к установленным пакетам.
+
 ## Локальные тесты
 
 ```sh
-.venv/bin/python -m pytest -q tests/test_external.py tests/test_external_results.py
+.venv/bin/python -m pytest -q tests/test_external.py tests/test_external_study.py
 .venv/bin/python -m pytest -q tests/test_upstream_contracts.py
 ```

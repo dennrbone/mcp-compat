@@ -156,6 +156,20 @@ def test_boolean_opaque(old,new):
     assert not compare(contract({'a':True}), contract({'a':True})).has_changes
 
 
+def test_extended_diff_keeps_annotations_and_unhandled_constraints_visible():
+    old = contract({"a": True})
+    new = contract({"a": False})
+    new.description = "Updated description"
+    new.input_schema["title"] = "Updated title"
+    old.input_schema["additionalProperties"] = {"type": "integer"}
+    old.output_schema = {"type": "string"}
+    diff = SchemaDiffEngine.compare(old, new, extended=True)
+    assert {item.path for item in diff.opaque} == {"input.additionalProperties"}
+    assert {"description", "input.title", "input.properties.a", "output"} <= {
+        item.path for item in diff.changes
+    }
+
+
 def test_opaque_keywords_metadata_output():
     old = contract({'a': {'oneOf':[{'type':'string'},{'type':'integer'}]}})
     assert not compare(old,old).is_complete

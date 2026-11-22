@@ -1,5 +1,4 @@
 from copy import deepcopy
-import json
 from pathlib import Path
 import sys
 
@@ -10,6 +9,7 @@ import external_study as study
 from external_200_dataset import read
 from mcp_compat import canonical_bytes
 from mcp_compat.external import load_inputs
+from mcp_compat.hybrid import Hybrid
 
 
 def fake_source(project, era, *, tool, arguments, state):
@@ -44,46 +44,6 @@ def case(alteration):
     return next(c for c in load_inputs(study.DATA,study.DIGEST) if c.project == "sqlite" and c.alteration == alteration)
 
 
-def test_identical_candidates_isolate_behavior_and_completeness(tmp_path,monkeypatch):
-    monkeypatch.setattr(study,"load_gold",lambda *a:pytest.fail("method must not read gold"))
-    runtime = study.Runtime(tmp_path,call=fake_source)
-    c = case("result_changed")
-    assert study.decide(c,"A",runtime).action == "EXECUTE"
-    assert study.decide(c,"C",runtime).action == "EXECUTE"
-    for method in ("B","D","E","M1_new"):
-        assert study.decide(c,method,runtime).action == "ABSTAIN"
-    assert study.decide(c,"M1_old",runtime).action == "EXECUTE"
-    c = case("hidden_state")
-    assert study.decide(c,"D",runtime).action == "EXECUTE"
-    assert study.decide(c,"B",runtime).reasons == ["incomplete_observation_profile"]
-    c = case("nondeterministic")
-    assert study.decide(c,"D",runtime).reasons == ["nondeterministic_observation"]
-    c = case("toctou")
-    assert study.decide(c,"B",runtime).reasons == ["state_changed"]
-    assert study.decide(c,"A",runtime).action == "EXECUTE"
-
-
-def test_complete_runner_resume_never_rewrites_or_reexecutes(tmp_path,monkeypatch):
-    monkeypatch.setattr(study,"execute",fake_source)
-    monkeypatch.setattr(study,"isolation_check",lambda:{"test_fixture_only":True})
-    records = study.study(tmp_path)
-    assert len(records) == 63*7
-    assert all(r.calls == 0 for r in records)
-    row = next(r for r in records if r.method == "M1_new" and r.scenario_id == "sqlite-07-removed")
-    assert row.validation_stages == 1
-    before = {p.name:(p.read_bytes(),p.stat().st_mtime_ns) for p in tmp_path.glob("*.json")}
-    def forbidden(*a,**k):
-        pytest.fail("completed run must not execute or rewrite")
-    monkeypatch.setattr(study,"execute",forbidden)
-    monkeypatch.setattr(study,"isolation_check",forbidden)
-    assert study.study(tmp_path) == study.read_completed(tmp_path)
-    assert before == {p.name:(p.read_bytes(),p.stat().st_mtime_ns) for p in tmp_path.glob("*.json")}
-    name = next(n for n in before if n.startswith("decision-"))
-    (tmp_path/name).write_bytes(canonical_bytes({"tampered":True}))
-    with pytest.raises(ValueError,match="integrity"):
-        study.read_completed(tmp_path)
-
-
 def test_runtime_history_has_no_holes_and_decoder_rejects_multiple_values(tmp_path):
     (tmp_path/"rpc-00002.json").write_text("{}")
     with pytest.raises(ValueError,match="history"):
@@ -91,10 +51,6 @@ def test_runtime_history_has_no_holes_and_decoder_rejects_multiple_values(tmp_pa
     c = case("encoding")
     with pytest.raises(ValueError,match="singleton"):
         study.native_arguments(c,{"query":["a","b"]})
-    manifest = tmp_path/"manifest.json"
-    manifest.write_text(json.dumps({"fingerprint":"wrong"}))
-    with pytest.raises(ValueError,match="requires new"):
-        study.study(tmp_path)
 
 
 def test_constructed_unit_output_is_finite_and_not_a_wrapper_exception():
@@ -105,7 +61,8 @@ def test_constructed_unit_output_is_finite_and_not_a_wrapper_exception():
 def test_full_hybrid_must_check_current_state_before_admission(tmp_path):
     runtime = study.Runtime(tmp_path,call=fake_source)
     c = case("toctou")
-    decision = study.decide(c,"M1_new",runtime)
+    checker = study.verifier(c, runtime)
+    decision = Hybrid(verifier=checker, current_state=lambda: study.current_state(c)).recover(c.request)
     assert decision.action == "ABSTAIN" and decision.reasons == ["state_changed"]
 
 

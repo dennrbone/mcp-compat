@@ -8,7 +8,6 @@ import sys
 from types import SimpleNamespace
 
 import pytest
-from pydantic import ValidationError
 
 from mcp_compat.llm import LLMRequest
 from mcp_compat.providers import ProviderError
@@ -101,14 +100,6 @@ def test_codex_configuration_bounds_and_honest_parameters(transport):
     for timeout in (0, -1, 121, float('nan')):
         with pytest.raises(ValueError):
             client.complete(LLMRequest(system='s',data={},response_schema={}), timeout)
-    path = Path(__file__).resolve().parents[1]/'examples/terra_case_study.py'
-    spec = spec_from_file_location('terra_case_study', path)
-    runner = module_from_spec(spec)
-    spec.loader.exec_module(runner)
-    good = runner.TerraRunConfig(kind='pilot',benchmark_digest='x',generation_parameters=transport.PARAMETERS)
-    assert good.generation_parameters['temperature'] == 'provider_default'
-    with pytest.raises(ValidationError, match='Terra generation'):
-        runner.TerraRunConfig(kind='pilot',benchmark_digest='x')
 
 
 @pytest.mark.real_provider

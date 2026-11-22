@@ -38,8 +38,8 @@ decision = engine.recover(request)
   `import_legacy=True`, чтобы добавить отсутствующий тип `object`
   к прежней входной схеме.
 - `compat` автоматически импортирует такую схему и умеет проверять
-  отдельный вызов при некоторых частично разобранных ограничениях,
-  например `propertyNames`. Режиму обязательны `EvidenceVerifier`
+  отдельный вызов при частично разобранных ограничениях `propertyNames`
+  и `patternProperties`. Режиму обязательны `EvidenceVerifier`
   и `current_state`.
 
 При переданном `current_state` Hybrid в обоих режимах перед допуском

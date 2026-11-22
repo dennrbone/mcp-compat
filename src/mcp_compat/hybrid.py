@@ -146,18 +146,8 @@ def adapt(request: RecoveryInput, operations: list[Operation]) -> ToolCall:
 
 
 def _can_verify_opaque(change: OpaqueChange) -> bool:
-    if change.reason in ("output schema added/removed", "tool description change", "annotation/dialect change"):
-        return True
-    if change.reason != "unsupported schema keyword":
-        return False
-    keyword = change.path.rsplit(".", 1)[-1]
-    if keyword == "additionalProperties":
-        return all(value is None or isinstance(value, bool) for value in (change.old_value, change.new_value))
-    return keyword in {
-        "default", "const", "minimum", "maximum", "exclusiveMinimum", "exclusiveMaximum",
-        "multipleOf", "minLength", "maxLength", "minItems", "maxItems", "uniqueItems",
-        "minProperties", "maxProperties", "patternProperties", "propertyNames",
-    }
+    return (change.reason == "unsupported schema keyword"
+            and change.path.rsplit(".", 1)[-1] in {"patternProperties", "propertyNames"})
 
 
 class Hybrid:
